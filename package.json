@@ -1,0 +1,30 @@
+{
+  "name": "user-service",
+  "version": "1.0.0",
+  "description": "Auth, user management service using a NOSQL database(mongo), redis. Service will be deployed inside a docker container running within a kubernetes pod",
+  "main": "index.js",
+  "repository": "https://github.com/hi-pal/user-service.git",
+  "author": "sujoydev99",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.24.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "googleapis": "^89.0.0",
+    "helmet": "^4.6.0",
+    "jsonapi-serializer": "^3.6.7",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.12",
+    "morgan": "^1.10.0",
+    "nanoid": "^3.1.30",
+    "qs": "^6.10.1",
+    "validatorjs": "^3.22.1",
+    "winston": "^3.3.3"
+  },
+  "scripts": {
+    "develop": "nodemon index.js"
+  }
+}
