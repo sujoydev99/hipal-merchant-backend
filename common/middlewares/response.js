@@ -20,11 +20,15 @@ module.exports = (http, type, data, req, res, next) => {
     data = JSON.parse(JSON.stringify(data));
     let dataSerializer = new JsonApi(type, {
       attributes:
-        data instanceof Array && data.length > 0 ? Object.keys(data[0] || {}) : Object.keys(data),
+        data instanceof Array && data.length > 0
+          ? Object.keys(data[0] || {})
+          : Object.keys(data),
       keyForAttribute: "camelCase",
     });
     var links = {
-      self: `${uri}${baseUrl}${path}${query !== null ? "?" + qs.stringify(query) : ""}`,
+      self: `${uri}${baseUrl}${path}${
+        query !== null ? "?" + qs.stringify(query) : ""
+      }`,
     };
     if (data instanceof Array) {
       delete query.page;
@@ -67,9 +71,9 @@ module.exports = (http, type, data, req, res, next) => {
     }
     // data = dataSerializer.serialize(data);
     // data = data.data;
-    res
+    return res
       .status(http.statusCode || 200)
-      .json(clean({ message: http.message, links, data, meta, method }));
+      .json(clean({ message: http.customMessage, links, data, meta, method }));
   } catch (error) {
     next(error);
   }

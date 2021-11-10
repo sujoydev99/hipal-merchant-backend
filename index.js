@@ -6,12 +6,13 @@ const helmet = require("helmet");
 const mongoose = require("mongoose");
 
 const { logger } = require("./common/functions/logger");
-const errorMiddleware = require("./common/middlewares/error");
 
 const { cleaner } = require("./common/middlewares/cleaner");
 // const { requestLogger } = require("./common/middlewares/requestLogger");
-const { initializeMessageHandler } = require("./common/messageBus/handler");
+// const { initializeMessageHandler } = require("./common/messageBus/handler");
 const auth = require("./routes/api/auth");
+const profile = require("./routes/api/profile");
+const errorMiddleware = require("./common/middlewares/error");
 // initialize the env configuration
 dotenv.config();
 
@@ -40,8 +41,7 @@ app.get("/api/health-check", (req, res, next) => {
   res.status(200).json({ message: "Health check successful" });
 });
 app.use("/api/user/auth", auth);
-// app.use("/api/auth/signin", employeeSignup);
-
+app.use("/api/user/profile", profile);
 app.use(errorMiddleware);
 
 // initializeMessageHandler();

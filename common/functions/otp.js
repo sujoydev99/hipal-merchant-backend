@@ -39,7 +39,7 @@ exports.verifyMobileOtp = (number, code, otp) => {
       logger.info(response.data.message);
       reject({
         code: 400,
-        message: response.data.message,
+        customMessage: response.data.message,
       });
     } catch (error) {
       reject(error);

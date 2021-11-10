@@ -22,6 +22,18 @@ exports.userEmailSignUpValidation = async (req, res, next) => {
     next(error);
   }
 };
+exports.userEmailSignInValidation = async (req, res, next) => {
+  try {
+    const validationRules = {
+      email: "required|string|email",
+      password: "required|string",
+    };
+    await validateRules(req.body, validationRules);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.userMobileSignUpValidation = async (req, res, next) => {
   try {
@@ -35,7 +47,7 @@ exports.userMobileSignUpValidation = async (req, res, next) => {
     next(error);
   }
 };
-exports.userMobileSignInValidation = async (req, res, next) => {
+exports.userMobileOtpValidation = async (req, res, next) => {
   try {
     const validationRules = {
       mobileNumber: "required|string",
@@ -60,7 +72,22 @@ exports.userSignUpValidation = async (req, res, next) => {
         await this.userMobileSignUpValidation(req, res, next);
         break;
     }
-    next();
+  } catch (error) {
+    next(error);
+  }
+};
+exports.userSignInValidation = async (req, res, next) => {
+  try {
+    const { type } = req.query;
+    if (![MOBILE, EMAIL].includes(type)) throw AUTH_TYPE_ERROR;
+    switch (type) {
+      case EMAIL:
+        await this.userEmailSignInValidation(req, res, next);
+        break;
+      case MOBILE:
+        await this.userMobileSignUpValidation(req, res, next);
+        break;
+    }
   } catch (error) {
     next(error);
   }
@@ -96,13 +123,14 @@ exports.otpValidation = async (req, res, next) => {
     if (![MOBILE, EMAIL].includes(type)) throw AUTH_TYPE_ERROR;
     switch (type) {
       case EMAIL:
-        await this.userMobileSignInValidation(req, res, next);
-        break;
-      case MOBILE:
         await this.emailOtpValidation(req, res, next);
         break;
+      case MOBILE:
+        await this.userMobileOtpValidation(req, res, next);
+        break;
+      default:
+        throw AUTH_TYPE_ERROR;
     }
-    next();
   } catch (error) {
     next(error);
   }

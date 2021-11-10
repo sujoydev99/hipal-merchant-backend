@@ -2,40 +2,68 @@ const { EMAIL, MOBILE } = require("./variables");
 
 module.exports = {
   DEFAULT_OTP: {
-    message: "default otp 123456 mocked",
+    customMessage: "default otp 123456 mocked",
     statusCode: 200,
   },
   OTP_SENT: {
-    message: "An OTP has been sent to your mobile number",
+    customMessage: "An OTP has been sent to your mobile number",
     statusCode: 200,
   },
   OTP_VERIFIED: {
-    message: "Successfully verified the OTP",
+    customMessage: "Successfully verified the OTP",
     statusCode: 200,
   },
   OTP_NOT_VERIFIED: {
-    message: "OTP verification failed",
+    customMessage: "OTP verification failed",
     statusCode: 409,
   },
   EMAIL_SIGNUP_SUCCESS: {
-    message:
-      "Email signup successful. Please verify your email address and signIn",
+    customMessage:
+      "Email signup successful. Please sign-in and verify your email address",
     statusCode: 201,
   },
+  EMAIL_SIGNIN_SUCCESS: {
+    customMessage: "Sign-In successful.",
+    statusCode: 200,
+  },
   EMAIL_ALREADY_EXISTS: {
-    message: "Email already exists. Please sign-in instead",
+    customMessage: "Email already exists. Please sign-in instead",
     statusCode: 400,
   },
   AUTH_TYPE_ERROR: {
-    message: `query param 'type' must be '${EMAIL}' or '${MOBILE}'`,
+    customMessage: `query param 'type' must be '${EMAIL}' or '${MOBILE}'`,
     statusCode: 409,
   },
   INSUFFICIENT_ROLES_ERROR: {
-    message: `user does not have sufficient privileges to access this module`,
+    customMessage: `user does not have sufficient privileges to access this module`,
     statusCode: 401,
   },
   SIGNIN_SUCCESS: {
-    message: "Successfully signed-in",
+    customMessage: "Successfully signed-in",
+    statusCode: 200,
+  },
+  INVALID_PASSWORD: {
+    customMessage: "Invalid Email/Password",
+    statusCode: 409,
+  },
+  NO_ACCOUNT: {
+    customMessage: "Account not found",
+    statusCode: 404,
+  },
+  PROFILE_FETCHED: {
+    customMessage: "User profile fetched",
+    statusCode: 200,
+  },
+  ADDRESS_ADDED: {
+    customMessage: "User address added",
+    statusCode: 201,
+  },
+  ADDRESS_UPDATED: {
+    customMessage: "User address updated",
+    statusCode: 200,
+  },
+  ADDRESS_DELETED: {
+    customMessage: "User address deleted",
     statusCode: 200,
   },
 };

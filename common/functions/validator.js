@@ -16,7 +16,7 @@ exports.validateRules = (
         if (!status) {
           err = {
             ...err,
-            message: "Request body Validation Error",
+            customMessage: "Request body Validation Error",
             statusCode: 409,
           };
           console.log(err);

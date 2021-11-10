@@ -6,7 +6,7 @@ exports.verifyToken = async (req, res, next) => {
       ? req.headers["authorization"]
       : req.headers["Authorization"];
     if (null == token) {
-      throw { statusCode: 403, message: "forbiddened" };
+      throw { statusCode: 403, customMessage: "forbiddened" };
     }
     let userJwt = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
     if (null != (userUuid = userJwt ? userJwt.uuid : null)) {

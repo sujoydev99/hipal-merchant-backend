@@ -19,7 +19,7 @@ exports.jwtVerify = (req) => {
     return jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
   } catch (error) {
     throw {
-      message: error,
+      customMessage: error,
       statusCode: 401,
     };
   }

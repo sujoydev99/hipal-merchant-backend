@@ -1,22 +1,14 @@
 const express = require("express");
-const { userSignup } = require("../../common/middlewares/handlers/auth");
-const {
-  userSignUpValidation,
-} = require("../../common/middlewares/validations/userValidations");
 const router = express.Router();
+const {
+  getUserByUuid,
+  addAddress,
+  updateAddress,
+  deleteAddress,
+} = require("../../common/middlewares/handlers/profile");
 
-router.post("/signup", userSignUpValidation, userSignup);
+router.get("/:uuid", getUserByUuid);
+router.post("/address", addAddress);
+router.put("/address/:uuid", updateAddress);
+router.delete("/address/:uuid", deleteAddress);
 module.exports = router;
-
-// get user/:uuid
-// get users?page=1$limit=10
-// add email
-// edit email
-// delete/deactivate email
-// add contact number
-// edit contact number
-// delete/deactivate contact number
-// add address
-// edit address
-// delete/deactivate address
-// upload docs
