@@ -1,4 +1,4 @@
-[x] Address CRUD
-[] emails CRUD
-[] documents CRUD
-[] contactNumbers CRUD
+- [x] Address CRUD
+- [] emails CRUD
+- [] documents CRUD
+- [] contactNumbers CRUD
