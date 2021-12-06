@@ -2,36 +2,38 @@
 const { nanoid } = require("nanoid");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class socials extends Model {
+  class userDocs extends Model {
     static associate(models) {
       // define association here
-      socials.belongsTo(models.users, {
+      userDocs.belongsTo(models.users, {
         foreignKey: "userId",
         as: "user",
-        onDelete: "RESTRICT",
+        onDelete: "CASCADE",
       });
     }
   }
-  socials.init(
+  userDocs.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
       userId: { type: DataTypes.INTEGER, allowNull: false },
-      socialId: { type: DataTypes.STRING, allowNull: false },
-      socialId: {
+      type: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "FACEBOOK/GOOGLE",
+        comment: "AADHARCARD/PANCARD/PASSPORT",
       },
+      notes: { type: DataTypes.STRING },
+      referenceNumber: { type: DataTypes.STRING },
+      expiration: { type: DataTypes.DATE },
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
     {
       sequelize,
-      modelName: "socials",
+      modelName: "userDocs",
       paranoid: true,
     }
   );
-  socials.beforeCreate((social, _) => {
-    return (social.uuid = "social_" + nanoid(20));
+  userDocs.beforeCreate((doc, _) => {
+    return (doc.uuid = "userDoc_" + nanoid(20));
   });
-  return socials;
+  return userDocs;
 };

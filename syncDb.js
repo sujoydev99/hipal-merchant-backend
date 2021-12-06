@@ -14,7 +14,7 @@ async function run() {
     // await db.sequelize.query("ALTER TABLE IF EXISTS employeeAddresses DROP INDEX IF EXISTS uuid");
     // await db.sequelize.query("ALTER TABLE IF EXISTS employeeDocs DROP INDEX IF EXISTS uuid");
     // await db.sequelize.query("CREATE TYPE IF NOT EXIST "public"."" AS ENUM('enum1', 'enum2')");
-    await db.sequelize.sync({ alter: true, force: true, transaction });
+    await db.sequelize.sync({ alter: true, transaction });
     transaction.commit();
   } catch (error) {
     console.log(error);

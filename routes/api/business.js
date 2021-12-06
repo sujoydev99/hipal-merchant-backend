@@ -13,18 +13,9 @@ const {
 } = require("../../common/middlewares/validations/user/userAddressValidation");
 
 // get user by uuid
-router.get(
-  "/:userUuid",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  getUserByUuid
-);
+router.get("/:uuid", verifyToken([], [ROLES.ADMIN, ROLES.USER]), getUserByUuid);
 // add address
-router.post(
-  "/:userUuid/address",
-  verifyToken(),
-  userAddressValidation,
-  addAddress
-);
+router.post("/", verifyToken(), addAddress);
 // update address by uuid
 router.put(
   "/:userUuid/address/:uuid",

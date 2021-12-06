@@ -10,28 +10,50 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      users.hasMany(models.addresses, {
+      users.hasMany(models.userAddresses, {
         foreignKey: "userId",
-        as: "addresses",
+        as: "userAddresses",
       });
-      users.hasMany(models.docs, {
+      users.hasMany(models.userDocs, {
         foreignKey: "userId",
-        as: "docs",
+        as: "userDocs",
       });
-      users.hasMany(models.emails, {
+      users.hasMany(models.userEmails, {
         foreignKey: "userId",
-        as: "emails",
+        as: "userEmails",
       });
-      users.hasMany(models.contactNumbers, {
+      users.hasMany(models.userContactNumbers, {
         foreignKey: "userId",
-        as: "contactNumbers",
+        as: "userContactNumbers",
+      });
+      users.belongsToMany(models.businesses, {
+        foreignKey: "userId",
+        as: "businesses",
+        through: "businessUsers",
+      });
+      users.belongsToMany(models.roles, {
+        foreignKey: "userId",
+        as: "userRoles",
+        through: "businessUsers",
       });
     }
   }
   users.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
-      name: { type: DataTypes.STRING },
+      name: {
+        type: DataTypes.STRING, // unique: true // TODO create migration and add unique constraint
+        set(value) {
+          this.setDataValue(
+            "name",
+            value
+              .trim()
+              .split(" ")
+              .map((i) => i[0].toUpperCase() + i.substring(1).toLowerCase())
+              .join(" ")
+          );
+        },
+      },
       password: { type: DataTypes.STRING },
       profileImageUrl: { type: DataTypes.STRING },
       coverImageUrl: { type: DataTypes.STRING },
@@ -40,8 +62,8 @@ module.exports = (sequelize, DataTypes) => {
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
       userTypes: {
         type: DataTypes.ARRAY(DataTypes.STRING),
-        defaultValue: ["CUSTOMER"],
-        comment: "[CUSTOMER, EMPLOYEE, ADMIN]",
+        defaultValue: ["USER"],
+        comment: "[CUSTOMER, ADMIN, ACCOUNT_MANAGER, USER]",
       },
     },
     {

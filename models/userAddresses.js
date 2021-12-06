@@ -2,7 +2,7 @@
 const { nanoid } = require("nanoid");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class contactNumbers extends Model {
+  class userAddresses extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -10,31 +10,34 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-
-      contactNumbers.belongsTo(models.users, {
+      userAddresses.belongsTo(models.users, {
         foreignKey: "userId",
         as: "user",
         onDelete: "CASCADE",
       });
     }
   }
-  contactNumbers.init(
+  userAddresses.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
       userId: { type: DataTypes.INTEGER, allowNull: false },
-      number: { type: DataTypes.STRING, allowNull: false },
-      extension: { type: DataTypes.INTEGER, allowNull: false },
-      otp: { type: DataTypes.INTEGER },
+      lineOne: { type: DataTypes.STRING, allowNull: false },
+      lineTwo: { type: DataTypes.STRING },
+      zip: { type: DataTypes.STRING },
+      city: { type: DataTypes.STRING },
+      state: { type: DataTypes.STRING },
+      country: { type: DataTypes.STRING },
+      geo: DataTypes.GEOMETRY("POINT", 4326),
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
     {
       sequelize,
-      modelName: "contactNumbers",
+      modelName: "userAddresses",
       paranoid: true,
     }
   );
-  contactNumbers.beforeCreate((cNum, _) => {
-    return (cNum.uuid = "contact_" + nanoid(20));
+  userAddresses.beforeCreate((address, _) => {
+    return (address.uuid = "userAddress_" + nanoid(20));
   });
-  return contactNumbers;
+  return userAddresses;
 };

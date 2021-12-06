@@ -1,6 +1,6 @@
-const { AUTH_TYPE_ERROR } = require("../../constants/messages");
-const { MOBILE, EMAIL } = require("../../constants/variables");
-const { validateRules } = require("../../functions/validator");
+const { AUTH_TYPE_ERROR } = require("../../../constants/messages");
+const { MOBILE, EMAIL } = require("../../../constants/variables");
+const { validateRules } = require("../../../functions/validator");
 exports.userEmailSignUpValidation = async (req, res, next) => {
   try {
     req.body.password_confirmation = req.body.passwordConfirmation;

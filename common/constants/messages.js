@@ -34,9 +34,13 @@ module.exports = {
     customMessage: `query param 'type' must be '${EMAIL}' or '${MOBILE}'`,
     statusCode: 409,
   },
-  INSUFFICIENT_ROLES_ERROR: {
-    customMessage: `user does not have sufficient privileges to access this module`,
-    statusCode: 401,
+  INSUFFICIENT_PRIVILEGES: {
+    customMessage: `You don't have sufficient privileges to access this module`,
+    statusCode: 403,
+  },
+  INSUFFICIENT_ROLES: {
+    customMessage: `You don't have sufficient roles to access this module`,
+    statusCode: 403,
   },
   SIGNIN_SUCCESS: {
     customMessage: "Successfully signed-in",
@@ -65,5 +69,17 @@ module.exports = {
   ADDRESS_DELETED: {
     customMessage: "User address deleted",
     statusCode: 200,
+  },
+  FORBIDDENED: {
+    customMessage: "Forbiddened access",
+    statusCode: 401,
+  },
+  JWT_EXPIRED: {
+    customMessage: "Access token expired",
+    statusCode: 401,
+  },
+  NOT_ALLOWED: {
+    customMessage: "This action is not permitted for you",
+    statusCode: 400,
   },
 };

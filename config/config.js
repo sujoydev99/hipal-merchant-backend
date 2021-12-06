@@ -12,7 +12,7 @@ module.exports = {
     pool: {
       max: 10,
       min: 0,
-      idle: 5000,
+      idle: 10000,
     },
     // dialectOptions: {
     //   // ssl: {
@@ -20,7 +20,7 @@ module.exports = {
     //   //   rejectUnauthorized: false,
     //   // },
     // },
-    // logging: false,
+    logging: false,
   },
   test: {
     username: process.env.DBUSERNAME,

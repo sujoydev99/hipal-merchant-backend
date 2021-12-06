@@ -2,37 +2,36 @@
 const { nanoid } = require("nanoid");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class emails extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class userSocials extends Model {
     static associate(models) {
       // define association here
-
-      emails.belongsTo(models.users, {
+      userSocials.belongsTo(models.users, {
         foreignKey: "userId",
         as: "user",
+        onDelete: "CASCADE",
       });
     }
   }
-  emails.init(
+  userSocials.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
       userId: { type: DataTypes.INTEGER, allowNull: false },
-      email: { type: DataTypes.STRING, allowNull: false },
-      otp: { type: DataTypes.INTEGER },
+      socialId: { type: DataTypes.STRING, allowNull: false },
+      socialId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "FACEBOOK/GOOGLE",
+      },
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
     {
       sequelize,
-      modelName: "emails",
+      modelName: "userSocials",
       paranoid: true,
     }
   );
-  emails.beforeCreate((email, _) => {
-    return (email.uuid = "email_" + nanoid(20));
+  userSocials.beforeCreate((social, _) => {
+    return (social.uuid = "userSocial_" + nanoid(20));
   });
-  return emails;
+  return userSocials;
 };

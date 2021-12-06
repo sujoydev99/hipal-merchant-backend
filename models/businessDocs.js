@@ -2,24 +2,24 @@
 const { nanoid } = require("nanoid");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class docs extends Model {
+  class businessDocs extends Model {
     static associate(models) {
       // define association here
-      docs.belongsTo(models.users, {
-        foreignKey: "userId",
-        as: "user",
+      businessDocs.belongsTo(models.businesses, {
+        foreignKey: "businessId",
+        as: "business",
         onDelete: "CASCADE",
       });
     }
   }
-  docs.init(
+  businessDocs.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
-      userId: { type: DataTypes.INTEGER, allowNull: false },
+      businessId: { type: DataTypes.INTEGER, allowNull: false },
       type: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "AADHARCARD/PANCARD/PASSPORT",
+        comment: "FSSAI/GST",
       },
       notes: { type: DataTypes.STRING },
       referenceNumber: { type: DataTypes.STRING },
@@ -28,12 +28,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "docs",
+      modelName: "businessDocs",
       paranoid: true,
     }
   );
-  docs.beforeCreate((doc, _) => {
-    return (doc.uuid = "doc_" + nanoid(20));
+  businessDocs.beforeCreate((doc, _) => {
+    return (doc.uuid = "businessDoc_" + nanoid(20));
   });
-  return docs;
+  return businessDocs;
 };

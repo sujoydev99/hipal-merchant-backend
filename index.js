@@ -46,16 +46,6 @@ app.use(errorMiddleware);
 
 // initializeMessageHandler();
 
-mongoose.connect(process.env.MONGO_CONNECTION_URI, {
-  useNewUrlParser: "true",
-});
-mongoose.connection.on("error", (err) => {
-  logger.error(err);
-  process.exit(1);
-});
-mongoose.connection.on("connected", (err, res) => {
-  logger.info("mongoose is connected");
-  app.listen(port, () => {
-    logger.info(`server started at http://localhost:${port}`);
-  });
+app.listen(port, () => {
+  logger.info(`server started at http://localhost:${port}`);
 });
