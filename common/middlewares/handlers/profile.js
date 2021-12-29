@@ -3,7 +3,10 @@ const {
   updateAddressByUuidUserId,
   deleteAddressByUuidUserId,
 } = require("../../../repository/userAddresses");
-const { getUserByUuid } = require("../../../repository/user");
+const {
+  getUserByUuid,
+  updateUserBasicDetailsByUuidUserId,
+} = require("../../../repository/user");
 const {
   PROFILE_FETCHED,
   NO_ACCOUNT,
@@ -11,6 +14,7 @@ const {
   ADDRESS_UPDATED,
   ADDRESS_DELETED,
   NOT_ALLOWED,
+  BASIC_DETAILS_UPDATED,
 } = require("../../constants/messages");
 const response = require("../response");
 const dbConn = require("../../../models");
@@ -74,6 +78,25 @@ exports.deleteAddress = async (req, res, next) => {
     );
     await transaction.commit();
     response(ADDRESS_DELETED, "address", null, req, res, next);
+  } catch (error) {
+    await transaction.rollback();
+    next(error);
+  }
+};
+
+exports.updateUserBasicDetails = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    const { userUuid } = req.params;
+    await updateUserBasicDetailsByUuidUserId(
+      transaction,
+      { ...req.body },
+      userUuid,
+      req.otherId || req.user.id
+    );
+    await transaction.commit();
+    response(BASIC_DETAILS_UPDATED, "basic details", null, req, res, next);
   } catch (error) {
     await transaction.rollback();
     next(error);

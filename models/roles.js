@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      privileges: DataTypes.ARRAY(DataTypes.STRING),
       notes: DataTypes.STRING,
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
     },

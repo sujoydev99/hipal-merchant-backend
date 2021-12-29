@@ -77,7 +77,7 @@ exports.getOrCreateUserByEmail = (transaction, email, password = null) => {
             ? newUser.userEmails.push(_email)
             : [_email],
         };
-        resolve(user);
+        return resolve(user);
       }
       if (!user && !password) throw NO_ACCOUNT;
       if (user) return resolve(user);
@@ -136,6 +136,43 @@ exports.getUserByUuidReq = (uuid, transaction) => {
         transaction,
       });
       resolve(user);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.updateUserBasicDetailsByUuidUserId = (
+  transaction,
+  userObj,
+  uuid,
+  id
+) => {
+  return new Promise(async (resolve, reject) => {
+    const { users } = await dbConn();
+    let updateFilter = { uuid, id };
+    try {
+      await users.update(userObj, {
+        where: updateFilter,
+        transaction,
+      });
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.updateAddressByUuidUserId = (transaction, addrObj, uuid, userId) => {
+  return new Promise(async (resolve, reject) => {
+    const { userAddresses } = await dbConn();
+    let updateFilter = { uuid, userId };
+    try {
+      let k = await userAddresses.update(addrObj, {
+        where: updateFilter,
+        transaction,
+      });
+      resolve();
     } catch (error) {
       reject(error);
     }

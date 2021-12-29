@@ -19,7 +19,6 @@ exports.validateRules = (
             customMessage: "Request body Validation Error",
             statusCode: 409,
           };
-          console.log(err);
           reject(err);
         }
         resolve();

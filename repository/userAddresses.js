@@ -34,13 +34,11 @@ exports.updateAddressByUuidUserId = (transaction, addrObj, uuid, userId) => {
   return new Promise(async (resolve, reject) => {
     const { userAddresses } = await dbConn();
     let updateFilter = { uuid, userId };
-    console.log(updateFilter, addrObj, transaction);
     try {
       let k = await userAddresses.update(addrObj, {
         where: updateFilter,
         transaction,
       });
-      console.log(k);
       resolve();
     } catch (error) {
       reject(error);

@@ -15,13 +15,12 @@ exports.verifyToken = (privileges = [], roles = []) => {
       let token = req.headers["authorization"]
         ? req.headers["authorization"]
         : req.headers["Authorization"];
-      if (null == token) {
+      if (null === token) {
         throw FORBIDDENED;
       }
       try {
         userJwt = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
       } catch (error) {
-        console.log(error);
         throw JWT_EXPIRED;
       }
       if (userJwt) {
@@ -33,11 +32,6 @@ exports.verifyToken = (privileges = [], roles = []) => {
       if (index !== -1) {
         arr.splice(index, 1);
       }
-      console.log(
-        roles,
-        req.user.userTypes,
-        allowedPrivilegesAndRoles(roles, req.user.userTypes)
-      );
       if (
         roles.length > 0 &&
         allowedPrivilegesAndRoles(roles, req.user.userTypes).length === 0
@@ -55,9 +49,7 @@ exports.verifyToken = (privileges = [], roles = []) => {
         req.otherId = req.other.id;
         return next();
       } else throw INSUFFICIENT_ROLES;
-      s;
     } catch (error) {
-      console.log(error);
       next(error);
     }
   };

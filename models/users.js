@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       uuid: { type: DataTypes.STRING, unique: true },
       name: {
-        type: DataTypes.STRING, // unique: true // TODO create migration and add unique constraint
+        type: DataTypes.STRING,
         set(value) {
           this.setDataValue(
             "name",

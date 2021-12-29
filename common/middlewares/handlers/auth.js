@@ -82,7 +82,6 @@ exports.userSignup = async (req, res, next) => {
         await this.userMobileSignup(req, res, next);
         break;
       case EMAIL:
-        console.log("here");
         await this.userEmailSignup(req, res, next);
         break;
       default:
@@ -101,7 +100,6 @@ exports.userSignIn = async (req, res, next) => {
         await this.userMobileSignup(req, res, next);
         break;
       case EMAIL:
-        console.log("here");
         await this.userEmailSignIn(req, res, next);
         break;
       default:

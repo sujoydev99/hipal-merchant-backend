@@ -14,7 +14,6 @@ exports.sendMobileOtp = (number, code) => {
       );
       resolve(response.data);
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });
@@ -57,7 +56,6 @@ exports.resendOtp = (number, code, type) => {
       logger.info(`${JSON.stringify(response.data)}\t ${code}${number}`);
       resolve(response.data);
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });

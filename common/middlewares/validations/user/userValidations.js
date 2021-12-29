@@ -153,3 +153,14 @@ exports.resendOtpValidation = async (req, res, next) => {
     next(error);
   }
 };
+exports.userBasicDetailsValidation = async (req, res, next) => {
+  try {
+    const validationRules = {
+      name: "required|string",
+    };
+    await validateRules(req.body, validationRules);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};

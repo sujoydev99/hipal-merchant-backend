@@ -66,6 +66,10 @@ module.exports = {
     customMessage: "User address updated",
     statusCode: 200,
   },
+  BASIC_DETAILS_UPDATED: {
+    customMessage: "User basic details updated",
+    statusCode: 200,
+  },
   ADDRESS_DELETED: {
     customMessage: "User address deleted",
     statusCode: 200,
