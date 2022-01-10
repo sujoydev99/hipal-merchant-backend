@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "firm-region-332914",
+  "private_key_id": "81bb5042344a792f56c3dc180aefab935999f21f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC6C08684phVObw\n3ScqESktTPRJgruRPSyCDYAINH2d1Ac7u+Ycmk6KGhE2Mzppd5+LLmlV9H39dvW2\nM64MVUVW05kZ3QLMv3cvlO7/HHf6s4TgDRBAOZTDiyTbmsorlpAjK0uweSS3svyH\noG/ePXQh3FbaAFY0WVuJrWmtDtYIyrm1JhiyRzgWFmKcRoyShPwwdcn6DKYxquj9\narzPi4mizTG/708oRXU+4inH+vseRmNttdKXlV32IS7ldJpMD490J3LYkRIOyQae\nUy/wG8+PGOMJnzpWRdXH/zJhw1NVkzxUcd9vDFw345YjtpEofQO4EdxIX7sBY8ud\n75OzRY/dAgMBAAECggEARET8KQTPhdHzAPYWdhBgDNiNWCBaFfzdxUeQ8PHaGr2A\nfgIAegSBx5mzMTFxQNx9tkQssTcLuKQbnGWwe6Qa0rbJGr2IVnv4D4TWgtT+jges\nPc9tZDP9DBiWSOOvRnl0oQM1PifmOma61kYgZuwkHnzNfifbelBED+yLt86W6hhh\nDKDiJ/VkBQFMKn2U9kK38Bk34WGTbXpY99ro9GxCS4rwkzZjnB/dT9BKy+6P6ScZ\nL9B95FWvmh3y1WcsRrZGoJUY+618ws0kox2+Lysu/mkcdTdAdQ6vAg4TDJmQYBsB\n0WaIAkcwcM2Xp2k+HFRqyt0lJGXGkmTE+37vYcJvPQKBgQD0AdafO0KMr/ZoS6du\n4QwJRoUspP+b57Q3jSIEM6HK+OpxYWx1vhn4dPCl0hX4sb3afejspGS+2wyE2VrO\nld5L5487j2kshe6IVptkyBuc/Cuw1K8U2XmGcXWdYcuH5cPv/1SNoqwCChauwUQX\nq9fzNw9dSHcQ2BQT6NRtH98i8wKBgQDDMCpjyyOq9VEyuYT3m3vBzNBOs86ptPVQ\nr0V8siBzvG09oxuCmY5aWxzSvcVKC81/9A0XHunE/kJPbFdu7oJHYgSN15R91tbb\n0zc7RQaNBIHCGfz6IJyI5eGX3eiE+0EancXrlnUqhYkcrwclk9LmdtAEi5I9IliR\n9+Sr1RIV7wKBgEB6c+Jj4HQY034/76CnK20QC4T+nOTv13mOe9ysYCaonBsV6Xk7\noNU84ZKP72pmXYrtFq3hyxV8ANTiMtLAW5unNvxAK0Sup5ezeyComFNld44kxZc2\n2JwkQzYxb30bxCkZSZib0eRAEjpfq8StjkUg2ZiG25/B2ZxhPDER6P7tAoGBALGA\nBayGuULooBSu3RqHDL4q0Wwg29k8tLHREjHZkuVs/zLEN2pG1kuY+9cxuE4j+ZdY\niubxt8jrJ8YuUjyRLWxY2Kdc2q6tRurVYy7FELYA2Td4hrO4IGHmG4cNyDvWeVgJ\nDkm1o4stsIijKq6jhXELrxPTEQQDTeRAOHWC6FWFAoGBANveYkOcrq0Sf6Mh/Sg3\ng3UA85vbcF6idUaxwZcwpcTqfCQJLpJnFoPkzNRlzX8QHRHv50Of3b1C7cQ2z4t+\nYL3gO/822xMY5oMKTpUEGPtHc5RVswnwdoO4VY6vX1yV/IxDQBFLPbQZsy5ILZjU\nKgk33ixD8czaCAkJkRmUJRvz\n-----END PRIVATE KEY-----\n",
+  "client_email": "gcs-service-account-hipal@firm-region-332914.iam.gserviceaccount.com",
+  "client_id": "111422496562350192965",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gcs-service-account-hipal%40firm-region-332914.iam.gserviceaccount.com"
+}

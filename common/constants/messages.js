@@ -86,4 +86,21 @@ module.exports = {
     customMessage: "This action is not permitted for you",
     statusCode: 400,
   },
+  DOC_EXISTS: {
+    customMessage:
+      "Please delete the existing document before uploading a new version",
+    statusCode: 400,
+  },
+  DOC_UPLOADED: {
+    customMessage: "Document uploaded successfully",
+    statusCode: 201,
+  },
+  PRIVATE_DOC_FETCHED: {
+    customMessage: "Private file fetched",
+    statusCode: 200,
+  },
+  PRIVATE_DOC_DELETED: {
+    customMessage: "Private file deleted",
+    statusCode: 200,
+  },
 };

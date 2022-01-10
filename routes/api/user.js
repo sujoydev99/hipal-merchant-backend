@@ -8,14 +8,27 @@ const {
   updateAddress,
   deleteAddress,
   updateUserBasicDetails,
-} = require("../../common/middlewares/handlers/profile");
+} = require("../../common/middlewares/handlers/user");
+const {
+  getPresignedUrl,
+  uploadUserDoc,
+  getUserDoc,
+  deleteUserDoc,
+} = require("../../common/middlewares/handlers/userDocs");
 const {
   userAddressValidation,
 } = require("../../common/middlewares/validations/user/userAddressValidation");
 const {
+  userDocsValidation,
+} = require("../../common/middlewares/validations/user/userDocsValidation");
+const {
   userBasicDetailsValidation,
 } = require("../../common/middlewares/validations/user/userValidations");
-
+const multer = require("multer");
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 // get user by uuid
 router.get(
   "/:userUuid",
@@ -51,22 +64,23 @@ router.delete(
 );
 // upload doc
 router.post(
-  "/:userUuid/doc/:type",
+  "/:userUuid/doc",
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  userAddressValidation,
-  addAddress
+  upload.single("file"),
+  userDocsValidation,
+  uploadUserDoc
 );
-// update doc by uuid
-router.put(
+// get private doc
+router.get(
   "/:userUuid/doc/:uuid",
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  userAddressValidation,
-  updateAddress
+  getUserDoc
 );
+
 // delete doc by uuid
 router.delete(
   "/:userUuid/doc/:uuid",
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  deleteAddress
+  deleteUserDoc
 );
 module.exports = router;

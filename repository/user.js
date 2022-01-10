@@ -58,8 +58,8 @@ exports.getOrCreateUserByEmail = (transaction, email, password = null) => {
           as: "userEmails",
           required: "true",
           where: { email },
-          transaction,
         },
+        transaction,
       });
       if (!user && password) {
         const newUser = await users.create({ password }, { transaction });
