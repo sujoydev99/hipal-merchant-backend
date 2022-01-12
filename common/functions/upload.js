@@ -38,10 +38,10 @@ exports.generateV4ReadSignedUrl = (fileName) => {
     }
   });
 };
-exports.deleteFile = (fileName) => {
+exports.deleteFile = (fileName, bucket) => {
   return new Promise(async (resolve, reject) => {
     try {
-      await storage.bucket(GCS_PRIVATE_BUCKET).file(fileName).delete();
+      await storage.bucket(bucket).file(fileName).delete();
       resolve();
     } catch (error) {
       reject(error);

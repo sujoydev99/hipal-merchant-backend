@@ -6,6 +6,7 @@ const {
 const {
   getUserByUuid,
   updateUserBasicDetailsByUuidUserId,
+  getUserByUuidReq,
 } = require("../../../repository/user");
 const {
   PROFILE_FETCHED,
@@ -15,9 +16,15 @@ const {
   ADDRESS_DELETED,
   NOT_ALLOWED,
   BASIC_DETAILS_UPDATED,
+  PROFILE_PICTURE_UPDATED,
+  NOT_FOUND,
+  PROFILE_PICTURE_DELETED,
 } = require("../../constants/messages");
 const response = require("../response");
 const dbConn = require("../../../models");
+const { uploadPublicDoc } = require("../upload");
+const { deleteFile } = require("../../functions/upload");
+const { GCS_PUBLIC_BUCKET, CDN_BASE_URL } = require("../../constants/gcs");
 
 exports.getUserByUuid = async (req, res, next) => {
   try {
@@ -97,6 +104,57 @@ exports.updateUserBasicDetails = async (req, res, next) => {
     );
     await transaction.commit();
     response(BASIC_DETAILS_UPDATED, "basic details", null, req, res, next);
+  } catch (error) {
+    await transaction.rollback();
+    next(error);
+  }
+};
+exports.uploadUserProfilePicture = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    const { userUuid } = req.params;
+    const user = await getUserByUuidReq(userUuid);
+    let path = "userProfilePictures";
+    await uploadPublicDoc(path, req, res, next);
+    await updateUserBasicDetailsByUuidUserId(
+      transaction,
+      { profileImageUrl: req.body.path },
+      userUuid,
+      req.otherId || req.user.id
+    );
+    if (user.profileImageUrl)
+      await deleteFile(user.profileImageUrl, GCS_PUBLIC_BUCKET);
+    await transaction.commit();
+    response(
+      PROFILE_PICTURE_UPDATED,
+      "profile image",
+      { url: `${CDN_BASE_URL}/${req.body.path}` },
+      req,
+      res,
+      next
+    );
+  } catch (error) {
+    await transaction.rollback();
+    next(error);
+  }
+};
+exports.deleteUserProfilePicture = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    const { userUuid } = req.params;
+    const user = await getUserByUuidReq(userUuid);
+    if (!user.profileImageUrl) throw NOT_FOUND;
+    await updateUserBasicDetailsByUuidUserId(
+      transaction,
+      { profileImageUrl: null },
+      userUuid,
+      req.otherId || req.user.id
+    );
+    await deleteFile(user.profileImageUrl, GCS_PUBLIC_BUCKET);
+    await transaction.commit();
+    response(PROFILE_PICTURE_DELETED, "profile image", {}, req, res, next);
   } catch (error) {
     await transaction.rollback();
     next(error);

@@ -70,6 +70,14 @@ module.exports = {
     customMessage: "User basic details updated",
     statusCode: 200,
   },
+  PROFILE_PICTURE_UPDATED: {
+    customMessage: "User profile picture updated",
+    statusCode: 200,
+  },
+  PROFILE_PICTURE_DELETED: {
+    customMessage: "User profile picture deleted",
+    statusCode: 200,
+  },
   ADDRESS_DELETED: {
     customMessage: "User address deleted",
     statusCode: 200,
@@ -90,6 +98,10 @@ module.exports = {
     customMessage:
       "Please delete the existing document before uploading a new version",
     statusCode: 400,
+  },
+  NOT_FOUND: {
+    customMessage: "The requested resource could not be found",
+    statusCode: 404,
   },
   DOC_UPLOADED: {
     customMessage: "Document uploaded successfully",

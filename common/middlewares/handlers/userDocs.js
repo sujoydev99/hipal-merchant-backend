@@ -7,11 +7,13 @@ const {
   getUserDocByUuidUserId,
   deleteUserDocByUuidUserId,
 } = require("../../../repository/userDocs");
+const { GCS_PRIVATE_BUCKET } = require("../../constants/gcs");
 const {
   DOC_EXISTS,
   DOC_UPLOADED,
   PRIVATE_DOC_FETCHED,
   PRIVATE_DOC_DELETED,
+  NOT_FOUND,
 } = require("../../constants/messages");
 const {
   generateV4UploadSignedUrl,
@@ -69,14 +71,15 @@ exports.deleteUserDoc = async (req, res, next) => {
       req.otherId || req.user.id,
       transaction
     );
+    if (!doc) throw NOT_FOUND;
     await deleteUserDocByUuidUserId(
       transaction,
       uuid,
       req.otherId || req.user.id
     );
-    let url = await deleteFile(doc.path);
+    await deleteFile(doc.path, GCS_PRIVATE_BUCKET);
     transaction.commit();
-    response(PRIVATE_DOC_DELETED, "document", { url }, req, res, next);
+    response(PRIVATE_DOC_DELETED, "document", {}, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);

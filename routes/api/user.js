@@ -8,6 +8,8 @@ const {
   updateAddress,
   deleteAddress,
   updateUserBasicDetails,
+  uploadUserProfilePicture,
+  deleteUserProfilePicture,
 } = require("../../common/middlewares/handlers/user");
 const {
   getPresignedUrl,
@@ -34,6 +36,19 @@ router.get(
   "/:userUuid",
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
   getUserByUuid
+);
+// upload profile picture
+router.post(
+  "/:userUuid/profilePicture",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  upload.single("file"),
+  uploadUserProfilePicture
+);
+// delete profile picture
+router.delete(
+  "/:userUuid/profilePicture",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  deleteUserProfilePicture
 );
 // update user basic details
 router.put(
