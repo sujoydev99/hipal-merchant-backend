@@ -10,6 +10,7 @@ const {
   updateUserBasicDetails,
   uploadUserProfilePicture,
   deleteUserProfilePicture,
+  updateUserPassword,
 } = require("../../common/middlewares/handlers/user");
 const {
   getPresignedUrl,
@@ -25,6 +26,7 @@ const {
 } = require("../../common/middlewares/validations/user/userDocsValidation");
 const {
   userBasicDetailsValidation,
+  updateUserPasswordValidation,
 } = require("../../common/middlewares/validations/user/userValidations");
 const multer = require("multer");
 const upload = multer({
@@ -91,11 +93,17 @@ router.get(
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
   getUserDoc
 );
-
 // delete doc by uuid
 router.delete(
   "/:userUuid/doc/:uuid",
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
   deleteUserDoc
+);
+// password update
+router.put(
+  "/:userUuid/password",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  updateUserPasswordValidation,
+  updateUserPassword
 );
 module.exports = router;

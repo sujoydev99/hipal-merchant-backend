@@ -164,3 +164,23 @@ exports.userBasicDetailsValidation = async (req, res, next) => {
     next(error);
   }
 };
+exports.updateUserPasswordValidation = async (req, res, next) => {
+  try {
+    req.body.password_confirmation = req.body.passwordConfirmation;
+    delete req.body.passwordConfirmation;
+    const validationRules = {
+      password: [
+        "required",
+        "string",
+        "confirmed",
+        "regex:^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$",
+      ],
+      password_confirmation: "required|string",
+      oldPassword: "string",
+    };
+    await validateRules(req.body, validationRules);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};

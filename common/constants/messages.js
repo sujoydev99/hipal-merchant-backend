@@ -78,6 +78,14 @@ module.exports = {
     customMessage: "User profile picture deleted",
     statusCode: 200,
   },
+  PASSWORD_UPDATED: {
+    customMessage: "User password updated",
+    statusCode: 200,
+  },
+  PREVOIUS_PASSWORD: {
+    customMessage: "Please enter your old password",
+    statusCode: 409,
+  },
   ADDRESS_DELETED: {
     customMessage: "User address deleted",
     statusCode: 200,

@@ -19,12 +19,15 @@ const {
   PROFILE_PICTURE_UPDATED,
   NOT_FOUND,
   PROFILE_PICTURE_DELETED,
+  PASSWORD_UPDATED,
+  PREVOIUS_PASSWORD,
 } = require("../../constants/messages");
 const response = require("../response");
 const dbConn = require("../../../models");
 const { uploadPublicDoc } = require("../upload");
 const { deleteFile } = require("../../functions/upload");
 const { GCS_PUBLIC_BUCKET, CDN_BASE_URL } = require("../../constants/gcs");
+const { comparepw, hash } = require("../../functions/bcrypt");
 
 exports.getUserByUuid = async (req, res, next) => {
   try {
@@ -155,6 +158,30 @@ exports.deleteUserProfilePicture = async (req, res, next) => {
     await deleteFile(user.profileImageUrl, GCS_PUBLIC_BUCKET);
     await transaction.commit();
     response(PROFILE_PICTURE_DELETED, "profile image", {}, req, res, next);
+  } catch (error) {
+    await transaction.rollback();
+    next(error);
+  }
+};
+exports.updateUserPassword = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    const { userUuid } = req.params;
+    const { oldPassword, password } = req.body;
+    const user = await getUserByUuidReq(userUuid);
+    if (user.password) {
+      if (!oldPassword) throw PREVOIUS_PASSWORD;
+      await comparepw(oldPassword, user.password);
+    }
+    await updateUserBasicDetailsByUuidUserId(
+      transaction,
+      { password: await hash(password) },
+      userUuid,
+      req.otherId || req.user.id
+    );
+    await transaction.commit();
+    response(PASSWORD_UPDATED, "password", {}, req, res, next);
   } catch (error) {
     await transaction.rollback();
     next(error);
