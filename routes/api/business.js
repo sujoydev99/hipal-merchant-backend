@@ -9,12 +9,26 @@ const {
   updateBusiness,
 } = require("../../common/middlewares/handlers/business");
 const {
+  businessDocsValidation,
+} = require("../../common/middlewares/validations/business/businessDocsValidation");
+const {
   createUpdateBusinessValidations,
   businessAddressValidations,
   businessBankValidations,
   businessContactValidations,
 } = require("../../common/middlewares/validations/business/businessValidations");
 const router = express.Router();
+const multer = require("multer");
+const {
+  uploadBusinessDoc,
+  getBusinessDoc,
+  deleteBusinessDoc,
+} = require("../../common/middlewares/handlers/businessDocs");
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
+
 // create business
 router.post(
   "/",
@@ -71,6 +85,29 @@ router.put(
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
   businessContactValidations,
   updateBusiness
+);
+
+// upload doc
+router.post(
+  "/:businessUuid/doc",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  upload.single("file"),
+  businessDocsValidation,
+  uploadBusinessDoc
+);
+
+// get private doc
+router.get(
+  "/:businessUuid/doc/:uuid",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  getBusinessDoc
+);
+
+// delete doc by uuid
+router.delete(
+  "/:businessUuid/doc/:uuid",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  deleteBusinessDoc
 );
 
 module.exports = router;

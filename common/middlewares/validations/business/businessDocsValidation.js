@@ -1,10 +1,10 @@
 const { validateRules } = require("../../../functions/validator");
-exports.userDocsValidation = async (req, res, next) => {
+exports.businessDocsValidation = async (req, res, next) => {
   try {
     const validationRules = {
-      type: "required|string|in:AADHARCARD,PASSPORT,PANCARD",
+      type: "required|string|in:BUSINESS_REGISTRATION,FSSAI_LICENSE,GST_REGISTRATION",
       notes: "string",
-      referenceNumber: "string",
+      referenceNumber: "required|string",
       expiration: "date",
     };
     await validateRules(req.body, validationRules);

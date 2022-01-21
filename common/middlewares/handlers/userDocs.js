@@ -55,6 +55,7 @@ exports.getUserDoc = async (req, res, next) => {
   try {
     let { uuid } = req.params;
     let doc = await getUserDocByUuidUserId(uuid, req.otherId || req.user.id);
+    if (!doc) throw NOT_FOUND;
     let url = await generateV4ReadSignedUrl(doc.path);
     response(PRIVATE_DOC_FETCHED, "document", { url }, req, res, next);
   } catch (error) {

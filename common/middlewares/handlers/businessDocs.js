@@ -1,0 +1,103 @@
+const { nanoid } = require("nanoid");
+const dbConn = require("../../../models");
+const { getBusinessMetaByUuidUserId } = require("../../../repository/business");
+const {
+  getDocByBusinessId,
+  addbusinessDoc,
+  getBusinessDocByUuidBusinessId,
+  deleteBusinessDocByUuidBusinessId,
+} = require("../../../repository/businessDocs");
+const { GCS_PRIVATE_BUCKET } = require("../../constants/gcs");
+const {
+  DOC_EXISTS,
+  DOC_UPLOADED,
+  PRIVATE_DOC_FETCHED,
+  PRIVATE_DOC_DELETED,
+  NOT_FOUND,
+} = require("../../constants/messages");
+const {
+  generateV4ReadSignedUrl,
+  deleteFile,
+} = require("../../functions/upload");
+const response = require("../response");
+const { uploadPrivateDoc } = require("../upload");
+
+exports.uploadBusinessDoc = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    console.log(req.file);
+    const { type } = req.body;
+    const { businessUuid } = req.params;
+    let business = await getBusinessMetaByUuidUserId(
+      businessUuid,
+      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
+      transaction
+    );
+    if (!business) throw NOT_FOUND;
+    let existingDoc = await getDocByBusinessId(
+      business.id,
+      [type],
+      transaction
+    );
+    if (existingDoc) throw DOC_EXISTS;
+    let path = `businessDocs/${type}`;
+    await uploadPrivateDoc(path, req, res, next);
+    let doc = await addbusinessDoc(transaction, {
+      businessId: business.id,
+      ...req.body,
+    });
+    transaction.commit();
+    response(
+      DOC_UPLOADED,
+      "document",
+      { ...req.body, uuid: doc.uuid },
+      req,
+      res,
+      next
+    );
+  } catch (error) {
+    transaction.rollback();
+    next(error);
+  }
+};
+
+exports.getBusinessDoc = async (req, res, next) => {
+  try {
+    let { uuid, businessUuid } = req.params;
+    let business = await getBusinessMetaByUuidUserId(
+      businessUuid,
+      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
+    );
+    if (!business) throw NOT_FOUND;
+
+    const doc = await getBusinessDocByUuidBusinessId(uuid, business.id);
+    if (!doc) throw NOT_FOUND;
+    const url = await generateV4ReadSignedUrl(doc.path);
+    response(PRIVATE_DOC_FETCHED, "document", { url }, req, res, next);
+  } catch (error) {
+    next(error);
+  }
+};
+exports.deleteBusinessDoc = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    let { uuid, businessUuid } = req.params;
+    let business = await getBusinessMetaByUuidUserId(
+      businessUuid,
+      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
+      transaction
+    );
+    if (!business) throw NOT_FOUND;
+    const doc = await getBusinessDocByUuidBusinessId(uuid, business.id);
+    if (!doc) throw NOT_FOUND;
+    await deleteBusinessDocByUuidBusinessId(transaction, uuid, business.id);
+    await deleteFile(doc.path, GCS_PRIVATE_BUCKET);
+    transaction.commit();
+    response(PRIVATE_DOC_DELETED, "document", {}, req, res, next);
+  } catch (error) {
+    transaction.rollback();
+    next(error);
+  }
+};
