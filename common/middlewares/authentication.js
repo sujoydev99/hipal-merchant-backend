@@ -44,12 +44,16 @@ exports.verifyToken = (privileges = [], roles = []) => {
         throw INSUFFICIENT_PRIVILEGES;
       if (req.user.uuid === req.params.userUuid) {
         return next();
-      } else if (allowedPrivilegesAndRoles(arr, roles).length > 0) {
+      } else if (
+        allowedPrivilegesAndRoles(arr, roles).length > 0 &&
+        req.params.userUuid
+      ) {
         req.other = await getUserByUuidReq(req.params.userUuid);
         req.otherId = req.other.id;
         return next();
-      } else throw INSUFFICIENT_ROLES;
+      } else next();
     } catch (error) {
+      console.log(error);
       next(error);
     }
   };

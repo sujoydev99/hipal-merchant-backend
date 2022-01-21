@@ -29,12 +29,12 @@ module.exports = (sequelize, DataTypes) => {
       users.belongsToMany(models.businesses, {
         foreignKey: "userId",
         as: "businesses",
-        through: "businessUsers",
+        through: "businessUserRoles",
       });
       users.belongsToMany(models.roles, {
         foreignKey: "userId",
-        as: "userRoles",
-        through: "businessUsers",
+        as: "roles",
+        through: "businessUserRoles",
       });
     }
   }

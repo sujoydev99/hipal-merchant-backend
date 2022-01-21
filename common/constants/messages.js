@@ -123,4 +123,13 @@ module.exports = {
     customMessage: "Private file deleted",
     statusCode: 200,
   },
+  SLUG_ALREADY_EXISTS: {
+    customMessage:
+      "The slug is already in use by another business, please choose a different one.",
+    statusCode: 400,
+  },
+  BUSINESS_CREATED: {
+    customMessage: "Congratulations your business has been created",
+    statusCode: 201,
+  },
 };

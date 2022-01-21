@@ -8,12 +8,13 @@ module.exports = (sequelize, DataTypes) => {
       roles.belongsTo(models.businesses, {
         foreignKey: "businessId",
         as: "business",
+        through: "businessUserRoles",
         onDelete: "CASCADE",
       });
       roles.belongsToMany(models.users, {
         foreignKey: "roleId",
-        as: "userRoles",
-        through: "businessUsers",
+        as: "users",
+        through: "businessUserRoles",
       });
     }
   }
@@ -35,8 +36,8 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true,
     }
   );
-  roles.beforeCreate((doc, _) => {
-    return (doc.uuid = "role_" + nanoid(20));
+  roles.beforeCreate((role, _) => {
+    return (role.uuid = "role_" + nanoid(20));
   });
   return roles;
 };

@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       city: { type: DataTypes.STRING },
       state: { type: DataTypes.STRING },
       country: { type: DataTypes.STRING },
-      geo: DataTypes.GEOMETRY("POINT", 4326),
+      // geo: DataTypes.GEOMETRY("POINT", 4326),
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
     {

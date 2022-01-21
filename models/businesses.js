@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       businesses.belongsToMany(models.users, {
         foreignKey: "businessId",
         as: "users",
-        through: "businessUsers",
+        through: "businessUserRoles",
       });
       businesses.hasMany(models.businessDocs, {
         foreignKey: "businessId",
@@ -40,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
   businesses.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
+      //basic
       name: {
         type: DataTypes.STRING,
         set(value) {
@@ -53,21 +54,31 @@ module.exports = (sequelize, DataTypes) => {
           );
         },
       },
+      timezone: DataTypes.STRING,
+      cuisine: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
+      notes: DataTypes.STRING,
       slug: { type: DataTypes.STRING, unique: true },
-      addressLineOne: { type: DataTypes.STRING, allowNull: false },
+      timings: { type: DataTypes.JSON }, //{MONDAY: {from:1100, to:2200}}
+      // address
+      addressLineOne: { type: DataTypes.STRING },
       addressLineTwo: { type: DataTypes.STRING },
       zip: { type: DataTypes.STRING },
       city: { type: DataTypes.STRING },
       state: { type: DataTypes.STRING },
       country: { type: DataTypes.STRING },
-      geo: DataTypes.GEOMETRY("POINT", 4326),
-      notes: DataTypes.STRING,
+      // geo: DataTypes.GEOMETRY("POINT", 4326),
+      // contacts
       emails: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
       contactNumbers: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         defaultValue: [],
       },
-      notes: DataTypes.STRING,
+      //image
+      logoUrl: DataTypes.STRING,
+      //bank
+      bankName: DataTypes.STRING,
+      bankIfscCode: DataTypes.STRING,
+      bankAccountNumber: DataTypes.STRING,
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
       isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
@@ -77,8 +88,8 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true,
     }
   );
-  businesses.beforeCreate((user, _) => {
-    return (user.uuid = "business_" + nanoid(20));
+  businesses.beforeCreate((business, _) => {
+    return (business.uuid = "business_" + nanoid(20));
   });
   return businesses;
 };

@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         comment: "FSSAI/GST",
       },
+      path: { type: DataTypes.STRING(500), allowNull: false },
       notes: { type: DataTypes.STRING },
       referenceNumber: { type: DataTypes.STRING },
       expiration: { type: DataTypes.DATE },

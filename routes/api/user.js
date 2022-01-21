@@ -13,7 +13,6 @@ const {
   updateUserPassword,
 } = require("../../common/middlewares/handlers/user");
 const {
-  getPresignedUrl,
   uploadUserDoc,
   getUserDoc,
   deleteUserDoc,

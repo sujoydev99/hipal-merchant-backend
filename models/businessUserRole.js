@@ -10,17 +10,31 @@ module.exports = (sequelize, DataTypes) => {
         as: "business",
         onDelete: "CASCADE",
       });
+      businessUserRoles.belongsTo(models.users, {
+        foreignKey: "userId",
+        as: "user",
+        onDelete: "CASCADE",
+      });
+      businessUserRoles.belongsTo(models.roles, {
+        foreignKey: "roleId",
+        as: "role",
+        onDelete: "CASCADE",
+      });
     }
   }
   businessUserRoles.init(
     {
-      businessId: { type: DataTypes.INTEGER, allowNull: false },
-      roleId: { type: DataTypes.INTEGER, allowNull: false },
-      userId: { type: DataTypes.INTEGER, allowNull: false },
+      businessId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+      },
+      roleId: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
+      userId: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
     },
     {
       sequelize,
-      modelName: "businessUsers",
+      modelName: "businessUserRoles",
       paranoid: true,
     }
   );
