@@ -1,8 +1,4 @@
 const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
-const {
-  EMAIL_ALREADY_EXISTS,
-  NO_ACCOUNT,
-} = require("../common/constants/messages");
 const dbConn = require("../models");
 
 exports.getBusinessBySlug = (slug, transaction) => {
@@ -21,6 +17,28 @@ exports.createBusiness = (transaction, businessObj) => {
     const { businesses } = await dbConn();
     try {
       const business = await businesses.create(businessObj, { transaction });
+      resolve(business);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getAllBusinessesByUserUuid = (uuid, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { businesses, users } = await dbConn();
+    try {
+      const business = await businesses.findAll({
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        include: {
+          model: users,
+          as: "users",
+          required: true,
+          attributes: [],
+          where: { uuid },
+        },
+        transaction,
+      });
       resolve(business);
     } catch (error) {
       reject(error);

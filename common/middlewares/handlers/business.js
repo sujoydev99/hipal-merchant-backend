@@ -10,6 +10,7 @@ const { GCS_PUBLIC_BUCKET, CDN_BASE_URL } = require("../../constants/gcs");
 const {
   getBusinessBySlug,
   createBusiness,
+  getAllBusinessesByUserUuid,
 } = require("../../../repository/business");
 const {
   createRole,
@@ -50,6 +51,19 @@ exports.createBusiness = async (req, res, next) => {
       res,
       next
     );
+  } catch (error) {
+    transaction.rollback();
+    next(error);
+  }
+};
+
+exports.getAllBusinessesByUserUuid = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    const { userUuid } = req.params;
+    let businesses = await getAllBusinessesByUserUuid(userUuid);
+    response(BUSINESS_CREATED, "business", businesses, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);

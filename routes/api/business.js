@@ -3,6 +3,7 @@ const { ROLES } = require("../../common/constants/rolesAndPrivileges");
 const { verifyToken } = require("../../common/middlewares/authentication");
 const {
   createBusiness,
+  getAllBusinessesByUserUuid,
 } = require("../../common/middlewares/handlers/business");
 const {
   createUpdateBusinessValidations,
@@ -14,6 +15,12 @@ router.post(
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
   createUpdateBusinessValidations,
   createBusiness
+);
+// get all business
+router.get(
+  "/user/:userUuid",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  getAllBusinessesByUserUuid
 );
 // // get business by uuid
 // router.post("/", verifyToken(), addAddress);
