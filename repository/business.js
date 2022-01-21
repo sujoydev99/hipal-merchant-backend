@@ -1,4 +1,5 @@
 const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
+const { clean } = require("../common/functions/clean");
 const dbConn = require("../models");
 
 exports.getBusinessBySlug = (slug, transaction) => {
@@ -45,92 +46,24 @@ exports.getAllBusinessesByUserUuid = (uuid, transaction) => {
     }
   });
 };
-exports.getUserByUuid = (uuid, transaction) => {
+exports.getBusinessByUuidUserId = (uuid, userUuid, transaction) => {
+  console.log("userUuid>>>>>>>>>>>>>>>>>>> ", userUuid);
   return new Promise(async (resolve, reject) => {
+    const { businesses, users } = await dbConn();
     try {
-      const { users, userEmails, userContactNumbers, userDocs, userAddresses } =
-        await dbConn();
-      const user = await users.findOne({
-        where: { uuid },
+      const business = await businesses.findOne({
         attributes: { exclude: DEFAULT_EXCLUDE },
-        include: [
-          {
-            model: userEmails,
-            as: "userEmails",
-            attributes: { exclude: DEFAULT_EXCLUDE },
-          },
-          {
-            model: userContactNumbers,
-            as: "userContactNumbers",
-            attributes: { exclude: DEFAULT_EXCLUDE },
-          },
-          {
-            model: userDocs,
-            as: "userDocs",
-            attributes: { exclude: DEFAULT_EXCLUDE },
-          },
-          {
-            model: userAddresses,
-            as: "userAddresses",
-            attributes: { exclude: DEFAULT_EXCLUDE },
-          },
-        ],
-        transaction,
-      });
-      resolve(user);
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
-
-exports.getUserByUuidReq = (uuid, transaction) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const { users, userEmails, userContactNumbers, userDocs, userAddresses } =
-        await dbConn();
-      const user = await users.findOne({
         where: { uuid },
+        include: {
+          model: users,
+          as: "users",
+          required: true,
+          attributes: [],
+          where: clean({ id: userUuid }),
+        },
         transaction,
       });
-      resolve(user);
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
-
-exports.updateUserBasicDetailsByUuidUserId = (
-  transaction,
-  userObj,
-  uuid,
-  id
-) => {
-  return new Promise(async (resolve, reject) => {
-    const { users } = await dbConn();
-    let updateFilter = { uuid, id };
-    try {
-      await users.update(userObj, {
-        where: updateFilter,
-        transaction,
-      });
-      resolve();
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
-
-exports.updateAddressByUuidUserId = (transaction, addrObj, uuid, userId) => {
-  return new Promise(async (resolve, reject) => {
-    const { userAddresses } = await dbConn();
-    let updateFilter = { uuid, userId };
-    try {
-      let k = await userAddresses.update(addrObj, {
-        where: updateFilter,
-        transaction,
-      });
-      resolve();
+      resolve(business);
     } catch (error) {
       reject(error);
     }

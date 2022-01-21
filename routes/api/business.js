@@ -4,6 +4,7 @@ const { verifyToken } = require("../../common/middlewares/authentication");
 const {
   createBusiness,
   getAllBusinessesByUserUuid,
+  getBusinessByUuid,
 } = require("../../common/middlewares/handlers/business");
 const {
   createUpdateBusinessValidations,
@@ -21,6 +22,12 @@ router.get(
   "/user/:userUuid",
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
   getAllBusinessesByUserUuid
+);
+// bet business by uuid and user uuid
+router.get(
+  "/:businessUuid",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  getBusinessByUuid
 );
 // // get business by uuid
 // router.post("/", verifyToken(), addAddress);

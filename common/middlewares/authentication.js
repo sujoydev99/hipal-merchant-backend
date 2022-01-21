@@ -42,16 +42,30 @@ exports.verifyToken = (privileges = [], roles = []) => {
         allowedPrivilegesAndRoles(privileges, req.user.privileges).length === 0
       )
         throw INSUFFICIENT_PRIVILEGES;
-      if (req.user.uuid === req.params.userUuid) {
-        return next();
-      } else if (
-        allowedPrivilegesAndRoles(arr, roles).length > 0 &&
-        req.params.userUuid
+
+      if (
+        req.params.userUuid &&
+        allowedPrivilegesAndRoles(arr, roles).length > 0
       ) {
         req.other = await getUserByUuidReq(req.params.userUuid);
         req.otherId = req.other.id;
         return next();
-      } else next();
+      } else if (req.params.userUuid && req.user.uuid !== req.params.userUuid)
+        throw INSUFFICIENT_PRIVILEGES;
+      // if (req.user.uuid === req.params.userUuid) {
+      //   return next();
+      // } else if (
+      //   req.params.userUuid &&
+      //   allowedPrivilegesAndRoles(arr, roles).length > 0
+      // ) {
+      //   req.other = await getUserByUuidReq(req.params.userUuid);
+      //   req.otherId = req.other.id;
+      //   return next();
+      // }
+      else {
+        next();
+        // throw INSUFFICIENT_ROLES;
+      }
     } catch (error) {
       console.log(error);
       next(error);

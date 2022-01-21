@@ -132,4 +132,12 @@ module.exports = {
     customMessage: "Congratulations your business has been created",
     statusCode: 201,
   },
+  BUSINESSES_FETCHED: {
+    customMessage: "Your businesses",
+    statusCode: 200,
+  },
+  BUSINESS_FETCHED: {
+    customMessage: "Your business",
+    statusCode: 200,
+  },
 };
