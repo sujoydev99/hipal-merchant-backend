@@ -140,4 +140,12 @@ module.exports = {
     customMessage: "Your business",
     statusCode: 200,
   },
+  BUSINESS_DELETED: {
+    customMessage: "Your business has been deleted",
+    statusCode: 200,
+  },
+  BUSINESS_UPDATED: {
+    customMessage: "Your business details have been updated",
+    statusCode: 200,
+  },
 };

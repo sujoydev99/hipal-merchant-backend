@@ -47,12 +47,62 @@ exports.getAllBusinessesByUserUuid = (uuid, transaction) => {
   });
 };
 exports.getBusinessByUuidUserId = (uuid, userUuid, transaction) => {
-  console.log("userUuid>>>>>>>>>>>>>>>>>>> ", userUuid);
   return new Promise(async (resolve, reject) => {
     const { businesses, users } = await dbConn();
     try {
       const business = await businesses.findOne({
         attributes: { exclude: DEFAULT_EXCLUDE },
+        where: { uuid },
+        include: {
+          model: users,
+          as: "users",
+          required: true,
+          attributes: [],
+          where: clean({ id: userUuid }),
+        },
+        transaction,
+      });
+      resolve(business);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+exports.deleteBusinessById = (transaction, id) => {
+  return new Promise(async (resolve, reject) => {
+    const { businesses } = await dbConn();
+    try {
+      const business = await businesses.destroy({
+        where: { id },
+        transaction,
+      });
+      resolve(business);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.updateBusinessById = (transaction, id, obj) => {
+  return new Promise(async (resolve, reject) => {
+    const { businesses } = await dbConn();
+    try {
+      const business = await businesses.update(obj, {
+        where: { id },
+        transaction,
+      });
+      resolve(business);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getBusinessMetaByUuidUserId = (uuid, userUuid, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { businesses, users } = await dbConn();
+    try {
+      const business = await businesses.findOne({
         where: { uuid },
         include: {
           model: users,
