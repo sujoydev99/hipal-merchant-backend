@@ -48,18 +48,26 @@ exports.getAllBusinessesByUserUuid = (uuid, transaction) => {
 };
 exports.getBusinessByUuidUserId = (uuid, userUuid, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { businesses, users } = await dbConn();
+    const { businesses, users, businessDocs } = await dbConn();
     try {
       const business = await businesses.findOne({
         attributes: { exclude: DEFAULT_EXCLUDE },
         where: { uuid },
-        include: {
-          model: users,
-          as: "users",
-          required: true,
-          attributes: [],
-          where: clean({ id: userUuid }),
-        },
+        include: [
+          {
+            model: users,
+            as: "users",
+            required: true,
+            attributes: [],
+            where: clean({ id: userUuid }),
+          },
+          {
+            model: businessDocs,
+            as: "businessDocs",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+        ],
+
         transaction,
       });
       resolve(business);

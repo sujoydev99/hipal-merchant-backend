@@ -8,5 +8,7 @@ module.exports = {
     "isActive",
     "userId",
     "otp",
+    "businessId",
+    "roleId",
   ],
 };
