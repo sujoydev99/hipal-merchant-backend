@@ -71,11 +71,11 @@ module.exports = {
     statusCode: 200,
   },
   PROFILE_PICTURE_UPDATED: {
-    customMessage: "User profile picture updated",
+    customMessage: "Profile picture updated",
     statusCode: 200,
   },
   PROFILE_PICTURE_DELETED: {
-    customMessage: "User profile picture deleted",
+    customMessage: "Profile picture deleted",
     statusCode: 200,
   },
   PASSWORD_UPDATED: {

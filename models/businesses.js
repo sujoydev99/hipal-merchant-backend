@@ -74,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: [],
       },
       //image
-      logoUrl: DataTypes.STRING,
+      profileImageUrl: DataTypes.STRING,
       //bank
       bankName: DataTypes.STRING,
       bankIfscCode: DataTypes.STRING,

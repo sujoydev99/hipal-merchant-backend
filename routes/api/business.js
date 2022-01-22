@@ -7,6 +7,8 @@ const {
   getBusinessByUuid,
   deleteBusinessByUuid,
   updateBusiness,
+  uploadBusinessProfilePicture,
+  deleteBusinessProfilePicture,
 } = require("../../common/middlewares/handlers/business");
 const {
   businessDocsValidation,
@@ -108,6 +110,20 @@ router.delete(
   "/:businessUuid/doc/:uuid",
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
   deleteBusinessDoc
+);
+
+// upload profile picture
+router.post(
+  "/:businessUuid/profilePicture",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  upload.single("file"),
+  uploadBusinessProfilePicture
+);
+// delete profile picture
+router.delete(
+  "/:businessUuid/profilePicture",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  deleteBusinessProfilePicture
 );
 
 module.exports = router;

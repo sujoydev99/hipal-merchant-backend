@@ -5,8 +5,9 @@ const {
   BUSINESS_FETCHED,
   NOT_FOUND,
   BUSINESS_DELETED,
-  ADDRESS_UPDATED,
   BUSINESS_UPDATED,
+  PROFILE_PICTURE_UPDATED,
+  PROFILE_PICTURE_DELETED,
 } = require("../../constants/messages");
 const response = require("../response");
 const dbConn = require("../../../models");
@@ -126,6 +127,60 @@ exports.updateBusiness = async (req, res, next) => {
     response(BUSINESS_UPDATED, "business", {}, req, res, next);
   } catch (error) {
     transaction.rollback();
+    next(error);
+  }
+};
+
+exports.uploadBusinessProfilePicture = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    const { businessUuid } = req.params;
+    let business = await getBusinessMetaByUuidUserId(
+      businessUuid,
+      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
+    );
+    if (!business) throw NOT_FOUND;
+    let path = "businessProfilePictures";
+    await uploadPublicDoc(path, req, res, next);
+    await updateBusinessById(transaction, business.id, {
+      profileImageUrl: req.body.path,
+    });
+    if (business.profileImageUrl)
+      await deleteFile(business.profileImageUrl, GCS_PUBLIC_BUCKET);
+    await transaction.commit();
+    response(
+      PROFILE_PICTURE_UPDATED,
+      "profile image",
+      { url: `${CDN_BASE_URL}/${req.body.path}` },
+      req,
+      res,
+      next
+    );
+  } catch (error) {
+    await transaction.rollback();
+    next(error);
+  }
+};
+exports.deleteBusinessProfilePicture = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    const { businessUuid } = req.params;
+    const business = await getBusinessMetaByUuidUserId(
+      businessUuid,
+      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
+    );
+    if (!business) throw NOT_FOUND;
+    if (!business.profileImageUrl) throw NOT_FOUND;
+    await updateBusinessById(transaction, business.id, {
+      profileImageUrl: null,
+    });
+    await deleteFile(business.profileImageUrl, GCS_PUBLIC_BUCKET);
+    await transaction.commit();
+    response(PROFILE_PICTURE_DELETED, "profile image", {}, req, res, next);
+  } catch (error) {
+    await transaction.rollback();
     next(error);
   }
 };
