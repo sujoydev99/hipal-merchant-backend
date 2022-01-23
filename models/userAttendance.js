@@ -2,22 +2,22 @@
 const { nanoid } = require("nanoid");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class employeeAttendance extends Model {
+  class userAttendance extends Model {
     static associate(models) {
       // define association here
-      employeeAttendance.belongsTo(models.businesses, {
+      userAttendance.belongsTo(models.businesses, {
         foreignKey: "businessId",
         as: "business",
         onDelete: "CASCADE",
       });
-      employeeAttendance.belongsTo(models.users, {
+      userAttendance.belongsTo(models.users, {
         foreignKey: "userId",
         as: "user",
         onDelete: "CASCADE",
       });
     }
   }
-  employeeAttendance.init(
+  userAttendance.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
       businessId: { type: DataTypes.INTEGER, allowNull: false },
@@ -27,12 +27,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "employeeAttendance",
+      modelName: "userAttendance",
       paranoid: true,
     }
   );
-  employeeAttendance.beforeCreate((doc, _) => {
-    return (doc.uuid = "employeeAttendance_" + nanoid(20));
+  userAttendance.beforeCreate((doc, _) => {
+    return (doc.uuid = "userAttendance_" + nanoid(20));
   });
-  return employeeAttendance;
+  return userAttendance;
 };
