@@ -59,6 +59,7 @@ module.exports = (sequelize, DataTypes) => {
       coverImageUrl: { type: DataTypes.STRING },
       resetToken: { type: DataTypes.STRING },
       resetTokenExpiry: { type: DataTypes.DATE },
+      accessToken: { type: DataTypes.STRING(1000) },
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
       userTypes: {
         type: DataTypes.ARRAY(DataTypes.STRING),

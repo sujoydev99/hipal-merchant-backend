@@ -12,6 +12,7 @@ const response = require("../response");
 const {
   getOrCreateUserByMobileNumber,
   getOrCreateUserByEmail,
+  updateUserById,
 } = require("../../../repository/user");
 const { hash, comparepw } = require("../../functions/bcrypt");
 const dbConn = require("../../../models");
@@ -37,6 +38,7 @@ exports.userMobileVerifyOtp = async (req, res, next) => {
       otp
     );
     let jwt = jwtSign(user);
+    await updateUserById(transaction, user.id, { accessToken: jwt.token });
     transaction.commit();
     response(SIGNIN_SUCCESS, "claims", jwt, req, res, next);
   } catch (error) {
@@ -51,7 +53,7 @@ exports.userEmailSignup = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     let hashpw = await hash(password);
-    let user = await getOrCreateUserByEmail(transaction, email, hashpw);
+    await getOrCreateUserByEmail(transaction, email, hashpw);
     transaction.commit();
     response(EMAIL_SIGNUP_SUCCESS, "claims", null, req, res, next);
   } catch (error) {
@@ -67,6 +69,7 @@ exports.userEmailSignIn = async (req, res, next) => {
     let user = await getOrCreateUserByEmail(transaction, email);
     await comparepw(password, user.password);
     let jwt = await jwtSign(user);
+    await updateUserById(transaction, user.id, { accessToken: jwt.token });
     transaction.commit();
     response(EMAIL_SIGNIN_SUCCESS, "claims", jwt, req, res, next);
   } catch (error) {

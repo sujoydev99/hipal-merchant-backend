@@ -178,3 +178,19 @@ exports.updateAddressByUuidUserId = (transaction, addrObj, uuid, userId) => {
     }
   });
 };
+
+exports.updateUserById = (transaction, id, obj = {}) => {
+  return new Promise(async (resolve, reject) => {
+    const { users } = await dbConn();
+    let updateFilter = { id };
+    try {
+      await users.update(obj, {
+        where: updateFilter,
+        transaction,
+      });
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
