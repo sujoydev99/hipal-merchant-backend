@@ -41,7 +41,7 @@ exports.uploadBusinessDoc = async (req, res, next) => {
       transaction
     );
     if (existingDoc) throw DOC_EXISTS;
-    let path = `businessDocs/${type}`;
+    let path = `business/${businessUuid}/businessDocs/${type}`;
     await uploadPrivateDoc(path, req, res, next);
     let doc = await addbusinessDoc(transaction, {
       businessId: business.id,

@@ -141,7 +141,7 @@ exports.uploadBusinessProfilePicture = async (req, res, next) => {
       req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
     );
     if (!business) throw NOT_FOUND;
-    let path = "businessProfilePictures";
+    let path = `business/${businessUuid}/profilePicture`;
     await uploadPublicDoc(path, req, res, next);
     await updateBusinessById(transaction, business.id, {
       profileImageUrl: req.body.path,

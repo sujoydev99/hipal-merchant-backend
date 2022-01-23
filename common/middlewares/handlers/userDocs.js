@@ -28,9 +28,10 @@ exports.uploadUserDoc = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     let { type } = req.body;
+    const { userUuid } = req.params;
     let existingDoc = await getDocByUserId(req.otherId || req.user.id, [type]);
     if (existingDoc) throw DOC_EXISTS;
-    let path = `userDocs/${req.body.type}`;
+    let path = `users/${userUuid}/userDocs/${req.body.type}`;
     await uploadPrivateDoc(path, req, res, next);
     let doc = await addUserDoc(transaction, {
       userId: req.otherId || req.user.id,

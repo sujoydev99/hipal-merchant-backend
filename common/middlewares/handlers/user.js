@@ -117,7 +117,7 @@ exports.uploadUserProfilePicture = async (req, res, next) => {
   try {
     const { userUuid } = req.params;
     const user = await getUserByUuidReq(userUuid);
-    let path = "userProfilePictures";
+    let path = `users/${userUuid}/profilePicture`;
     await uploadPublicDoc(path, req, res, next);
     await updateUserBasicDetailsByUuidUserId(
       transaction,
