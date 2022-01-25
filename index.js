@@ -14,6 +14,7 @@ const { cleaner } = require("./common/middlewares/cleaner");
 const auth = require("./routes/api/auth");
 const user = require("./routes/api/user");
 const business = require("./routes/api/business");
+const role = require("./routes/api/role");
 const errorMiddleware = require("./common/middlewares/error");
 // initialize the env configuration
 dotenv.config();
@@ -48,6 +49,7 @@ app.get("/api/health-check", (req, res, next) => {
 app.use("/api/user/auth", auth);
 app.use("/api/user", user);
 app.use("/api/business", business);
+app.use("/api/role", role);
 app.use(errorMiddleware);
 
 // initializeMessageHandler();

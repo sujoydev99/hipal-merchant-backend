@@ -1,113 +1,79 @@
 const express = require("express");
-const { ROLES } = require("../../common/constants/rolesAndPrivileges");
-const { verifyToken } = require("../../common/middlewares/authentication");
-const {
-  createBusiness,
-  getAllBusinessesByUserUuid,
-  getBusinessByUuid,
-  deleteBusinessByUuid,
-  updateBusiness,
-} = require("../../common/middlewares/handlers/business");
-const {
-  businessDocsValidation,
-} = require("../../common/middlewares/validations/business/businessDocsValidation");
-const {
-  createUpdateBusinessValidations,
-  businessAddressValidations,
-  businessBankValidations,
-  businessContactValidations,
-} = require("../../common/middlewares/validations/business/businessValidations");
 const router = express.Router();
-const multer = require("multer");
 const {
-  uploadBusinessDoc,
-  getBusinessDoc,
-  deleteBusinessDoc,
-} = require("../../common/middlewares/handlers/businessDocs");
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 },
-});
+  PRIVILEGES,
+  ROLES,
+} = require("../../common/constants/rolesAndPrivileges");
+const { verifyToken } = require("../../common/middlewares/authentication");
 
-// create business
+const {
+  getAllAvailablePrivileges,
+  createRole,
+  updateRole,
+  getRole,
+  getAllBusinessRoles,
+  deleteRole,
+} = require("../../common/middlewares/handlers/role");
+const {
+  createUpdateRoleValidations,
+} = require("../../common/middlewares/validations/role/role");
+
+// get all available privileges
+router.get("/allAvailable", getAllAvailablePrivileges);
+
+// get all business roles
+router.get("/:businessUuid", verifyToken(), getAllBusinessRoles);
+
+// create business role
 router.post(
-  "/",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  createUpdateBusinessValidations,
-  createBusiness
-);
-// update basic business details
-router.put(
   "/:businessUuid",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  createUpdateBusinessValidations,
-  updateBusiness
+  verifyToken(),
+  // verifyToken(
+  //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
+  //   [ROLES.ADMIN, ROLES.USER]
+  // ),
+  createUpdateRoleValidations,
+  createRole
 );
-// get all business
-router.get(
-  "/user/:userUuid",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  getAllBusinessesByUserUuid
-);
-// get business by uuid and user uuid
-router.get(
-  "/:businessUuid",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  getBusinessByUuid
-);
-
-// delete business by uuid and user uuid
-router.delete(
-  "/:businessUuid",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  deleteBusinessByUuid
-);
-
-// UPDATE ADDRESS
-router.put(
-  "/:businessUuid/address",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  businessAddressValidations,
-  updateBusiness
-);
-
-// UPDATE BANK DETAILS
-router.put(
-  "/:businessUuid/bank",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  businessBankValidations,
-  updateBusiness
-);
-
-// update contact details
-router.put(
-  "/:businessUuid/contact",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  businessContactValidations,
-  updateBusiness
-);
-
-// upload doc
+// update business role
 router.post(
-  "/:businessUuid/doc",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  upload.single("file"),
-  businessDocsValidation,
-  uploadBusinessDoc
+  "/:businessUuid/:roleUuid",
+  verifyToken(),
+  // verifyToken(
+  //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
+  //   [ROLES.ADMIN, ROLES.USER]
+  // ),
+  createUpdateRoleValidations,
+  updateRole
 );
 
-// get private doc
+// get single business role
 router.get(
-  "/:businessUuid/doc/:uuid",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  getBusinessDoc
+  "/:businessUuid/:roleUuid",
+  verifyToken(),
+  // verifyToken(
+  //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
+  //   [ROLES.ADMIN, ROLES.USER]
+  // ),
+  getRole
 );
-
-// delete doc by uuid
+router.get(
+  "/:businessUuid/:roleUuid",
+  verifyToken(),
+  // verifyToken(
+  //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
+  //   [ROLES.ADMIN, ROLES.USER]
+  // ),
+  getRole
+);
 router.delete(
-  "/:businessUuid/doc/:uuid",
-  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  deleteBusinessDoc
+  "/:businessUuid/:roleUuid",
+  verifyToken(),
+  // verifyToken(
+  //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
+  //   [ROLES.ADMIN, ROLES.USER]
+  // ),
+  deleteRole
 );
 
 module.exports = router;

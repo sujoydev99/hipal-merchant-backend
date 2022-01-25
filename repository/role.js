@@ -5,23 +5,26 @@ const {
 } = require("../common/constants/messages");
 const dbConn = require("../models");
 
-exports.getBusinessBySlug = (slug, transaction) => {
-  return new Promise(async (resolve, reject) => {
-    const { businesses } = await dbConn();
-    try {
-      let business = await businesses.findOne({ where: { slug }, transaction });
-      resolve(business);
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
 exports.createRole = (transaction, roleObj) => {
   return new Promise(async (resolve, reject) => {
     const { roles } = await dbConn();
     try {
       const role = await roles.create(roleObj, { transaction });
       resolve(role);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+exports.updateRoleByUuidBusinessId = (transaction, uuid, roleObj) => {
+  return new Promise(async (resolve, reject) => {
+    const { roles } = await dbConn();
+    try {
+      await roles.update(roleObj, {
+        where: { uuid },
+        transaction,
+      });
+      resolve();
     } catch (error) {
       reject(error);
     }
@@ -45,6 +48,103 @@ exports.deleteRoleByBusinessId = (transaction, businessId) => {
     try {
       const role = await roles.destroy({
         where: { businessId },
+        transaction,
+      });
+      resolve(role);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getRoleByUuidBusinessId = (uuid, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { roles } = await dbConn();
+    try {
+      const role = await roles.findOne({
+        where: { businessId, uuid },
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        transaction,
+      });
+      resolve(role);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+exports.getRoleWithUsersByUuidBusinessId = (uuid, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { roles, users } = await dbConn();
+    try {
+      const role = await roles.findOne({
+        where: { businessId, uuid },
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        include: { model: users, as: "users" },
+        transaction,
+      });
+      resolve(role);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getAllRoleWithUsersByBusinessId = (businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { roles, users } = await dbConn();
+    try {
+      const rolesArr = await roles.findAll({
+        where: { businessId },
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        include: {
+          model: users,
+          as: "users",
+          attributes: { exclude: DEFAULT_EXCLUDE },
+        },
+        transaction,
+      });
+      resolve(rolesArr);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+exports.getAllRoleByBusinessId = (businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { roles } = await dbConn();
+    try {
+      const rolesArr = await roles.findAll({
+        where: { businessId },
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        transaction,
+      });
+      resolve(rolesArr);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.deleteRoleByIdBusinessId = (transaction, id, businessId) => {
+  return new Promise(async (resolve, reject) => {
+    const { roles } = await dbConn();
+    try {
+      const role = await roles.destroy({
+        where: { businessId, id },
+        transaction,
+      });
+      resolve(role);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+exports.deleteRoleByUuidBusinessId = (transaction, uuid, businessId) => {
+  return new Promise(async (resolve, reject) => {
+    const { roles } = await dbConn();
+    try {
+      const role = await roles.destroy({
+        where: { businessId, uuid },
         transaction,
       });
       resolve(role);

@@ -1,6 +1,7 @@
 const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
 const { clean } = require("../common/functions/clean");
 const dbConn = require("../models");
+const roles = require("../models/roles");
 
 exports.getBusinessBySlug = (slug, transaction) => {
   return new Promise(async (resolve, reject) => {
@@ -108,17 +109,19 @@ exports.updateBusinessById = (transaction, id, obj) => {
 
 exports.getBusinessMetaByUuidUserId = (uuid, userUuid, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { businesses, users } = await dbConn();
+    const { businesses, users, roles } = await dbConn();
     try {
       const business = await businesses.findOne({
         where: { uuid },
-        include: {
-          model: users,
-          as: "users",
-          required: true,
-          attributes: [],
-          where: clean({ id: userUuid }),
-        },
+        include: [
+          {
+            model: users,
+            as: "users",
+            required: true,
+            where: clean({ id: userUuid }),
+          },
+          { model: roles, as: "roles", required: true },
+        ],
         transaction,
       });
       resolve(business);

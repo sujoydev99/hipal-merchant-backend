@@ -148,4 +148,32 @@ module.exports = {
     customMessage: "Your business details have been updated",
     statusCode: 200,
   },
+  ALL_AVAILABLE_PRIVILEGES: {
+    customMessage: "Here's all the privileges you can assign.",
+    statusCode: 200,
+  },
+  ROLE_CREATED: {
+    customMessage: "Your role has been created",
+    statusCode: 201,
+  },
+  ROLE_UPDATED: {
+    customMessage: "Your role has been updated",
+    statusCode: 200,
+  },
+  ROLE_FETCHED: {
+    customMessage: "Your role",
+    statusCode: 200,
+  },
+  ROLE_FORBIDDEN: {
+    customMessage: "Owner role cannot be altered/deleted",
+    statusCode: 400,
+  },
+  ROLE_DELETED: {
+    customMessage: "Role Deleted",
+    statusCode: 200,
+  },
+  ROLE_USER_EXIST: {
+    customMessage: "Role in use",
+    statusCode: 400,
+  },
 };
