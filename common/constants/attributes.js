@@ -14,6 +14,5 @@ module.exports = {
     "resetTokenExpiry",
     "businessUserRoles",
     "accessToken",
-    "userTypes",
   ],
 };

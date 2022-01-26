@@ -61,11 +61,6 @@ module.exports = (sequelize, DataTypes) => {
       resetTokenExpiry: { type: DataTypes.DATE },
       accessToken: { type: DataTypes.TEXT },
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
-      userTypes: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        defaultValue: ["USER"],
-        comment: "[CUSTOMER, ADMIN, ACCOUNT_MANAGER, USER]",
-      },
     },
     {
       sequelize,
