@@ -14,7 +14,10 @@ const {
   getAllBusinessRoles,
   deleteRole,
 } = require("../../common/middlewares/handlers/role");
-const { createStaff } = require("../../common/middlewares/handlers/staff");
+const {
+  createStaff,
+  getAllBusinessStaff,
+} = require("../../common/middlewares/handlers/staff");
 const {
   createUpdateRoleValidations,
 } = require("../../common/middlewares/validations/role/role");
@@ -23,7 +26,7 @@ const {
 } = require("../../common/middlewares/validations/staff/staff");
 
 // get all business staff
-router.get("/:businessUuid", verifyToken(), getAllBusinessRoles);
+router.get("/:businessUuid", verifyToken(), getAllBusinessStaff);
 
 // create staff
 router.post(

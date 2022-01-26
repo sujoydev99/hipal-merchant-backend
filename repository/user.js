@@ -234,3 +234,25 @@ exports.getUserByMobileNumber = (number, extension, transaction) => {
     }
   });
 };
+
+exports.getAllUsersByBusinessId = (id, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { users, businesses } = await dbConn();
+    try {
+      let user = await users.findAll({
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        include: {
+          model: businesses,
+          as: "businesses",
+          required: true,
+          where: { id },
+          attributes: { exclude: DEFAULT_EXCLUDE },
+        },
+        transaction,
+      });
+      return resolve(user);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

@@ -192,4 +192,8 @@ module.exports = {
     customMessage: "Staff member already exists",
     statusCode: 200,
   },
+  STAFF_FETCHED: {
+    customMessage: "Your staff member/s",
+    statusCode: 200,
+  },
 };

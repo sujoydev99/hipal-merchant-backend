@@ -17,6 +17,7 @@ const {
   getOrCreateUserByEmail,
   getUserByEmail,
   getUserByMobileNumber,
+  getAllUsersByBusinessId,
 } = require("../../../repository/user");
 const {
   ALL_AVAILABLE_PRIVILEGES,
@@ -31,6 +32,7 @@ const {
   ROLE_NOT_FOUND,
   STAFF_CREATED,
   STAFF_EXISTS,
+  STAFF_FETCHED,
 } = require("../../constants/messages");
 const { PRIVILEGES } = require("../../constants/rolesAndPrivileges");
 const { EMAIL } = require("../../constants/variables");
@@ -73,14 +75,7 @@ exports.createStaff = async (req, res, next) => {
       roleId: role.id,
     });
     transaction.commit();
-    response(
-      STAFF_CREATED,
-      "role",
-      { ...req.body, uuid: role.uuid },
-      req,
-      res,
-      next
-    );
+    response(STAFF_CREATED, "staff", { ...req.body }, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);
@@ -115,8 +110,8 @@ exports.getAllBusinessStaff = async (req, res, next) => {
       req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
     );
     if (!business) throw NOT_FOUND;
-    const role = await getAllRoleByBusinessId(business.id);
-    response(ROLE_FETCHED, "role", role, req, res, next);
+    const staff = await getAllUsersByBusinessId(business.id);
+    response(STAFF_FETCHED, "staff", staff, req, res, next);
   } catch (error) {
     next(error);
   }
