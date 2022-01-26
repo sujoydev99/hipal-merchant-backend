@@ -237,17 +237,130 @@ exports.getUserByMobileNumber = (number, extension, transaction) => {
 
 exports.getAllUsersByBusinessId = (id, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { users, businesses } = await dbConn();
+    const { users, businesses, userEmails, userContactNumbers, roles } =
+      await dbConn();
     try {
       let user = await users.findAll({
         attributes: { exclude: DEFAULT_EXCLUDE },
-        include: {
-          model: businesses,
-          as: "businesses",
-          required: true,
-          where: { id },
-          attributes: { exclude: DEFAULT_EXCLUDE },
-        },
+        include: [
+          {
+            model: businesses,
+            as: "businesses",
+            required: true,
+            where: { id },
+            attributes: [],
+          },
+          {
+            model: userEmails,
+            as: "userEmails",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+          {
+            model: userContactNumbers,
+            as: "userContactNumbers",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+          {
+            model: roles,
+            as: "roles",
+            attributes: ["name"],
+          },
+        ],
+        transaction,
+      });
+      return resolve(user);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getUserMetaByUuid = (uuid, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { users } = await dbConn();
+      const user = await users.findOne({
+        where: { uuid },
+        transaction,
+      });
+      resolve(user);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getUserByUuidBusinessId = (uuid, id, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { users, businesses, userEmails, userContactNumbers, roles } =
+      await dbConn();
+    try {
+      let user = await users.findOne({
+        where: { uuid },
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        include: [
+          {
+            model: businesses,
+            as: "businesses",
+            required: true,
+            where: { id },
+            attributes: [],
+          },
+          {
+            model: userEmails,
+            as: "userEmails",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+          {
+            model: userContactNumbers,
+            as: "userContactNumbers",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+          {
+            model: roles,
+            as: "roles",
+            attributes: ["name"],
+          },
+        ],
+        transaction,
+      });
+      return resolve(user);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+exports.getUserMetaByUuidBusinessId = (uuid, id, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { users, businesses, userEmails, userContactNumbers, roles } =
+      await dbConn();
+    try {
+      let user = await users.findOne({
+        where: { uuid },
+        include: [
+          {
+            model: businesses,
+            as: "businesses",
+            required: true,
+            where: { id },
+            attributes: [],
+          },
+          {
+            model: userEmails,
+            as: "userEmails",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+          {
+            model: userContactNumbers,
+            as: "userContactNumbers",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+          {
+            model: roles,
+            as: "roles",
+            attributes: ["name"],
+          },
+        ],
         transaction,
       });
       return resolve(user);

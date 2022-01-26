@@ -12,12 +12,17 @@ const {
   createBusinessUserRole,
   getRoleMetaByUuidBusinessId,
   getRoleMetaByUserIdRoleIdBusinessId,
+  updateBusinessUserRole,
+  deleteBusinessUserRole,
 } = require("../../../repository/role");
 const {
   getOrCreateUserByEmail,
   getUserByEmail,
   getUserByMobileNumber,
   getAllUsersByBusinessId,
+  getUserMetaByUuid,
+  getUserByUuidBusinessId,
+  getUserMetaByUuidBusinessId,
 } = require("../../../repository/user");
 const {
   ALL_AVAILABLE_PRIVILEGES,
@@ -33,10 +38,14 @@ const {
   STAFF_CREATED,
   STAFF_EXISTS,
   STAFF_FETCHED,
+  ROLE_FORBIDDEN,
+  SINGLE_OWNER,
+  STAFF_DELETED,
 } = require("../../constants/messages");
 const { PRIVILEGES } = require("../../constants/rolesAndPrivileges");
 const { EMAIL } = require("../../constants/variables");
 const response = require("../response");
+const { getUserByUuid } = require("./user");
 
 exports.createStaff = async (req, res, next) => {
   const { sequelize } = await dbConn();
@@ -62,9 +71,9 @@ exports.createStaff = async (req, res, next) => {
       transaction
     );
     if (!role) throw ROLE_NOT_FOUND;
+    if (role.name.toLowerCase() === "owner") throw SINGLE_OWNER;
     const existingStaff = await getRoleMetaByUserIdRoleIdBusinessId(
       user.id,
-      role.id,
       business.id,
       transaction
     );
@@ -85,18 +94,30 @@ exports.updateStaff = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    let { businessUuid, roleUuid } = req.params;
+    let { businessUuid } = req.params;
+    const { userUuid, roleUuid } = req.body;
     let business = await getBusinessMetaByUuidUserId(
       businessUuid,
       req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
       transaction
     );
     if (!business) throw NOT_FOUND;
-    await updateRoleByUuidBusinessId(transaction, roleUuid, {
-      ...req.body,
+    const user = await getUserMetaByUuid(userUuid, transaction);
+    if (!user) throw USER_NOT_FOUND;
+    const role = await getRoleMetaByUuidBusinessId(
+      roleUuid,
+      business.id,
+      transaction
+    );
+    if (!role) throw ROLE_NOT_FOUND;
+    if (role.name.toLowerCase() === "owner") throw ROLE_FORBIDDEN;
+    await updateBusinessUserRole(transaction, {
+      userId: user.id,
+      businessId: business.id,
+      roleId: role.id,
     });
     transaction.commit();
-    response(ROLE_UPDATED, "role", {}, req, res, next);
+    response(ROLE_UPDATED, "staff", {}, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);
@@ -118,15 +139,15 @@ exports.getAllBusinessStaff = async (req, res, next) => {
 };
 exports.getStaff = async (req, res, next) => {
   try {
-    let { businessUuid, roleUuid } = req.params;
+    let { businessUuid, userUuid } = req.params;
     let business = await getBusinessMetaByUuidUserId(
       businessUuid,
       req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
     );
     if (!business) throw NOT_FOUND;
-    const role = await getRoleByUuidBusinessId(roleUuid, business.id);
-    if (!role) throw NOT_FOUND;
-    response(ROLE_FETCHED, "role", role, req, res, next);
+    const user = await getUserByUuidBusinessId(userUuid, business.id);
+    if (!user) throw NOT_FOUND;
+    response(STAFF_FETCHED, "staff", user, req, res, next);
   } catch (error) {
     next(error);
   }
@@ -135,112 +156,18 @@ exports.deleteStaff = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    let { businessUuid, roleUuid } = req.params;
+    let { businessUuid, userUuid } = req.params;
     let business = await getBusinessMetaByUuidUserId(
       businessUuid,
       req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
     );
     if (!business) throw NOT_FOUND;
-
-    const role = await getRoleWithUsersByUuidBusinessId(
-      roleUuid,
-      business.id,
-      transaction
-    );
-    if (!role) throw NOT_FOUND;
-    else if (role.users.length > 0) throw ROLE_USER_EXIST;
-    await deleteRoleByUuidBusinessId(transaction, role.uuid, business.id);
+    const user = await getUserMetaByUuidBusinessId(userUuid, business.id);
+    if (!user) throw USER_NOT_FOUND;
+    if (user.roles[0].name.toLowerCase() === "owner") throw ROLE_FORBIDDEN;
+    await deleteBusinessUserRole(transaction, user.id, business.id);
     transaction.commit();
-    response(ROLE_DELETED, "role", {}, req, res, next);
-  } catch (error) {
-    transaction.rollback();
-    next(error);
-  }
-};
-
-exports.addAttendence = async (req, res, next) => {
-  const { sequelize } = await dbConn();
-  let transaction = await sequelize.transaction();
-  try {
-    let { businessUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
-      transaction
-    );
-    if (!business) throw NOT_FOUND;
-    let role = await createRole(transaction, {
-      ...req.body,
-      businessId: business.id,
-    });
-    transaction.commit();
-    response(
-      ROLE_CREATED,
-      "role",
-      { ...req.body, uuid: role.uuid },
-      req,
-      res,
-      next
-    );
-  } catch (error) {
-    transaction.rollback();
-    next(error);
-  }
-};
-exports.deleteAttendence = async (req, res, next) => {
-  const { sequelize } = await dbConn();
-  let transaction = await sequelize.transaction();
-  try {
-    let { businessUuid, userUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
-      transaction
-    );
-    if (!business) throw NOT_FOUND;
-    let role = await createRole(transaction, {
-      ...req.body,
-      businessId: business.id,
-    });
-    transaction.commit();
-    response(
-      ROLE_CREATED,
-      "role",
-      { ...req.body, uuid: role.uuid },
-      req,
-      res,
-      next
-    );
-  } catch (error) {
-    transaction.rollback();
-    next(error);
-  }
-};
-
-exports.getStaffAttendence = async (req, res, next) => {
-  const { sequelize } = await dbConn();
-  let transaction = await sequelize.transaction();
-  try {
-    let { businessUuid, userUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
-      transaction
-    );
-    if (!business) throw NOT_FOUND;
-    let role = await createRole(transaction, {
-      ...req.body,
-      businessId: business.id,
-    });
-    transaction.commit();
-    response(
-      ROLE_CREATED,
-      "role",
-      { ...req.body, uuid: role.uuid },
-      req,
-      res,
-      next
-    );
+    response(STAFF_DELETED, "staff", {}, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);

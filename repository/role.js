@@ -42,6 +42,34 @@ exports.createBusinessUserRole = (transaction, roleObj) => {
     }
   });
 };
+exports.updateBusinessUserRole = (transaction, roleObj) => {
+  return new Promise(async (resolve, reject) => {
+    const { businessUserRoles } = await dbConn();
+    try {
+      const role = await businessUserRoles.update(roleObj, {
+        where: { businessId: roleObj.businessId, userId: roleObj.userId },
+        transaction,
+      });
+      resolve(role);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+exports.deleteBusinessUserRole = (transaction, userId, businessId) => {
+  return new Promise(async (resolve, reject) => {
+    const { businessUserRoles } = await dbConn();
+    try {
+      const role = await businessUserRoles.destroy({
+        where: { businessId, userId },
+        transaction,
+      });
+      resolve(role);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 exports.deleteRoleByBusinessId = (transaction, businessId) => {
   return new Promise(async (resolve, reject) => {
@@ -177,7 +205,6 @@ exports.getRoleMetaByUuidBusinessId = (uuid, businessId, transaction) => {
 
 exports.getRoleMetaByUserIdRoleIdBusinessId = (
   userId,
-  roleId,
   businessId,
   transaction
 ) => {
@@ -185,7 +212,7 @@ exports.getRoleMetaByUserIdRoleIdBusinessId = (
     const { businessUserRoles } = await dbConn();
     try {
       const rolesArr = await businessUserRoles.findOne({
-        where: { roleId, userId, businessId },
+        where: { userId, businessId },
         transaction,
       });
       resolve(rolesArr);

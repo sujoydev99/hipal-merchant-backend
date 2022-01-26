@@ -168,6 +168,11 @@ module.exports = {
     customMessage: "Owner role cannot be altered/deleted",
     statusCode: 400,
   },
+  SINGLE_OWNER: {
+    customMessage:
+      "There can only be a single business owner, please create roles with persmissions",
+    statusCode: 400,
+  },
   ROLE_DELETED: {
     customMessage: "Role Deleted",
     statusCode: 200,
@@ -194,6 +199,14 @@ module.exports = {
   },
   STAFF_FETCHED: {
     customMessage: "Your staff member/s",
+    statusCode: 200,
+  },
+  STAFF_UPDATED: {
+    customMessage: "Staff member updated",
+    statusCode: 200,
+  },
+  STAFF_DELETED: {
+    customMessage: "Staff member removed from business",
     statusCode: 200,
   },
 };

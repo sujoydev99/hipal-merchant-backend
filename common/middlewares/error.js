@@ -3,6 +3,7 @@ const { logger } = require("../functions/logger");
 
 module.exports = (err, req, res, next) => {
   !err.statusCode ? console.log(err) : null;
+  console.log(err);
   let uri = process.env.APP_BASE_URL;
   let method = req.method;
   return res.status(err.statusCode ? err.statusCode : 500).json(

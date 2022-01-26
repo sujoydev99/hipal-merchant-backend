@@ -7,22 +7,15 @@ const {
 const { verifyToken } = require("../../common/middlewares/authentication");
 
 const {
-  getAllAvailablePrivileges,
-  createRole,
-  updateRole,
-  getRole,
-  getAllBusinessRoles,
-  deleteRole,
-} = require("../../common/middlewares/handlers/role");
-const {
   createStaff,
   getAllBusinessStaff,
+  updateStaff,
+  deleteStaff,
+  getStaff,
 } = require("../../common/middlewares/handlers/staff");
 const {
-  createUpdateRoleValidations,
-} = require("../../common/middlewares/validations/role/role");
-const {
   createStaffValidations,
+  updateStaffValidations,
 } = require("../../common/middlewares/validations/staff/staff");
 
 // get all business staff
@@ -42,14 +35,14 @@ router.post(
 
 // update staff
 router.put(
-  "/:businessUuid/:userUuid",
+  "/:businessUuid",
   verifyToken(),
   // verifyToken(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
   //   [ROLES.ADMIN, ROLES.USER]
   // ),
-  createUpdateRoleValidations,
-  updateRole
+  updateStaffValidations,
+  updateStaff
 );
 
 // get single staff
@@ -60,18 +53,18 @@ router.get(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
   //   [ROLES.ADMIN, ROLES.USER]
   // ),
-  getRole
+  getStaff
 );
 
 // delete staff
 router.delete(
-  "/:businessUuid/:staffUuid",
+  "/:businessUuid/:userUuid",
   verifyToken(),
   // verifyToken(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
   //   [ROLES.ADMIN, ROLES.USER]
   // ),
-  deleteRole
+  deleteStaff
 );
 
 module.exports = router;
