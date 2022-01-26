@@ -129,8 +129,7 @@ exports.getUserByUuid = (uuid, transaction) => {
 exports.getUserByUuidReq = (uuid, transaction) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { users, userEmails, userContactNumbers, userDocs, userAddresses } =
-        await dbConn();
+      const { users } = await dbConn();
       const user = await users.findOne({
         where: { uuid },
         transaction,
@@ -189,6 +188,47 @@ exports.updateUserById = (transaction, id, obj = {}) => {
         transaction,
       });
       resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getUserByEmail = (email, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { users, userEmails } = await dbConn();
+    try {
+      let user = await users.findOne({
+        include: {
+          model: userEmails,
+          as: "userEmails",
+          required: true,
+          where: { email },
+        },
+        transaction,
+      });
+      console.log(user);
+      return resolve(user);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getUserByMobileNumber = (number, extension, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { users, userContactNumbers } = await dbConn();
+    try {
+      let user = await users.findOne({
+        include: {
+          model: userContactNumbers,
+          as: "userContactNumbers",
+          required: true,
+          where: { extension, number },
+        },
+        transaction,
+      });
+      return resolve(user);
     } catch (error) {
       reject(error);
     }

@@ -58,6 +58,7 @@ module.exports = (sequelize, DataTypes) => {
       cuisine: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
       notes: DataTypes.STRING,
       slug: { type: DataTypes.STRING, unique: true },
+      currency: { type: DataTypes.STRING },
       timings: { type: DataTypes.JSON }, //{MONDAY: {from:1100, to:2200}}
       // address
       addressLineOne: { type: DataTypes.STRING },

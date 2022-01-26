@@ -1,3 +1,4 @@
+const sequelize = require("sequelize");
 const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
 const {
   EMAIL_ALREADY_EXISTS,
@@ -111,12 +112,17 @@ exports.getAllRoleWithUsersByBusinessId = (businessId, transaction) => {
 };
 exports.getAllRoleByBusinessId = (businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { roles } = await dbConn();
+    const { roles, users } = await dbConn();
     try {
       const rolesArr = await roles.findAll({
         where: { businessId },
         attributes: { exclude: DEFAULT_EXCLUDE },
         transaction,
+        include: {
+          model: users,
+          as: "users",
+          attributes: { exclude: DEFAULT_EXCLUDE },
+        },
       });
       resolve(rolesArr);
     } catch (error) {
@@ -148,6 +154,41 @@ exports.deleteRoleByUuidBusinessId = (transaction, uuid, businessId) => {
         transaction,
       });
       resolve(role);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getRoleMetaByUuidBusinessId = (uuid, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { roles } = await dbConn();
+    try {
+      const rolesArr = await roles.findOne({
+        where: { uuid, businessId },
+        transaction,
+      });
+      resolve(rolesArr);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getRoleMetaByUserIdRoleIdBusinessId = (
+  userId,
+  roleId,
+  businessId,
+  transaction
+) => {
+  return new Promise(async (resolve, reject) => {
+    const { businessUserRoles } = await dbConn();
+    try {
+      const rolesArr = await businessUserRoles.findOne({
+        where: { roleId, userId, businessId },
+        transaction,
+      });
+      resolve(rolesArr);
     } catch (error) {
       reject(error);
     }

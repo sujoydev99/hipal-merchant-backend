@@ -176,4 +176,20 @@ module.exports = {
     customMessage: "Role in use",
     statusCode: 400,
   },
+  USER_NOT_FOUND: {
+    customMessage: "User not found",
+    statusCode: 404,
+  },
+  ROLE_NOT_FOUND: {
+    customMessage: "Role not found",
+    statusCode: 404,
+  },
+  STAFF_CREATED: {
+    customMessage: "Your staff member has been created",
+    statusCode: 201,
+  },
+  STAFF_EXISTS: {
+    customMessage: "Staff member already exists",
+    statusCode: 200,
+  },
 };

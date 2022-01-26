@@ -4,7 +4,6 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const helmet = require("helmet");
-const mongoose = require("mongoose");
 
 const { logger } = require("./common/functions/logger");
 
@@ -15,6 +14,7 @@ const auth = require("./routes/api/auth");
 const user = require("./routes/api/user");
 const business = require("./routes/api/business");
 const role = require("./routes/api/role");
+const staff = require("./routes/api/staff");
 const errorMiddleware = require("./common/middlewares/error");
 // initialize the env configuration
 dotenv.config();
@@ -50,6 +50,7 @@ app.use("/api/user/auth", auth);
 app.use("/api/user", user);
 app.use("/api/business", business);
 app.use("/api/role", role);
+app.use("/api/staff", staff);
 app.use(errorMiddleware);
 
 // initializeMessageHandler();

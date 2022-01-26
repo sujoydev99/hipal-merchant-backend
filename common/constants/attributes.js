@@ -10,5 +10,10 @@ module.exports = {
     "otp",
     "businessId",
     "roleId",
+    "resetToken",
+    "resetTokenExpiry",
+    "businessUserRoles",
+    "accessToken",
+    "userTypes",
   ],
 };

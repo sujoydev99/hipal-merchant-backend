@@ -1,13 +1,12 @@
 const jwt = require("jsonwebtoken");
+const { userSignIn } = require("../middlewares/handlers/auth");
 exports.jwtSign = (token) => {
+  token = JSON.parse(JSON.stringify(token));
+  token = { uuid: token.uuid };
   return {
-    token: `Bearer ${jwt.sign(
-      JSON.parse(JSON.stringify(token)),
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    )}`,
+    token: `Bearer ${jwt.sign(token, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    })}`,
   };
 };
 
