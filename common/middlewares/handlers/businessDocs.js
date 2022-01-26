@@ -31,7 +31,7 @@ exports.uploadBusinessDoc = async (req, res, next) => {
     const { businessUuid } = req.params;
     let business = await getBusinessMetaByUuidUserId(
       businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
+      req.user.id,
       transaction
     );
     if (!business) throw NOT_FOUND;
@@ -65,10 +65,7 @@ exports.uploadBusinessDoc = async (req, res, next) => {
 exports.getBusinessDoc = async (req, res, next) => {
   try {
     let { uuid, businessUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
-    );
+    let business = await getBusinessMetaByUuidUserId(businessUuid, req.user.id);
     if (!business) throw NOT_FOUND;
 
     const doc = await getBusinessDocByUuidBusinessId(uuid, business.id);
@@ -86,7 +83,7 @@ exports.deleteBusinessDoc = async (req, res, next) => {
     let { uuid, businessUuid } = req.params;
     let business = await getBusinessMetaByUuidUserId(
       businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
+      req.user.id,
       transaction
     );
     if (!business) throw NOT_FOUND;

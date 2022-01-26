@@ -56,7 +56,7 @@ exports.createStaff = async (req, res, next) => {
     let { email, mobileNumber, countryCode, roleUuid } = req.body;
     let business = await getBusinessMetaByUuidUserId(
       businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
+      req.user.id,
       transaction
     );
     if (!business) throw NOT_FOUND;
@@ -98,7 +98,7 @@ exports.updateStaff = async (req, res, next) => {
     const { userUuid, roleUuid } = req.body;
     let business = await getBusinessMetaByUuidUserId(
       businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
+      req.user.id,
       transaction
     );
     if (!business) throw NOT_FOUND;
@@ -126,10 +126,7 @@ exports.updateStaff = async (req, res, next) => {
 exports.getAllBusinessStaff = async (req, res, next) => {
   try {
     let { businessUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
-    );
+    let business = await getBusinessMetaByUuidUserId(businessUuid, req.user.id);
     if (!business) throw NOT_FOUND;
     const staff = await getAllUsersByBusinessId(business.id);
     response(STAFF_FETCHED, "staff", staff, req, res, next);
@@ -140,10 +137,7 @@ exports.getAllBusinessStaff = async (req, res, next) => {
 exports.getStaff = async (req, res, next) => {
   try {
     let { businessUuid, userUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
-    );
+    let business = await getBusinessMetaByUuidUserId(businessUuid, req.user.id);
     if (!business) throw NOT_FOUND;
     const user = await getUserByUuidBusinessId(userUuid, business.id);
     if (!user) throw NOT_FOUND;
@@ -157,10 +151,7 @@ exports.deleteStaff = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     let { businessUuid, userUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
-    );
+    let business = await getBusinessMetaByUuidUserId(businessUuid, req.user.id);
     if (!business) throw NOT_FOUND;
     const user = await getUserMetaByUuidBusinessId(userUuid, business.id);
     if (!user) throw USER_NOT_FOUND;

@@ -78,10 +78,7 @@ exports.getAllBusinessesByUserUuid = async (req, res, next) => {
 exports.getBusinessByUuid = async (req, res, next) => {
   try {
     const { businessUuid } = req.params;
-    let business = await getBusinessByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
-    );
+    let business = await getBusinessByUuidUserId(businessUuid, req.user.id);
     if (!business) throw NOT_FOUND;
     response(BUSINESS_FETCHED, "business", business, req, res, next);
   } catch (error) {
@@ -95,7 +92,7 @@ exports.deleteBusinessByUuid = async (req, res, next) => {
     const { businessUuid } = req.params;
     const business = await getBusinessMetaByUuidUserId(
       businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
+      req.user.id
     );
     if (business) {
       await updateBusinessById(transaction, business.id, {
@@ -118,7 +115,7 @@ exports.updateBusiness = async (req, res, next) => {
     const { businessUuid } = req.params;
     const business = await getBusinessMetaByUuidUserId(
       businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
+      req.user.id
     );
     if (business) {
       await updateBusinessById(transaction, business.id, req.body);
@@ -136,10 +133,7 @@ exports.uploadBusinessProfilePicture = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     const { businessUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
-    );
+    let business = await getBusinessMetaByUuidUserId(businessUuid, req.user.id);
     if (!business) throw NOT_FOUND;
     let path = `business/${businessUuid}/profilePicture`;
     await uploadPublicDoc(path, req, res, next);
@@ -169,7 +163,7 @@ exports.deleteBusinessProfilePicture = async (req, res, next) => {
     const { businessUuid } = req.params;
     const business = await getBusinessMetaByUuidUserId(
       businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
+      req.user.id
     );
     if (!business) throw NOT_FOUND;
     if (!business.profileImageUrl) throw NOT_FOUND;

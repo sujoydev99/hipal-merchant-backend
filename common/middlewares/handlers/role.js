@@ -54,7 +54,7 @@ exports.createRole = async (req, res, next) => {
     let { businessUuid } = req.params;
     let business = await getBusinessMetaByUuidUserId(
       businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
+      req.user.id,
       transaction
     );
     if (!business) throw NOT_FOUND;
@@ -83,7 +83,7 @@ exports.updateRole = async (req, res, next) => {
     let { businessUuid, roleUuid } = req.params;
     let business = await getBusinessMetaByUuidUserId(
       businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id,
+      req.user.id,
       transaction
     );
     if (!business) throw NOT_FOUND;
@@ -100,10 +100,7 @@ exports.updateRole = async (req, res, next) => {
 exports.getAllBusinessRoles = async (req, res, next) => {
   try {
     let { businessUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
-    );
+    let business = await getBusinessMetaByUuidUserId(businessUuid, req.user.id);
     if (!business) throw NOT_FOUND;
     const role = await getAllRoleByBusinessId(business.id);
     response(ROLE_FETCHED, "role", role, req, res, next);
@@ -114,10 +111,7 @@ exports.getAllBusinessRoles = async (req, res, next) => {
 exports.getRole = async (req, res, next) => {
   try {
     let { businessUuid, roleUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
-    );
+    let business = await getBusinessMetaByUuidUserId(businessUuid, req.user.id);
     if (!business) throw NOT_FOUND;
     const role = await getRoleByUuidBusinessId(roleUuid, business.id);
     if (!role) throw NOT_FOUND;
@@ -131,10 +125,7 @@ exports.deleteRole = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     let { businessUuid, roleUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
-    );
+    let business = await getBusinessMetaByUuidUserId(businessUuid, req.user.id);
     if (!business) throw NOT_FOUND;
 
     const role = await getRoleWithUsersByUuidBusinessId(
@@ -156,10 +147,7 @@ exports.deleteRole = async (req, res, next) => {
 exports.getAllStaffByRole = async (req, res, next) => {
   try {
     let { businessUuid, roleUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.userTypes.indexOf("ADMIN") > -1 ? null : req.user.id
-    );
+    let business = await getBusinessMetaByUuidUserId(businessUuid, req.user.id);
     if (!business) throw NOT_FOUND;
     const roles = await getAllRoleWithUsersByBusinessId(roleUuid, business.id);
     response(ROLE_DELETED, "role", roles, req, res, next);
