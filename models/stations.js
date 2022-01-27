@@ -10,18 +10,12 @@ module.exports = (sequelize, DataTypes) => {
         as: "business",
         onDelete: "CASCADE",
       });
-      stations.belongsTo(models.floors, {
-        foreignKey: "floorId",
-        as: "floor",
-        onDelete: "CASCADE",
-      });
     }
   }
   stations.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
       businessId: { type: DataTypes.INTEGER, allowNull: false },
-      floorId: { type: DataTypes.INTEGER, allowNull: false },
       name: {
         type: DataTypes.STRING,
         allowNull: false,

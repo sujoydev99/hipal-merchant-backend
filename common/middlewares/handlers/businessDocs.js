@@ -1,6 +1,5 @@
 const { nanoid } = require("nanoid");
 const dbConn = require("../../../models");
-const { getBusinessMetaByUuidUserId } = require("../../../repository/business");
 const {
   getDocByBusinessId,
   addbusinessDoc,
@@ -29,12 +28,6 @@ exports.uploadBusinessDoc = async (req, res, next) => {
     console.log(req.file);
     const { type } = req.body;
     const { businessUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.id,
-      transaction
-    );
-    if (!business) throw NOT_FOUND;
     let existingDoc = await getDocByBusinessId(
       business.id,
       [type],
@@ -44,7 +37,7 @@ exports.uploadBusinessDoc = async (req, res, next) => {
     let path = `business/${businessUuid}/businessDocs/${type}`;
     await uploadPrivateDoc(path, req, res, next);
     let doc = await addbusinessDoc(transaction, {
-      businessId: business.id,
+      businessId: req.business.id,
       ...req.body,
     });
     transaction.commit();
@@ -64,11 +57,8 @@ exports.uploadBusinessDoc = async (req, res, next) => {
 
 exports.getBusinessDoc = async (req, res, next) => {
   try {
-    let { uuid, businessUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(businessUuid, req.user.id);
-    if (!business) throw NOT_FOUND;
-
-    const doc = await getBusinessDocByUuidBusinessId(uuid, business.id);
+    let { uuid } = req.params;
+    const doc = await getBusinessDocByUuidBusinessId(uuid, req.business.id);
     if (!doc) throw NOT_FOUND;
     const url = await generateV4ReadSignedUrl(doc.path);
     response(PRIVATE_DOC_FETCHED, "document", { url }, req, res, next);
@@ -80,14 +70,8 @@ exports.deleteBusinessDoc = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    let { uuid, businessUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.id,
-      transaction
-    );
-    if (!business) throw NOT_FOUND;
-    const doc = await getBusinessDocByUuidBusinessId(uuid, business.id);
+    let { uuid } = req.params;
+    const doc = await getBusinessDocByUuidBusinessId(uuid, req.business.id);
     if (!doc) throw NOT_FOUND;
     await deleteBusinessDocByUuidBusinessId(transaction, uuid, business.id);
     await deleteFile(doc.path, GCS_PRIVATE_BUCKET);

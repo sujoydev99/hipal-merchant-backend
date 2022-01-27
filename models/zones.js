@@ -2,44 +2,41 @@
 const { nanoid } = require("nanoid");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class floors extends Model {
+  class zones extends Model {
     static associate(models) {
       // define association here
-      floors.belongsTo(models.businesses, {
+      zones.belongsTo(models.businesses, {
         foreignKey: "businessId",
         as: "business",
         onDelete: "CASCADE",
       });
-      floors.hasMany(models.tables, {
+      zones.hasMany(models.tables, {
         foreignKey: "floorId",
         as: "tables",
       });
-      floors.hasMany(models.stations, {
-        foreignKey: "floorId",
-        as: "stations",
-      });
     }
   }
-  floors.init(
+  zones.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
       businessId: { type: DataTypes.INTEGER, allowNull: false },
-      floorId: { type: DataTypes.INTEGER, allowNull: false },
+      capacity: { type: DataTypes.INTEGER, defaultValue: 0 },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      type: { type: DataTypes.STRING, comment: "DINE-IN/TAKE-AWAY/DELIVERY" },
       notes: DataTypes.STRING,
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
     {
       sequelize,
-      modelName: "floors",
+      modelName: "zones",
       paranoid: true,
     }
   );
-  floors.beforeCreate((doc, _) => {
-    return (doc.uuid = "floor_" + nanoid(20));
+  zones.beforeCreate((doc, _) => {
+    return (doc.uuid = "zone_" + nanoid(20));
   });
-  return floors;
+  return zones;
 };

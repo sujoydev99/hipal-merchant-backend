@@ -209,4 +209,20 @@ module.exports = {
     customMessage: "Staff member removed from business",
     statusCode: 200,
   },
+  ZONE_CREATED: {
+    customMessage: "Your zone has been created",
+    statusCode: 201,
+  },
+  ZONE_UPDATED: {
+    customMessage: "Your zone has been updated",
+    statusCode: 200,
+  },
+  ZONE_FETCHED: {
+    customMessage: "Your zone",
+    statusCode: 200,
+  },
+  ZONE_DELETED: {
+    customMessage: "Zone Deleted",
+    statusCode: 200,
+  },
 };

@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const { userSignIn } = require("../middlewares/handlers/auth");
 exports.jwtSign = (token) => {
   token = JSON.parse(JSON.stringify(token));
   token = { uuid: token.uuid };

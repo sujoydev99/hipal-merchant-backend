@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
         as: "business",
         onDelete: "CASCADE",
       });
-      tables.belongsTo(models.floors, {
-        foreignKey: "floorId",
-        as: "floor",
+      tables.belongsTo(models.zones, {
+        foreignKey: "zoneId",
+        as: "zone",
         onDelete: "CASCADE",
       });
     }
@@ -21,17 +21,16 @@ module.exports = (sequelize, DataTypes) => {
     {
       uuid: { type: DataTypes.STRING, unique: true },
       businessId: { type: DataTypes.INTEGER, allowNull: false },
-      floorId: { type: DataTypes.INTEGER, allowNull: false },
+      zoneId: { type: DataTypes.INTEGER, allowNull: false },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       notes: DataTypes.STRING,
       capacity: { type: DataTypes.INTEGER, defaultValue: 0 },
-      isOccupied: { type: DataTypes.BOOLEAN, defaultValue: false },
       status: {
         type: DataTypes.STRING,
-        comment: "VACANT/OCCUPIED/CLEANUP",
+        comment: "VACANT/OCCUPIED/CLEANUP/SERVED/ORDERED",
         defaultValue: "VACANT",
       },
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },

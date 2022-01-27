@@ -20,7 +20,6 @@ const {
   getAllBusinessesByUserUuid,
   getBusinessByUuidUserId,
   deleteBusinessById,
-  getBusinessMetaByUuidUserId,
   updateBusinessById,
 } = require("../../../repository/business");
 const {
@@ -89,18 +88,11 @@ exports.deleteBusinessByUuid = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    const { businessUuid } = req.params;
-    const business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.id
-    );
-    if (business) {
-      await updateBusinessById(transaction, business.id, {
-        slug: business.slug + "---" + new Date(),
-      });
-      await deleteRoleByBusinessId(transaction, business.id);
-      await deleteBusinessById(transaction, business.id);
-    } else throw NOT_FOUND;
+    await updateBusinessById(transaction, business.id, {
+      slug: req.business.slug + "---" + new Date(),
+    });
+    await deleteRoleByBusinessId(transaction, business.id);
+    await deleteBusinessById(transaction, business.id);
     transaction.commit();
     response(BUSINESS_DELETED, "business", {}, req, res, next);
   } catch (error) {
@@ -112,14 +104,7 @@ exports.updateBusiness = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    const { businessUuid } = req.params;
-    const business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.id
-    );
-    if (business) {
-      await updateBusinessById(transaction, business.id, req.body);
-    } else throw NOT_FOUND;
+    await updateBusinessById(transaction, req.business.id, req.body);
     transaction.commit();
     response(BUSINESS_UPDATED, "business", {}, req, res, next);
   } catch (error) {
@@ -133,15 +118,13 @@ exports.uploadBusinessProfilePicture = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     const { businessUuid } = req.params;
-    let business = await getBusinessMetaByUuidUserId(businessUuid, req.user.id);
-    if (!business) throw NOT_FOUND;
     let path = `business/${businessUuid}/profilePicture`;
     await uploadPublicDoc(path, req, res, next);
-    await updateBusinessById(transaction, business.id, {
+    await updateBusinessById(transaction, req.business.id, {
       profileImageUrl: req.body.path,
     });
-    if (business.profileImageUrl)
-      await deleteFile(business.profileImageUrl, GCS_PUBLIC_BUCKET);
+    if (req.business.profileImageUrl)
+      await deleteFile(req.business.profileImageUrl, GCS_PUBLIC_BUCKET);
     await transaction.commit();
     response(
       PROFILE_PICTURE_UPDATED,
@@ -160,17 +143,11 @@ exports.deleteBusinessProfilePicture = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    const { businessUuid } = req.params;
-    const business = await getBusinessMetaByUuidUserId(
-      businessUuid,
-      req.user.id
-    );
-    if (!business) throw NOT_FOUND;
-    if (!business.profileImageUrl) throw NOT_FOUND;
-    await updateBusinessById(transaction, business.id, {
+    if (!req.business.profileImageUrl) throw NOT_FOUND;
+    await updateBusinessById(transaction, req.business.id, {
       profileImageUrl: null,
     });
-    await deleteFile(business.profileImageUrl, GCS_PUBLIC_BUCKET);
+    await deleteFile(req.business.profileImageUrl, GCS_PUBLIC_BUCKET);
     await transaction.commit();
     response(PROFILE_PICTURE_DELETED, "profile image", {}, req, res, next);
   } catch (error) {

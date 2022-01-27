@@ -19,9 +19,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "businessId",
         as: "businessDocs",
       });
-      businesses.hasMany(models.floors, {
+      businesses.hasMany(models.zones, {
         foreignKey: "businessId",
-        as: "floors",
+        as: "zones",
       });
       businesses.hasMany(models.tables, {
         foreignKey: "businessId",

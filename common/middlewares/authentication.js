@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { getBusinessMetaByUuidUserId } = require("../../repository/business");
 const { getUserByUuid, getUserByUuidReq } = require("../../repository/user");
 const {
   FORBIDDENED,
@@ -27,34 +28,16 @@ exports.verifyToken = (privileges = [], roles = []) => {
         user = await getUserByUuidReq(userJwt.uuid);
         req.user = JSON.parse(JSON.stringify(user));
       }
-      // var arr = user.userTypes;
-      // var index = arr.indexOf(ROLES.USER);
-      // if (index !== -1) {
-      //   arr.splice(index, 1);
-      // }
-      // if (
-      //   roles.length > 0 &&
-      //   allowedPrivilegesAndRoles(roles, req.user.userTypes).length === 0
-      // )
-      //   throw INSUFFICIENT_ROLES;
-      // if (
-      //   privileges.length > 0 &&
-      //   allowedPrivilegesAndRoles(privileges, req.user.privileges).length === 0
-      // )
-      //   throw INSUFFICIENT_PRIVILEGES;
-
-      // if (
-      //   req.params.userUuid &&
-      //   allowedPrivilegesAndRoles(arr, roles).length > 0
-      // ) {
-      //   req.other = await getUserByUuidReq(req.params.userUuid);
-      //   req.otherId = req.other.id;
-      //   return next();
-      // } else if (req.params.userUuid && req.user.uuid !== req.params.userUuid)
-      //   throw INSUFFICIENT_PRIVILEGES;
-      // else {
+      if (req.params.businessUuid) {
+        const { businessUuid } = req.params;
+        const business = await getBusinessMetaByUuidUserId(
+          businessUuid,
+          req.user.id
+        );
+        if (!business) throw NOT_FOUND;
+        req.business = business;
+      }
       next();
-      // }
     } catch (error) {
       console.log(error);
       next(error);
