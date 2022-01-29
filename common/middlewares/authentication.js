@@ -7,6 +7,7 @@ const {
   INSUFFICIENT_PRIVILEGES,
   INSUFFICIENT_ROLES,
   NOT_ALLOWED,
+  NOT_FOUND,
 } = require("../constants/messages");
 const { PRIVILEGES, ROLES } = require("../constants/rolesAndPrivileges");
 exports.verifyToken = (privileges = [], roles = []) => {
@@ -24,6 +25,8 @@ exports.verifyToken = (privileges = [], roles = []) => {
       } catch (error) {
         throw JWT_EXPIRED;
       }
+      if (req.params.userUuid && req.params.userUuid !== userJwt.uuid)
+        throw NOT_ALLOWED;
       if (userJwt) {
         user = await getUserByUuidReq(userJwt.uuid);
         req.user = JSON.parse(JSON.stringify(user));

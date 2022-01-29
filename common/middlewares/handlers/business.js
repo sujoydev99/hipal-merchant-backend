@@ -28,7 +28,6 @@ const {
   deleteRoleByBusinessId,
 } = require("../../../repository/role");
 const { PRIVILEGES } = require("../../constants/rolesAndPrivileges");
-const businesses = require("../../../models/businesses");
 
 exports.createBusiness = async (req, res, next) => {
   const { sequelize } = await dbConn();
