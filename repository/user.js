@@ -263,7 +263,7 @@ exports.getAllUsersByBusinessId = (id, transaction) => {
           {
             model: roles,
             as: "roles",
-            attributes: ["name"],
+            attributes: ["name", "uuid"],
           },
         ],
         transaction,

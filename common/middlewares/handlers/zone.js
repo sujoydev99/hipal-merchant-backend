@@ -43,7 +43,7 @@ exports.updateZone = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     let { zoneUuid } = req.params;
-    await updateZoneByUuidBusinessId(transaction, zoneUuid,req.business.id {
+    await updateZoneByUuidBusinessId(transaction, zoneUuid, req.business.id, {
       ...req.body,
     });
     transaction.commit();
@@ -64,7 +64,7 @@ exports.getAllBusinessZones = async (req, res, next) => {
 exports.getZone = async (req, res, next) => {
   try {
     let { zoneUuid } = req.params;
-    const role = await getZoneByUuidBusinessId(zoneUuid,req.business.id);
+    const role = await getZoneByUuidBusinessId(zoneUuid, req.business.id);
     if (!role) throw NOT_FOUND;
     response(ZONE_FETCHED, "role", role, req, res, next);
   } catch (error) {
