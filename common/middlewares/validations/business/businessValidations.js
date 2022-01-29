@@ -19,7 +19,7 @@ exports.createUpdateBusinessValidations = async (req, res, next) => {
       "WEDNESDAY",
       "THURSDAY",
       "FRIDAY",
-      "SATUARDAY",
+      "SATURDAY",
       "SUNDAY",
     ];
     const timingsValidationRules = {};

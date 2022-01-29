@@ -5,7 +5,6 @@ module.exports = {
     "updatedAt",
     "deletedAt",
     "id",
-    "isActive",
     "userId",
     "otp",
     "businessId",

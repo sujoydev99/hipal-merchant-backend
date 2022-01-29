@@ -6,6 +6,7 @@ exports.createUpdateZoneValidations = async (req, res, next) => {
       capacity: "required|integer|min:0",
       type: "required|string|in:DINE-IN,TAKE-AWAY,DELIVERY",
       notes: "string",
+      isActive: "required|boolean",
     };
     await validateRules(req.body, validationRules);
     next();

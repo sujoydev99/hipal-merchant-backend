@@ -225,4 +225,24 @@ module.exports = {
     customMessage: "Zone Deleted",
     statusCode: 200,
   },
+  TABLE_CREATED: {
+    customMessage: "Your table has been created",
+    statusCode: 201,
+  },
+  TABLE_UPDATED: {
+    customMessage: "Your table has been updated",
+    statusCode: 200,
+  },
+  TABLE_FETCHED: {
+    customMessage: "Your table",
+    statusCode: 200,
+  },
+  TABLE_DELETED: {
+    customMessage: "table Deleted",
+    statusCode: 200,
+  },
+  TABLE_ZONE_ERROR: {
+    customMessage: "Tables can only be create for Dine-In zones",
+    statusCode: 200,
+  },
 };
