@@ -16,8 +16,8 @@ const business = require("./routes/api/business");
 const role = require("./routes/api/role");
 const staff = require("./routes/api/staff");
 const zone = require("./routes/api/zone");
-// const station = require("./route/s/api/station");
-// const table = require("./routes/api/table");
+// const station = require("./routes/api/station");
+const table = require("./routes/api/table");
 const errorMiddleware = require("./common/middlewares/error");
 // initialize the env configuration
 dotenv.config();
@@ -56,7 +56,7 @@ app.use("/api/role", role);
 app.use("/api/staff", staff);
 app.use("/api/zone", zone);
 // app.use("/api/station", station);
-// app.use("/api/table", table);
+app.use("/api/table", table);
 app.use(errorMiddleware);
 
 // initializeMessageHandler();

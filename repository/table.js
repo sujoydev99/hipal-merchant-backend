@@ -1,7 +1,7 @@
 const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
 const dbConn = require("../models");
 
-exports.createZone = (transaction, tableObj) => {
+exports.createTable = (transaction, tableObj) => {
   return new Promise(async (resolve, reject) => {
     const { tables } = await dbConn();
     try {
@@ -12,12 +12,18 @@ exports.createZone = (transaction, tableObj) => {
     }
   });
 };
-exports.updateZoneByUuid = (transaction, uuid, zoneObj) => {
+exports.updateTableByUuidBusinessIdZoneId = (
+  transaction,
+  uuid,
+  businessId,
+  zoneId,
+  tableObj
+) => {
   return new Promise(async (resolve, reject) => {
-    const { zones } = await dbConn();
+    const { tables } = await dbConn();
     try {
-      await zones.update(zoneObj, {
-        where: { uuid },
+      await tables.update(tableObj, {
+        where: { uuid, businessId, zoneId },
         transaction,
       });
       resolve();
@@ -27,58 +33,68 @@ exports.updateZoneByUuid = (transaction, uuid, zoneObj) => {
   });
 };
 
-exports.getZoneByUuid = (uuid, transaction) => {
+exports.getTableByUuidBusinessIdZoneId = (
+  uuid,
+  businessId,
+  zoneId,
+  transaction
+) => {
   return new Promise(async (resolve, reject) => {
-    const { zones } = await dbConn();
+    const { tables } = await dbConn();
     try {
-      const zone = await zones.findOne({
-        where: { uuid },
+      const table = await tables.findOne({
+        where: { uuid, businessId, zoneId },
         attributes: { exclude: DEFAULT_EXCLUDE },
         transaction,
       });
-      resolve(zone);
+      resolve(table);
     } catch (error) {
       reject(error);
     }
   });
 };
 
-exports.getAllZonesByBusinessId = (businessId, transaction) => {
+exports.getAllTablesByBusinessIdZoneId = (businessId, zoneId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { zones } = await dbConn();
+    const { tables } = await dbConn();
     try {
-      const zonesArr = await zones.findAll({
-        where: { businessId },
+      const tablesArr = await tables.findAll({
+        where: { businessId, zoneId },
         attributes: { exclude: DEFAULT_EXCLUDE },
         transaction,
       });
-      resolve(zonesArr);
+      resolve(tablesArr);
     } catch (error) {
       reject(error);
     }
   });
 };
 
-exports.deleteZoneByUuidBusinessId = (transaction, uuid) => {
+exports.deleteTableByUuidBusinessIdZoneId = (
+  transaction,
+  uuid,
+  businessId,
+  zoneId
+) => {
   return new Promise(async (resolve, reject) => {
-    const { zones } = await dbConn();
+    const { tables } = await dbConn();
     try {
-      const zone = await zones.destroy({
-        where: { uuid },
+      await tables.destroy({
+        where: { uuid, businessId, zoneId },
         transaction,
       });
-      resolve(zone);
+      resolve();
     } catch (error) {
       reject(error);
     }
   });
 };
 
-exports.getZoneMetaByUuidBusinessId = (uuid, transaction) => {
+exports.getZoneMetaByUuid = (uuid, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { zones } = await dbConn();
+    const { tables } = await dbConn();
     try {
-      const zonesArr = await zones.findOne({
+      const zonesArr = await tables.findOne({
         where: { uuid },
         transaction,
       });

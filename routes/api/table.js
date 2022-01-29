@@ -5,72 +5,67 @@ const {
   ROLES,
 } = require("../../common/constants/rolesAndPrivileges");
 const { verifyToken } = require("../../common/middlewares/authentication");
-
 const {
-  getAllAvailablePrivileges,
-  createRole,
-  updateRole,
-  getRole,
-  getAllBusinessRoles,
-  deleteRole,
-} = require("../../common/middlewares/handlers/role");
+  getAllBusinessTablesByZone,
+  createTable,
+  updateTable,
+  getTable,
+  deleteTable,
+} = require("../../common/middlewares/handlers/table");
 const {
-  createZone,
-  updateZone,
-  getZone,
-  deleteZone,
-  getAllBusinessZones,
-} = require("../../common/middlewares/handlers/zone");
-const {
-  createUpdateZoneValidations,
-} = require("../../common/middlewares/validations/zone/zone");
+  createUpdateTableValidations,
+} = require("../../common/middlewares/validations/table/table");
 
-// get all business zone
-router.get("/:businessUuid", verifyToken(), getAllBusinessZones);
-
-// create business zone
-router.post(
-  "/:businessUuid",
-  verifyToken(),
-  // verifyToken(
-  //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
-  //   [ROLES.ADMIN, ROLES.USER]
-  // ),
-  createUpdateZoneValidations,
-  createZone
-);
-// update business zone
-router.put(
-  "/:businessUuid/:zoneUuid",
-  verifyToken(),
-  // verifyToken(
-  //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
-  //   [ROLES.ADMIN, ROLES.USER]
-  // ),
-  createUpdateZoneValidations,
-  updateZone
-);
-
-// get single zone
+// get all tables by business and zone, with order details
 router.get(
   "/:businessUuid/:zoneUuid",
   verifyToken(),
+  getAllBusinessTablesByZone
+);
+
+// create table
+router.post(
+  "/:businessUuid/:zoneUuid",
+  verifyToken(),
   // verifyToken(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
   //   [ROLES.ADMIN, ROLES.USER]
   // ),
-  getZone
+  createUpdateTableValidations,
+  createTable
+);
+// update table
+router.put(
+  "/:businessUuid/:zoneUuid/:tableUuid",
+  verifyToken(),
+  // verifyToken(
+  //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
+  //   [ROLES.ADMIN, ROLES.USER]
+  // ),
+  createUpdateTableValidations,
+  updateTable
+);
+
+// get single table with order details
+router.get(
+  "/:businessUuid/:zoneUuid/:tableUuid",
+  verifyToken(),
+  // verifyToken(
+  //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
+  //   [ROLES.ADMIN, ROLES.USER]
+  // ),
+  getTable
 );
 
 // delete zone
 router.delete(
-  "/:businessUuid/:zoneUuid",
+  "/:businessUuid/:zoneUuid/:tableUuid",
   verifyToken(),
   // verifyToken(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
   //   [ROLES.ADMIN, ROLES.USER]
   // ),
-  deleteZone
+  deleteTable
 );
 
 module.exports = router;
