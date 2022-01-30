@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      stationType: { type: DataTypes.STRING, comment: "KITCHEN/BAR" },
+      type: { type: DataTypes.STRING, comment: "KITCHEN/BAR" },
       notes: DataTypes.STRING,
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
