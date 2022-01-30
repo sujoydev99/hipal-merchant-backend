@@ -14,6 +14,7 @@ const {
   TABLE_FETCHED,
   TABLE_UPDATED,
   TABLE_DELETED,
+  TABLE_ZONE_ERROR,
 } = require("../../constants/messages");
 const response = require("../response");
 
@@ -24,6 +25,7 @@ exports.createTable = async (req, res, next) => {
     const { zoneUuid } = req.params;
     const zone = await getZoneMetaByUuid(zoneUuid);
     if (!zone) throw NOT_FOUND;
+    if (zone.type !== "DINE-IN") throw TABLE_ZONE_ERROR;
     const table = await createTable(transaction, {
       ...req.body,
       businessId: req.business.id,

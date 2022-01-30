@@ -33,7 +33,7 @@ router.post(
 );
 // update business zone
 router.put(
-  "/:businessUuid/:zoneUuid",
+  "/:businessUuid/:stationUuid",
   verifyToken(),
   // verifyToken(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
@@ -45,7 +45,7 @@ router.put(
 
 // get single zone
 router.get(
-  "/:businessUuid/:zoneUuid",
+  "/:businessUuid/:stationUuid",
   verifyToken(),
   // verifyToken(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
@@ -56,7 +56,7 @@ router.get(
 
 // delete zone
 router.delete(
-  "/:businessUuid/:zoneUuid",
+  "/:businessUuid/:stationUuid",
   verifyToken(),
   // verifyToken(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
