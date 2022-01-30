@@ -16,7 +16,7 @@ const business = require("./routes/api/business");
 const role = require("./routes/api/role");
 const staff = require("./routes/api/staff");
 const zone = require("./routes/api/zone");
-// const station = require("./routes/api/station");
+const station = require("./routes/api/station");
 const table = require("./routes/api/table");
 const errorMiddleware = require("./common/middlewares/error");
 // initialize the env configuration
@@ -55,7 +55,7 @@ app.use("/api/business", business);
 app.use("/api/role", role);
 app.use("/api/staff", staff);
 app.use("/api/zone", zone);
-// app.use("/api/station", station);
+app.use("/api/station", station);
 app.use("/api/table", table);
 app.use(errorMiddleware);
 

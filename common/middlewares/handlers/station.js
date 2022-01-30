@@ -72,7 +72,7 @@ exports.getStation = async (req, res, next) => {
       stationUuid,
       req.business.id
     );
-    if (!role) throw NOT_FOUND;
+    if (!station) throw NOT_FOUND;
     response(STATION_FETCHED, "station", station, req, res, next);
   } catch (error) {
     next(error);

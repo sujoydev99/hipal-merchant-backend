@@ -5,20 +5,20 @@ const {
   ROLES,
 } = require("../../common/constants/rolesAndPrivileges");
 const { verifyToken } = require("../../common/middlewares/authentication");
+const {
+  deleteStation,
+  getStation,
+  updateStation,
+  createStation,
+  getAllBusinessStations,
+} = require("../../common/middlewares/handlers/station");
 
 const {
-  createZone,
-  updateZone,
-  getZone,
-  deleteZone,
-  getAllBusinessZones,
-} = require("../../common/middlewares/handlers/zone");
-const {
-  createUpdateZoneValidations,
-} = require("../../common/middlewares/validations/zone/zone");
+  createUpdateStationdations,
+} = require("../../common/middlewares/validations/station/station");
 
 // get all business zone
-router.get("/:businessUuid", verifyToken(), getAllBusinessZones);
+router.get("/:businessUuid", verifyToken(), getAllBusinessStations);
 
 // create business zone
 router.post(
@@ -28,8 +28,8 @@ router.post(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
   //   [ROLES.ADMIN, ROLES.USER]
   // ),
-  createUpdateZoneValidations,
-  createZone
+  createUpdateStationdations,
+  createStation
 );
 // update business zone
 router.put(
@@ -39,8 +39,8 @@ router.put(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
   //   [ROLES.ADMIN, ROLES.USER]
   // ),
-  createUpdateZoneValidations,
-  updateZone
+  createUpdateStationdations,
+  updateStation
 );
 
 // get single zone
@@ -51,7 +51,7 @@ router.get(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
   //   [ROLES.ADMIN, ROLES.USER]
   // ),
-  getZone
+  getStation
 );
 
 // delete zone
@@ -62,7 +62,7 @@ router.delete(
   //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
   //   [ROLES.ADMIN, ROLES.USER]
   // ),
-  deleteZone
+  deleteStation
 );
 
 module.exports = router;
