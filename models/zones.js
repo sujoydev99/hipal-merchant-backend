@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
       });
       zones.hasMany(models.tables, {
-        foreignKey: "floorId",
+        foreignKey: "zoneId",
         as: "tables",
       });
     }

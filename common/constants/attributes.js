@@ -13,5 +13,7 @@ module.exports = {
     "resetTokenExpiry",
     "businessUserRoles",
     "accessToken",
+    "zoneId",
+    "floorId",
   ],
 };
