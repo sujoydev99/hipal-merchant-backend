@@ -25,11 +25,10 @@ exports.uploadBusinessDoc = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    console.log(req.file);
     const { type } = req.body;
     const { businessUuid } = req.params;
     let existingDoc = await getDocByBusinessId(
-      business.id,
+      req.business.id,
       [type],
       transaction
     );
@@ -73,7 +72,7 @@ exports.deleteBusinessDoc = async (req, res, next) => {
     let { uuid } = req.params;
     const doc = await getBusinessDocByUuidBusinessId(uuid, req.business.id);
     if (!doc) throw NOT_FOUND;
-    await deleteBusinessDocByUuidBusinessId(transaction, uuid, business.id);
+    await deleteBusinessDocByUuidBusinessId(transaction, uuid, req.business.id);
     await deleteFile(doc.path, GCS_PRIVATE_BUCKET);
     transaction.commit();
     response(PRIVATE_DOC_DELETED, "document", {}, req, res, next);

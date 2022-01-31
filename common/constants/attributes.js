@@ -15,5 +15,6 @@ module.exports = {
     "accessToken",
     "zoneId",
     "floorId",
+    "parentCategoryId",
   ],
 };

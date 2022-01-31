@@ -245,6 +245,22 @@ module.exports = {
     customMessage: "Tables can only be created for Dine-In zones",
     statusCode: 200,
   },
+  CATEGORY_CREATED: {
+    customMessage: "Your category has been created",
+    statusCode: 201,
+  },
+  CATEGORY_UPDATED: {
+    customMessage: "Your category has been updated",
+    statusCode: 200,
+  },
+  CATEGORY_FETCHED: {
+    customMessage: "Your caTegory/s",
+    statusCode: 200,
+  },
+  CATEGORY_DELETED: {
+    customMessage: "Category Deleted",
+    statusCode: 200,
+  },
   STATION_CREATED: {
     customMessage: "Your station has been created",
     statusCode: 201,
