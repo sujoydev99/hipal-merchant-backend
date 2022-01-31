@@ -254,7 +254,7 @@ module.exports = {
     statusCode: 200,
   },
   CATEGORY_FETCHED: {
-    customMessage: "Your caTegory/s",
+    customMessage: "Your category",
     statusCode: 200,
   },
   CATEGORY_DELETED: {
@@ -275,6 +275,22 @@ module.exports = {
   },
   STATION_DELETED: {
     customMessage: "Station Deleted",
+    statusCode: 200,
+  },
+  ITEM_CREATED: {
+    customMessage: "Your item has been created",
+    statusCode: 201,
+  },
+  ITEM_UPDATED: {
+    customMessage: "Your item has been updated",
+    statusCode: 200,
+  },
+  ITEM_FETCHED: {
+    customMessage: "Your item",
+    statusCode: 200,
+  },
+  ITEM_DELETED: {
+    customMessage: "Item Deleted",
     statusCode: 200,
   },
 };

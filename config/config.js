@@ -20,7 +20,7 @@ module.exports = {
     //   //   rejectUnauthorized: false,
     //   // },
     // },
-    logging: false,
+    // logging: false,
   },
   test: {
     username: process.env.DBUSERNAME,

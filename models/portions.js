@@ -2,30 +2,25 @@
 const { nanoid } = require("nanoid");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class categories extends Model {
+  class portions extends Model {
     static associate(models) {
       // define association here
-      categories.belongsTo(models.businesses, {
+      portions.belongsTo(models.businesses, {
         foreignKey: "businessId",
         as: "business",
         onDelete: "CASCADE",
       });
-      categories.hasMany(categories, {
-        foreignKey: "parentCategoryId",
-        useJunctionTable: false,
-        as: "childCategories",
-        onDelete: "SET NULL",
-      });
-      categories.hasMany(models.items, {
-        foreignKey: "categoryId",
-        as: "items",
+      portions.belongsTo(models.items, {
+        foreignKey: "itemId",
+        onDelete: "CASCADE",
       });
     }
   }
-  categories.init(
+  portions.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
       businessId: { type: DataTypes.INTEGER, allowNull: false },
+      itemId: { type: DataTypes.INTEGER, allowNull: false },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -35,12 +30,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "categories",
+      modelName: "portions",
       paranoid: true,
     }
   );
-  categories.beforeCreate((doc, _) => {
-    return (doc.uuid = "category_" + nanoid(20));
+  portions.beforeCreate((doc, _) => {
+    return (doc.uuid = "portion_" + nanoid(20));
   });
-  return categories;
+  return portions;
 };
