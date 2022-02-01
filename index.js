@@ -19,6 +19,7 @@ const zone = require("./routes/api/zone");
 const station = require("./routes/api/station");
 const table = require("./routes/api/table");
 const category = require("./routes/api/category");
+const item = require("./routes/api/item");
 const errorMiddleware = require("./common/middlewares/error");
 // initialize the env configuration
 dotenv.config();
@@ -59,6 +60,7 @@ app.use("/api/zone", zone);
 app.use("/api/station", station);
 app.use("/api/table", table);
 app.use("/api/category", category);
+app.use("/api/item", item);
 app.use(errorMiddleware);
 
 // initializeMessageHandler();
