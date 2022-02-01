@@ -293,4 +293,12 @@ module.exports = {
     customMessage: "Item Deleted",
     statusCode: 200,
   },
+  PORTION_CREATED: {
+    customMessage: "Your serving size has been created",
+    statusCode: 201,
+  },
+  PORTION_DELETED: {
+    customMessage: "Your serving size has been deleted",
+    statusCode: 201,
+  },
 };

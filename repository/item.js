@@ -1,5 +1,4 @@
 const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
-const { clean } = require("../common/functions/clean");
 const dbConn = require("../models");
 
 exports.createItem = (transaction, itemObj) => {

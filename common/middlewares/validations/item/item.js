@@ -34,7 +34,8 @@ exports.createUpdatePortionValidations = async (req, res, next) => {
   try {
     const validationRules = {
       name: "required|string",
-      price: "required|array",
+      price: "required|integer",
+      notes: "string",
       isActive: "boolean",
     };
     await validateRules(req.body, validationRules);

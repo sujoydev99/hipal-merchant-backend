@@ -1,18 +1,14 @@
 const dbConn = require("../../../models");
-const {
-  getCategoryMetaByUuid,
-  createCategory,
-  updateCategoryByUuidBusinessId,
-  getAllCategoriesByBusinessId,
-  getCategoryByUuidBusinessId,
-  deleteCategoryByUuidBusinessId,
-} = require("../../../repository/category");
+const { getCategoryMetaByUuid } = require("../../../repository/category");
 const {
   createItem,
-  getItemMetaByUuid,
   updateItemByUuidBusinessId,
   getAllItemsByBusinessIdAndOrCategoryId,
   getItemByUuidBusinessId,
+  deleteItemByUuidBusinessId,
+  deletePortionByUuidBusinessId,
+  createPortion,
+  getItemMetaByUuid,
 } = require("../../../repository/item");
 
 const {
@@ -25,6 +21,8 @@ const {
   ITEM_UPDATED,
   ITEM_FETCHED,
   ITEM_DELETED,
+  PORTION_CREATED,
+  PORTION_DELETED,
 } = require("../../constants/messages");
 const response = require("../response");
 
@@ -120,13 +118,58 @@ exports.deleteItem = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     let { itemUuid } = req.params;
-    await deleteCategoryByUuidBusinessId(
+    await deleteItemByUuidBusinessId(transaction, itemUuid, req.business.id);
+    transaction.commit();
+    response(ITEM_DELETED, "item", {}, req, res, next);
+  } catch (error) {
+    transaction.rollback();
+    next(error);
+  }
+};
+
+exports.deletePortion = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    let { portionUuid } = req.params;
+    await deletePortionByUuidBusinessId(
       transaction,
-      itemUuid,
+      portionUuid,
       req.business.id
     );
     transaction.commit();
-    response(ITEM_DELETED, "item", {}, req, res, next);
+    response(PORTION_DELETED, "portion", {}, req, res, next);
+  } catch (error) {
+    transaction.rollback();
+    next(error);
+  }
+};
+exports.createPortion = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    const { itemUuid } = req.params;
+    const item = await getItemMetaByUuid(
+      itemUuid,
+      req.business.id,
+      transaction
+    );
+    if (!item) throw NOT_FOUND;
+    const portion = await createPortion(transaction, {
+      ...req.body,
+      businessId: req.business.id,
+      itemId: item.id,
+    });
+
+    transaction.commit();
+    response(
+      PORTION_CREATED,
+      "portion",
+      { ...req.body, uuid: portion.uuid },
+      req,
+      res,
+      next
+    );
   } catch (error) {
     transaction.rollback();
     next(error);
