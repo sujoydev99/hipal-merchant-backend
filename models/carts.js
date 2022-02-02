@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       categoryId: { type: DataTypes.INTEGER, allowNull: true },
       itemId: { type: DataTypes.INTEGER, allowNull: false },
       portionId: { type: DataTypes.INTEGER, allowNull: false },
-      isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
+      quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
       userName: { type: DataTypes.STRING },
       userContactNumber: { type: DataTypes.STRING },
     },

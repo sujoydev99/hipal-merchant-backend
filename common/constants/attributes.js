@@ -16,5 +16,7 @@ module.exports = {
     "zoneId",
     "floorId",
     "parentCategoryId",
+    "itemId",
+    "categoryId",
   ],
 };

@@ -26,7 +26,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       notes: DataTypes.STRING,
-      isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
+      price: {
+        type: DataTypes.DOUBLE(10, 2),
+        allowNull: false,
+        defaultValue: 0.0,
+      },
     },
     {
       sequelize,
