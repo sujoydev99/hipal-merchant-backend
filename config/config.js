@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config();
 module.exports = {
   development: {
     username: process.env.DBUSERNAME,
@@ -20,7 +20,7 @@ module.exports = {
     //   //   rejectUnauthorized: false,
     //   // },
     // },
-    // logging: false,
+    logging: false,
   },
   test: {
     username: process.env.DBUSERNAME,

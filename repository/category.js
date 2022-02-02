@@ -1,5 +1,5 @@
-const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
-const dbConn = require("../models");
+const { DEFAULT_EXCLUDE } = require('../common/constants/attributes');
+const dbConn = require('../models');
 
 exports.createCategory = (transaction, categoryObj) => {
   return new Promise(async (resolve, reject) => {
@@ -42,7 +42,7 @@ exports.getCategoryByUuidBusinessId = (uuid, businessId, transaction) => {
         transaction,
         include: {
           model: categories,
-          as: "childCategories",
+          as: 'childCategories',
           attributes: { exclude: DEFAULT_EXCLUDE },
         },
       });
@@ -61,11 +61,18 @@ exports.getAllCategoriesByBusinessId = (businessId, transaction) => {
         where: { businessId },
         attributes: { exclude: DEFAULT_EXCLUDE },
         transaction,
-        include: {
-          model: categories,
-          as: "childCategories",
-          attributes: { exclude: DEFAULT_EXCLUDE },
-        },
+        include: [
+          {
+            model: categories,
+            as: 'parentCategory',
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+          {
+            model: categories,
+            as: 'childCategories',
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+        ],
       });
       resolve(categoriesArr);
     } catch (error) {

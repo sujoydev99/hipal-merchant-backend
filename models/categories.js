@@ -1,24 +1,30 @@
-"use strict";
-const { nanoid } = require("nanoid");
-const { Model } = require("sequelize");
+'use strict';
+const { nanoid } = require('nanoid');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class categories extends Model {
     static associate(models) {
       // define association here
       categories.belongsTo(models.businesses, {
-        foreignKey: "businessId",
-        as: "business",
-        onDelete: "CASCADE",
+        foreignKey: 'businessId',
+        as: 'business',
+        onDelete: 'CASCADE',
       });
       categories.hasMany(categories, {
-        foreignKey: "parentCategoryId",
+        foreignKey: 'parentCategoryId',
         useJunctionTable: false,
-        as: "childCategories",
-        onDelete: "SET NULL",
+        as: 'childCategories',
+        // onDelete: "SET NULL",
+      });
+      categories.belongsTo(categories, {
+        foreignKey: 'parentCategoryId',
+        useJunctionTable: false,
+        as: 'parentCategory',
+        onDelete: 'SET NULL',
       });
       categories.hasMany(models.items, {
-        foreignKey: "categoryId",
-        as: "items",
+        foreignKey: 'categoryId',
+        as: 'items',
       });
     }
   }
@@ -35,12 +41,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "categories",
+      modelName: 'categories',
       paranoid: true,
     }
   );
   categories.beforeCreate((doc, _) => {
-    return (doc.uuid = "category_" + nanoid(20));
+    return (doc.uuid = 'category_' + nanoid(20));
   });
   return categories;
 };
