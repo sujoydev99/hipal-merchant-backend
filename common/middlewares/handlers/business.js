@@ -8,12 +8,12 @@ const {
   BUSINESS_UPDATED,
   PROFILE_PICTURE_UPDATED,
   PROFILE_PICTURE_DELETED,
-} = require("../../constants/messages");
-const response = require("../response");
-const dbConn = require("../../../models");
-const { uploadPublicDoc } = require("../upload");
-const { deleteFile } = require("../../functions/upload");
-const { GCS_PUBLIC_BUCKET, CDN_BASE_URL } = require("../../constants/gcs");
+} = require('../../constants/messages');
+const response = require('../response');
+const dbConn = require('../../../models');
+const { uploadPublicDoc } = require('../upload');
+const { deleteFile } = require('../../functions/upload');
+const { GCS_PUBLIC_BUCKET, CDN_BASE_URL } = require('../../constants/gcs');
 const {
   getBusinessBySlug,
   createBusiness,
@@ -21,13 +21,13 @@ const {
   getBusinessByUuidUserId,
   deleteBusinessById,
   updateBusinessById,
-} = require("../../../repository/business");
+} = require('../../../repository/business');
 const {
   createRole,
   createBusinessUserRole,
   deleteRoleByBusinessId,
-} = require("../../../repository/role");
-const { PRIVILEGES } = require("../../constants/rolesAndPrivileges");
+} = require('../../../repository/role');
+const { PRIVILEGES } = require('../../constants/rolesAndPrivileges');
 
 exports.createBusiness = async (req, res, next) => {
   const { sequelize } = await dbConn();
@@ -40,7 +40,7 @@ exports.createBusiness = async (req, res, next) => {
     const business = await createBusiness(transaction, req.body);
     const role = await createRole(transaction, {
       businessId: business.id,
-      name: "Owner",
+      name: 'Owner',
       privileges: [PRIVILEGES.ALL],
     });
     await createBusinessUserRole(transaction, {
@@ -51,7 +51,7 @@ exports.createBusiness = async (req, res, next) => {
     transaction.commit();
     response(
       BUSINESS_CREATED,
-      "business",
+      'business',
       { ...req.body, uuid: business.uuid },
       req,
       res,
@@ -67,7 +67,7 @@ exports.getAllBusinessesByUserUuid = async (req, res, next) => {
   try {
     const { userUuid } = req.params;
     let businesses = await getAllBusinessesByUserUuid(userUuid);
-    response(BUSINESSES_FETCHED, "business", businesses, req, res, next);
+    response(BUSINESSES_FETCHED, 'business', businesses, req, res, next);
   } catch (error) {
     next(error);
   }
@@ -78,7 +78,7 @@ exports.getBusinessByUuid = async (req, res, next) => {
     const { businessUuid } = req.params;
     let business = await getBusinessByUuidUserId(businessUuid, req.user.id);
     if (!business) throw NOT_FOUND;
-    response(BUSINESS_FETCHED, "business", business, req, res, next);
+    response(BUSINESS_FETCHED, 'business', business, req, res, next);
   } catch (error) {
     next(error);
   }
@@ -88,12 +88,12 @@ exports.deleteBusinessByUuid = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     await updateBusinessById(transaction, business.id, {
-      slug: req.business.slug + "---" + new Date(),
+      slug: req.business.slug + '---' + new Date(),
     });
     await deleteRoleByBusinessId(transaction, business.id);
     await deleteBusinessById(transaction, business.id);
     transaction.commit();
-    response(BUSINESS_DELETED, "business", {}, req, res, next);
+    response(BUSINESS_DELETED, 'business', {}, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);
@@ -103,9 +103,20 @@ exports.updateBusiness = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    await updateBusinessById(transaction, req.business.id, req.body);
+    const business = await updateBusinessById(
+      transaction,
+      req.business.id,
+      req.body
+    );
     transaction.commit();
-    response(BUSINESS_UPDATED, "business", {}, req, res, next);
+    response(
+      BUSINESS_UPDATED,
+      'business',
+      business[1].dataValues,
+      req,
+      res,
+      next
+    );
   } catch (error) {
     transaction.rollback();
     next(error);
@@ -127,7 +138,7 @@ exports.uploadBusinessProfilePicture = async (req, res, next) => {
     await transaction.commit();
     response(
       PROFILE_PICTURE_UPDATED,
-      "profile image",
+      'profile image',
       { url: `${CDN_BASE_URL}/${req.body.path}` },
       req,
       res,
@@ -148,7 +159,7 @@ exports.deleteBusinessProfilePicture = async (req, res, next) => {
     });
     await deleteFile(req.business.profileImageUrl, GCS_PUBLIC_BUCKET);
     await transaction.commit();
-    response(PROFILE_PICTURE_DELETED, "profile image", {}, req, res, next);
+    response(PROFILE_PICTURE_DELETED, 'profile image', {}, req, res, next);
   } catch (error) {
     await transaction.rollback();
     next(error);
