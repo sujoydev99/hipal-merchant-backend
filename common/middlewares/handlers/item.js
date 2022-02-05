@@ -14,10 +14,6 @@ const { getStationMetaByUuid } = require("../../../repository/station");
 
 const {
   NOT_FOUND,
-  CATEGORY_CREATED,
-  CATEGORY_DELETED,
-  CATEGORY_UPDATED,
-  CATEGORY_FETCHED,
   ITEM_CREATED,
   ITEM_UPDATED,
   ITEM_FETCHED,
