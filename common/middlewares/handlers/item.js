@@ -10,6 +10,7 @@ const {
   createPortion,
   getItemMetaByUuid,
 } = require("../../../repository/item");
+const { getStationMetaByUuid } = require("../../../repository/station");
 
 const {
   NOT_FOUND,
@@ -30,16 +31,23 @@ exports.createItem = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    const { categoryUuid = null } = req.body;
+    const { categoryUuid = null, stationUuid } = req.body;
     const category = await getCategoryMetaByUuid(
       categoryUuid,
       req.business.id,
       transaction
     );
+    const station = await getStationMetaByUuid(
+      stationUuid,
+      req.business.id,
+      transaction
+    );
+    if (!station) throw NOT_FOUND;
     const item = await createItem(transaction, {
       ...req.body,
       businessId: req.business.id,
       categoryId: category ? category.id : null,
+      stationId: station.id,
     });
 
     transaction.commit();
@@ -61,16 +69,22 @@ exports.updateItem = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     const { itemUuid } = req.params;
-    const { categoryUuid = null } = req.body;
+    const { categoryUuid = null, stationUuid } = req.body;
     const category = await getCategoryMetaByUuid(
       categoryUuid,
       req.business.id,
       transaction
     );
-    console.log(category.dataValues);
+    const station = await getStationMetaByUuid(
+      stationUuid,
+      req.business.id,
+      transaction
+    );
+    if (!station) throw NOT_FOUND;
     await updateItemByUuidBusinessId(transaction, itemUuid, req.business.id, {
       ...req.body,
       categoryId: category ? category.id : null,
+      stationId: station.id,
     });
     transaction.commit();
     response(ITEM_UPDATED, "item", {}, req, res, next);

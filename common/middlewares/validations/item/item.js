@@ -5,6 +5,7 @@ exports.createUpdateItemValidations = async (req, res, next) => {
       name: "required|string",
       notes: "string",
       categoryUuid: "string",
+      stationUuid: "string",
       tags: "array",
       types: "required|array",
       "tags.*.tag": "string|min:3",
