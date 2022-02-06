@@ -1,9 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {
-  PRIVILEGES,
-  ROLES,
-} = require("../../common/constants/rolesAndPrivileges");
+const { PRIVILEGES, ROLES } = require("../../common/constants/rolesAndPrivileges");
 const { verifyToken } = require("../../common/middlewares/authentication");
 const {
   createItem,
@@ -13,11 +10,14 @@ const {
   deleteItem,
   deletePortion,
   createPortion,
+  createAddon,
+  deleteAddon,
 } = require("../../common/middlewares/handlers/item");
 
 const {
   createUpdateItemValidations,
   createUpdatePortionValidations,
+  createUpdateAddonValidations,
 } = require("../../common/middlewares/validations/item/item");
 
 // get all business items
@@ -90,4 +90,28 @@ router.delete(
   // ),
   deletePortion
 );
+
+// create addon
+router.post(
+  "/:businessUuid/:itemUuid/addon",
+  verifyToken(),
+  // verifyToken(
+  //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
+  //   [ROLES.ADMIN, ROLES.USER]
+  // ),
+  createUpdateAddonValidations,
+  createAddon
+);
+
+// delete addon
+router.delete(
+  "/:businessUuid/:itemUuid/addon/:addonUuid",
+  verifyToken(),
+  // verifyToken(
+  //   [PRIVILEGES.ALL, PRIVILEGES.ADD_BUSINESS],
+  //   [ROLES.ADMIN, ROLES.USER]
+  // ),
+  deleteAddon
+);
+
 module.exports = router;

@@ -9,8 +9,7 @@ exports.createUpdateItemValidations = async (req, res, next) => {
       tags: "array",
       types: "required|array",
       "tags.*.tag": "string|min:3",
-      "types.*.tag":
-        "required|string|min:3|in:VEG,NON-VEG,VEGAN,EGG,HALAL,KOSHER",
+      "types.*.tag": "required|string|min:3|in:VEG,NON-VEG,VEGAN,EGG,HALAL,KOSHER",
       isActive: "required|boolean",
       categoryUuid: "string",
     };
@@ -32,6 +31,21 @@ exports.createUpdateItemValidations = async (req, res, next) => {
 };
 
 exports.createUpdatePortionValidations = async (req, res, next) => {
+  try {
+    const validationRules = {
+      name: "required|string",
+      price: "required|integer",
+      notes: "string",
+      isActive: "boolean",
+    };
+    await validateRules(req.body, validationRules);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.createUpdateAddonValidations = async (req, res, next) => {
   try {
     const validationRules = {
       name: "required|string",
