@@ -1,5 +1,5 @@
-const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
-const dbConn = require("../models");
+const { DEFAULT_EXCLUDE } = require('../common/constants/attributes');
+const dbConn = require('../models');
 
 exports.createStation = (transaction, stationObj) => {
   return new Promise(async (resolve, reject) => {
@@ -79,12 +79,12 @@ exports.deleteStationByUuidBusinessId = (transaction, uuid, businessId) => {
   });
 };
 
-exports.getStationMetaByUuid = (uuid, transaction) => {
+exports.getStationMetaByUuid = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
     const { stations } = await dbConn();
     try {
       const station = await stations.findOne({
-        where: { uuid },
+        where: { uuid, businessId },
         transaction,
       });
       resolve(station);
