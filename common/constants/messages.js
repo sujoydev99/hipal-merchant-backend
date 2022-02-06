@@ -18,8 +18,7 @@ module.exports = {
     statusCode: 409,
   },
   EMAIL_SIGNUP_SUCCESS: {
-    customMessage:
-      "Email signup successful. Please sign-in and verify your email address",
+    customMessage: "Email signup successful. Please sign-in and verify your email address",
     statusCode: 201,
   },
   EMAIL_SIGNIN_SUCCESS: {
@@ -103,8 +102,7 @@ module.exports = {
     statusCode: 400,
   },
   DOC_EXISTS: {
-    customMessage:
-      "Please delete the existing document before uploading a new version",
+    customMessage: "Please delete the existing document before uploading a new version",
     statusCode: 400,
   },
   NOT_FOUND: {
@@ -124,8 +122,7 @@ module.exports = {
     statusCode: 200,
   },
   SLUG_ALREADY_EXISTS: {
-    customMessage:
-      "The slug is already in use by another business, please choose a different one.",
+    customMessage: "The slug is already in use by another business, please choose a different one.",
     statusCode: 400,
   },
   BUSINESS_CREATED: {
@@ -299,6 +296,14 @@ module.exports = {
   },
   PORTION_DELETED: {
     customMessage: "Your serving size has been deleted",
+    statusCode: 201,
+  },
+  ADDON_CREATED: {
+    customMessage: "Addon created successfully",
+    statusCode: 201,
+  },
+  ADDON_DELETED: {
+    customMessage: "Addon deleted successfully",
     statusCode: 201,
   },
 };

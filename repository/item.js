@@ -12,12 +12,7 @@ exports.createItem = (transaction, itemObj) => {
     }
   });
 };
-exports.updateItemByUuidBusinessId = (
-  transaction,
-  uuid,
-  businessId,
-  itemObj
-) => {
+exports.updateItemByUuidBusinessId = (transaction, uuid, businessId, itemObj) => {
   return new Promise(async (resolve, reject) => {
     const { items } = await dbConn();
     try {
@@ -34,7 +29,7 @@ exports.updateItemByUuidBusinessId = (
 
 exports.getItemByUuidBusinessId = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { items, portions, categories } = await dbConn();
+    const { items, portions, categories, addons } = await dbConn();
     try {
       const item = await items.findOne({
         where: { uuid, businessId },
@@ -51,6 +46,11 @@ exports.getItemByUuidBusinessId = (uuid, businessId, transaction) => {
             as: "category",
             attributes: { exclude: DEFAULT_EXCLUDE },
           },
+          {
+            model: addons,
+            as: "addons",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
         ],
       });
       resolve(item);
@@ -60,13 +60,9 @@ exports.getItemByUuidBusinessId = (uuid, businessId, transaction) => {
   });
 };
 
-exports.getAllItemsByBusinessIdAndOrCategoryId = (
-  businessId,
-  categoryId,
-  transaction
-) => {
+exports.getAllItemsByBusinessIdAndOrCategoryId = (businessId, categoryId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { items, portions, categories } = await dbConn();
+    const { items, portions, categories, addons } = await dbConn();
     try {
       let whereFilter = { businessId };
       if (categoryId !== undefined) whereFilter.categoryId = categoryId;
@@ -83,6 +79,11 @@ exports.getAllItemsByBusinessIdAndOrCategoryId = (
           {
             model: categories,
             as: "category",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+          {
+            model: addons,
+            as: "addons",
             attributes: { exclude: DEFAULT_EXCLUDE },
           },
         ],
@@ -136,12 +137,7 @@ exports.createPortion = (transaction, portionObj) => {
   });
 };
 
-exports.updatePortionByUuidBusinessId = (
-  transaction,
-  uuid,
-  businessId,
-  portionObj
-) => {
+exports.updatePortionByUuidBusinessId = (transaction, uuid, businessId, portionObj) => {
   return new Promise(async (resolve, reject) => {
     const { portions } = await dbConn();
     try {
@@ -165,6 +161,33 @@ exports.deletePortionByUuidBusinessId = (transaction, uuid, businessId) => {
         transaction,
       });
       resolve(portion);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.createAddon = (transaction, addonObj) => {
+  return new Promise(async (resolve, reject) => {
+    const { addons } = await dbConn();
+    try {
+      const addon = await addons.create(addonObj, { transaction });
+      resolve(addon);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.deleteAddonByUuidBusinessId = (transaction, uuid, businessId) => {
+  return new Promise(async (resolve, reject) => {
+    const { addons } = await dbConn();
+    try {
+      const addon = await addons.destroy({
+        where: { uuid, businessId },
+        transaction,
+      });
+      resolve(addon);
     } catch (error) {
       reject(error);
     }

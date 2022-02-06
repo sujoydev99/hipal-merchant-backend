@@ -8,6 +8,8 @@ const {
   deleteItemByUuidBusinessId,
   deletePortionByUuidBusinessId,
   createPortion,
+  createAddon,
+  deleteAddonByUuidBusinessId,
   getItemMetaByUuid,
 } = require("../../../repository/item");
 const { getStationMetaByUuid } = require("../../../repository/station");
@@ -20,6 +22,8 @@ const {
   ITEM_DELETED,
   PORTION_CREATED,
   PORTION_DELETED,
+  ADDON_CREATED,
+  ADDON_DELETED,
 } = require("../../constants/messages");
 const response = require("../response");
 
@@ -28,16 +32,8 @@ exports.createItem = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     const { categoryUuid = null, stationUuid } = req.body;
-    const category = await getCategoryMetaByUuid(
-      categoryUuid,
-      req.business.id,
-      transaction
-    );
-    const station = await getStationMetaByUuid(
-      stationUuid,
-      req.business.id,
-      transaction
-    );
+    const category = await getCategoryMetaByUuid(categoryUuid, req.business.id, transaction);
+    const station = await getStationMetaByUuid(stationUuid, req.business.id, transaction);
     if (!station) throw NOT_FOUND;
     const item = await createItem(transaction, {
       ...req.body,
@@ -47,14 +43,7 @@ exports.createItem = async (req, res, next) => {
     });
 
     transaction.commit();
-    response(
-      ITEM_CREATED,
-      "item",
-      { ...req.body, uuid: item.uuid },
-      req,
-      res,
-      next
-    );
+    response(ITEM_CREATED, "item", { ...req.body, uuid: item.uuid }, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);
@@ -66,16 +55,8 @@ exports.updateItem = async (req, res, next) => {
   try {
     const { itemUuid } = req.params;
     const { categoryUuid = null, stationUuid } = req.body;
-    const category = await getCategoryMetaByUuid(
-      categoryUuid,
-      req.business.id,
-      transaction
-    );
-    const station = await getStationMetaByUuid(
-      stationUuid,
-      req.business.id,
-      transaction
-    );
+    const category = await getCategoryMetaByUuid(categoryUuid, req.business.id, transaction);
+    const station = await getStationMetaByUuid(stationUuid, req.business.id, transaction);
     if (!station) throw NOT_FOUND;
     await updateItemByUuidBusinessId(transaction, itemUuid, req.business.id, {
       ...req.body,
@@ -102,11 +83,7 @@ exports.getAllBusinessItems = async (req, res, next) => {
       category = await getCategoryMetaByUuid(categoryUuid, req.business.id);
     items = await getAllItemsByBusinessIdAndOrCategoryId(
       req.business.id,
-      categoryUuid.toLowerCase() !== "all"
-        ? category
-          ? category.id
-          : null
-        : undefined
+      categoryUuid.toLowerCase() !== "all" ? (category ? category.id : null) : undefined
     );
     response(ITEM_FETCHED, "item", items, req, res, next);
   } catch (error) {
@@ -142,11 +119,7 @@ exports.deletePortion = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     let { portionUuid } = req.params;
-    await deletePortionByUuidBusinessId(
-      transaction,
-      portionUuid,
-      req.business.id
-    );
+    await deletePortionByUuidBusinessId(transaction, portionUuid, req.business.id);
     transaction.commit();
     response(PORTION_DELETED, "portion", {}, req, res, next);
   } catch (error) {
@@ -159,11 +132,7 @@ exports.createPortion = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     const { itemUuid } = req.params;
-    const item = await getItemMetaByUuid(
-      itemUuid,
-      req.business.id,
-      transaction
-    );
+    const item = await getItemMetaByUuid(itemUuid, req.business.id, transaction);
     if (!item) throw NOT_FOUND;
     const portion = await createPortion(transaction, {
       ...req.body,
@@ -172,14 +141,42 @@ exports.createPortion = async (req, res, next) => {
     });
 
     transaction.commit();
-    response(
-      PORTION_CREATED,
-      "portion",
-      { ...req.body, uuid: portion.uuid },
-      req,
-      res,
-      next
-    );
+    response(PORTION_CREATED, "portion", { ...req.body, uuid: portion.uuid }, req, res, next);
+  } catch (error) {
+    transaction.rollback();
+    next(error);
+  }
+};
+
+exports.deleteAddon = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    let { addonUuid } = req.params;
+    await deleteAddonByUuidBusinessId(transaction, addonUuid, req.business.id);
+    transaction.commit();
+    response(ADDON_DELETED, "addon", {}, req, res, next);
+  } catch (error) {
+    transaction.rollback();
+    next(error);
+  }
+};
+
+exports.createAddon = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    const { itemUuid } = req.params;
+    const item = await getItemMetaByUuid(itemUuid, req.business.id, transaction);
+    if (!item) throw NOT_FOUND;
+    const addon = await createAddon(transaction, {
+      ...req.body,
+      businessId: req.business.id,
+      itemId: item.id,
+    });
+
+    transaction.commit();
+    response(ADDON_CREATED, "addon", { ...req.body, uuid: addon.uuid }, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);
