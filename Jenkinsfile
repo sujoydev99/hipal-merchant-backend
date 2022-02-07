@@ -7,11 +7,9 @@ pipeline {
 
     stage("init"){
       steps {
-        step {
-          script {
+        script {
             gv = load "scripts.groovy"
           }
-        }
       }
     }
 
@@ -38,9 +36,13 @@ pipeline {
         }
       }
 
-      scripts {
-        gv.dev()
+      steps {
+        script {
+          gv.dev()
+        }
       }
+
+      
     }
 
     stage("staging"){
@@ -50,8 +52,10 @@ pipeline {
         }
       }
 
-      scripts {
-        gv.staging()
+      steps{
+        script {
+          gv.staging()
+        }
       }
     }
 
@@ -62,7 +66,11 @@ pipeline {
         }
       }
 
-      gv.prod()
+      steps{
+        script {
+          gv.prod()
+        }
+      }
     }
   }
 }
