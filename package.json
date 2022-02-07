@@ -29,6 +29,7 @@
     "winston": "^3.3.3"
   },
   "scripts": {
-    "develop": "nodemon index.js"
+    "develop": "nodemon index.js",
+    "start": "node index.js"
   }
 }
