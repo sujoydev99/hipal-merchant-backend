@@ -6,17 +6,19 @@ pipeline {
   stages{
 
     stage("init"){
-      steps {
-        script {
-            gv = load "scripts.groovy"
+      stages {
+        stage("") {
+          steps {
+            script {
+                gv = load "scripts.groovy"
+              }
           }
+        }
       }
+      
     }
 
     stage("build"){
-      steps {
-        echo "building"
-      }
 
       steps{
         script {
