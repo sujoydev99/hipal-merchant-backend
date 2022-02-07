@@ -30,7 +30,7 @@ pipeline {
     stage("dev"){
       when {
         experission {
-          ENV == "dev"
+          env.ENV == "dev"
         }
       }
 
@@ -46,7 +46,7 @@ pipeline {
     stage("staging"){
       when {
         experission {
-          ENV == "staging"
+          env.ENV == "staging"
         }
       }
 
@@ -60,7 +60,7 @@ pipeline {
     stage("prod"){
       when {
         experission {
-          ENV == "prod"
+          env.ENV == "prod"
         }
       }
 
