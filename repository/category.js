@@ -1,5 +1,5 @@
-const { DEFAULT_EXCLUDE } = require('../common/constants/attributes');
-const dbConn = require('../models');
+const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
+const dbConn = require("../models");
 
 exports.createCategory = (transaction, categoryObj) => {
   return new Promise(async (resolve, reject) => {
@@ -12,12 +12,7 @@ exports.createCategory = (transaction, categoryObj) => {
     }
   });
 };
-exports.updateCategoryByUuidBusinessId = (
-  transaction,
-  uuid,
-  businessId,
-  categoryObj
-) => {
+exports.updateCategoryByUuidBusinessId = (transaction, uuid, businessId, categoryObj) => {
   return new Promise(async (resolve, reject) => {
     const { categories } = await dbConn();
     try {
@@ -42,7 +37,7 @@ exports.getCategoryByUuidBusinessId = (uuid, businessId, transaction) => {
         transaction,
         include: {
           model: categories,
-          as: 'childCategories',
+          as: "childCategories",
           attributes: { exclude: DEFAULT_EXCLUDE },
         },
       });
@@ -64,12 +59,12 @@ exports.getAllCategoriesByBusinessId = (businessId, transaction) => {
         include: [
           {
             model: categories,
-            as: 'parentCategory',
+            as: "parentCategory",
             attributes: { exclude: DEFAULT_EXCLUDE },
           },
           {
             model: categories,
-            as: 'childCategories',
+            as: "childCategories",
             attributes: { exclude: DEFAULT_EXCLUDE },
           },
         ],
@@ -105,6 +100,76 @@ exports.getCategoryMetaByUuid = (uuid, businessId, transaction) => {
         transaction,
       });
       resolve(category);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getCategoryAndItemsByParentCategoryIdBusinessId = (id, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { categories, items, portions, addons } = await dbConn();
+    try {
+      let whereFilter = { businessId, isActive: true };
+      if (id !== undefined) whereFilter.id = id;
+      console.log(whereFilter);
+      const categoriesArr = await categories.findOne({
+        where: whereFilter,
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        transaction,
+        include: [
+          {
+            model: categories,
+            as: "childCategories",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+            where: { businessId, isActive: true },
+            required: false,
+          },
+          {
+            model: items,
+            as: "items",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+            where: { businessId, isActive: true },
+            required: false,
+            include: [
+              {
+                model: portions,
+                as: "portions",
+                attributes: { exclude: DEFAULT_EXCLUDE },
+                where: { businessId },
+                required: true,
+              },
+              {
+                model: addons,
+                as: "addons",
+                attributes: { exclude: DEFAULT_EXCLUDE },
+                where: { businessId, isActive: true },
+                required: false,
+              },
+            ],
+          },
+        ],
+      });
+      resolve(categoriesArr);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getAllUpperCategoriesByBusinessId = (parentCategoryId, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { categories } = await dbConn();
+    try {
+      let whereFilter = { businessId, isActive: true };
+      if (parentCategoryId !== undefined) whereFilter.parentCategoryId = parentCategoryId;
+
+      const categoriesArr = await categories.findAll({
+        where: whereFilter,
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        transaction,
+      });
+      resolve(categoriesArr);
     } catch (error) {
       reject(error);
     }

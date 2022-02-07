@@ -18,5 +18,6 @@ module.exports = {
     "parentCategoryId",
     "itemId",
     "categoryId",
+    "stationId",
   ],
 };

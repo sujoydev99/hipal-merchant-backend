@@ -306,4 +306,8 @@ module.exports = {
     customMessage: "Addon deleted successfully",
     statusCode: 201,
   },
+  POS_DATA_FETCHED: {
+    customMessage: "Pos data",
+    statusCode: 200,
+  },
 };

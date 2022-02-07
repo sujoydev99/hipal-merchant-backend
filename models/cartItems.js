@@ -2,29 +2,41 @@
 const { nanoid } = require("nanoid");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class carts extends Model {
+  class cartItems extends Model {
     static associate(models) {
       // define association here
-      // carts.belongsTo(models.businesses, {
+      // cartItems.belongsTo(models.businesses, {
       //   foreignKey: "businessId",
       //   as: "business",
       //   onDelete: "CASCADE",
       // });
-      // carts.belongsTo(models.categories, {
+      // cartItems.belongsTo(models.categories, {
       //   foreignKey: "categoryId",
       //   as: "category",
-      //   onDelete: "SET NULL",
+      //   onDelete: "CASCADE",
       // });
-      // carts.belongsTo(models.portions, {
+      // cartItems.belongsTo(models.portions, {
       //   foreignKey: "portionId",
-      //   as: "portions",
+      //   as: "portion",
+      //   onDelete: "CASCADE",
+      // });
+      // cartItems.belongsTo(models.items, {
+      //   foreignKey: "itemId",
+      //   as: "item",
+      //   onDelete: "CASCADE",
+      // });
+      // cartItems.belongsTo(models.stations, {
+      //   foreignKey: "stationId",
+      //   as: "station",
+      //   onDelete: "CASCADE",
       // });
     }
   }
-  carts.init(
+  cartItems.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
       businessId: { type: DataTypes.INTEGER, allowNull: false },
+      stationId: { type: DataTypes.INTEGER, allowNull: false },
       tableId: { type: DataTypes.INTEGER, allowNull: true },
       categoryId: { type: DataTypes.INTEGER, allowNull: true },
       itemId: { type: DataTypes.INTEGER, allowNull: false },
@@ -35,13 +47,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "carts",
+      modelName: "cartItems",
       paranoid: true,
     }
   );
-  carts.beforeCreate((doc, _) => {
-    return (doc.uuid = "cart_" + nanoid(20));
+  cartItems.beforeCreate((doc, _) => {
+    return (doc.uuid = "cartItem_" + nanoid(20));
   });
-  return carts;
+  return cartItems;
 };
 // TODO implement live cart feature

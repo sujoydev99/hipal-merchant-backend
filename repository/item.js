@@ -193,3 +193,35 @@ exports.deleteAddonByUuidBusinessId = (transaction, uuid, businessId) => {
     }
   });
 };
+
+exports.getAllItemsByBusinessIdAndOrCategoryIdForPos = (businessId, categoryId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { items, portions, categories, addons } = await dbConn();
+    try {
+      let whereFilter = { businessId };
+      if (categoryId !== undefined) whereFilter.categoryId = categoryId;
+      console.log(whereFilter);
+      const itemsArr = await items.findAll({
+        where: whereFilter,
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        transaction,
+        include: [
+          {
+            model: portions,
+            as: "portions",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+            required: true,
+          },
+          {
+            model: addons,
+            as: "addons",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+        ],
+      });
+      resolve(itemsArr);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
