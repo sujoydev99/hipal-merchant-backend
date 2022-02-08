@@ -1,7 +1,7 @@
-const { DEFAULT_EXCLUDE } = require('../common/constants/attributes');
-const { clean } = require('../common/functions/clean');
-const dbConn = require('../models');
-const roles = require('../models/roles');
+const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
+const { clean } = require("../common/functions/clean");
+const dbConn = require("../models");
+const roles = require("../models/roles");
 
 exports.getBusinessBySlug = (slug, transaction) => {
   return new Promise(async (resolve, reject) => {
@@ -28,17 +28,24 @@ exports.createBusiness = (transaction, businessObj) => {
 
 exports.getAllBusinessesByUserUuid = (uuid, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { businesses, users } = await dbConn();
+    const { businesses, users, stations } = await dbConn();
     try {
       const business = await businesses.findAll({
         attributes: { exclude: DEFAULT_EXCLUDE },
-        include: {
-          model: users,
-          as: 'users',
-          required: true,
-          attributes: [],
-          where: { uuid },
-        },
+        include: [
+          {
+            model: users,
+            as: "users",
+            required: true,
+            attributes: [],
+            where: { uuid },
+          },
+          {
+            model: stations,
+            as: "stations",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+        ],
         transaction,
       });
       resolve(business);
@@ -57,14 +64,14 @@ exports.getBusinessByUuidUserId = (uuid, userUuid, transaction) => {
         include: [
           {
             model: users,
-            as: 'users',
+            as: "users",
             required: true,
             attributes: [],
             where: clean({ id: userUuid }),
           },
           {
             model: businessDocs,
-            as: 'businessDocs',
+            as: "businessDocs",
             attributes: { exclude: DEFAULT_EXCLUDE },
           },
         ],
@@ -119,11 +126,11 @@ exports.getBusinessMetaByUuidUserId = (uuid, userUuid, transaction) => {
         include: [
           {
             model: users,
-            as: 'users',
+            as: "users",
             required: true,
             where: clean({ id: userUuid }),
           },
-          { model: roles, as: 'roles', required: true },
+          { model: roles, as: "roles", required: true },
         ],
         transaction,
       });
