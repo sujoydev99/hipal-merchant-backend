@@ -3,7 +3,7 @@ def build(){
   withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASSWORD', usernameVariable: 'USER')]){
     sh 'docker build -t hipal/hipal:ver-test-2 .'
     sh 'echo $PASSWORD | docker login -u $USER --password-stdin'
-    sh 'docker push hipal/hipal:ver-test'
+    sh 'docker push hipal/hipal:ver-test-2'
   }
 }
 
