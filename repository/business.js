@@ -28,7 +28,7 @@ exports.createBusiness = (transaction, businessObj) => {
 
 exports.getAllBusinessesByUserUuid = (uuid, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { businesses, users, stations } = await dbConn();
+    const { businesses, users } = await dbConn();
     try {
       const business = await businesses.findAll({
         attributes: { exclude: DEFAULT_EXCLUDE },
@@ -39,11 +39,6 @@ exports.getAllBusinessesByUserUuid = (uuid, transaction) => {
             required: true,
             attributes: [],
             where: { uuid },
-          },
-          {
-            model: stations,
-            as: "stations",
-            attributes: { exclude: DEFAULT_EXCLUDE },
           },
         ],
         transaction,
