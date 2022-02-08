@@ -29,7 +29,7 @@ exports.updateItemByUuidBusinessId = (transaction, uuid, businessId, itemObj) =>
 
 exports.getItemByUuidBusinessId = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { items, portions, categories, addons } = await dbConn();
+    const { items, portions, categories, addons, stations } = await dbConn();
     try {
       const item = await items.findOne({
         where: { uuid, businessId },
@@ -49,6 +49,11 @@ exports.getItemByUuidBusinessId = (uuid, businessId, transaction) => {
           {
             model: addons,
             as: "addons",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
+          {
+            model: stations,
+            as: "station",
             attributes: { exclude: DEFAULT_EXCLUDE },
           },
         ],
