@@ -18,9 +18,7 @@ def staging(){
 def prod(){
   echo "Deployed in ${ENV} environment"
   def dockerCmd = 'docker run -p 5001:5001 -d hipal/hipal'
-  sshagent(['hipal-ssh-key']) {
-    sh "ssh -o StrictHostKeyChecking=no prod@35.244.30.4 ${dockerCmd}"
-  }
+  sh "ssh -o StrictHostKeyChecking=no prod@35.244.30.4 ${dockerCmd}"
   
 }
 
