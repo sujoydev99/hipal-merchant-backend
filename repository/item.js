@@ -112,13 +112,56 @@ exports.deleteItemByUuidBusinessId = (transaction, uuid, businessId) => {
 
 exports.getItemMetaByUuid = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { items } = await dbConn();
+    const { items, stations } = await dbConn();
     try {
       const item = await items.findOne({
         where: { uuid, businessId },
         transaction,
       });
       resolve(item);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+exports.getItemPortionsAddonsMetaByUuid = (
+  uuid,
+  businessId,
+  portionUuid,
+  addonUuids,
+  transaction
+) => {
+  return new Promise(async (resolve, reject) => {
+    const { items, portions, addons } = await dbConn();
+    try {
+      const item = await items.findOne({
+        where: { uuid, businessId, isActive: true },
+        include: [
+          { model: portions, as: "portions", required: true, where: { uuid: portionUuid } },
+          {
+            model: addons,
+            as: "addons",
+            required: false,
+            where: { uuid: addonUuids, isActive: true },
+          },
+        ],
+        transaction,
+      });
+      resolve(item);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+exports.getPortionMetaByUuid = (uuid, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { portions } = await dbConn();
+    try {
+      const portion = await portions.findOne({
+        where: { uuid, businessId },
+        transaction,
+      });
+      resolve(portion);
     } catch (error) {
       reject(error);
     }
@@ -220,6 +263,21 @@ exports.getAllItemsByBusinessIdAndOrCategoryIdForPos = (businessId, categoryId, 
         ],
       });
       resolve(itemsArr);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getAddonMetaByUuidArrays = (uuid, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { addons } = await dbConn();
+    try {
+      const addon = await addons.findAll({
+        where: { uuid, businessId },
+        transaction,
+      });
+      resolve(addon);
     } catch (error) {
       reject(error);
     }

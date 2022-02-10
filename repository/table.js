@@ -12,13 +12,7 @@ exports.createTable = (transaction, tableObj) => {
     }
   });
 };
-exports.updateTableByUuidBusinessIdZoneId = (
-  transaction,
-  uuid,
-  businessId,
-  zoneId,
-  tableObj
-) => {
+exports.updateTableByUuidBusinessIdZoneId = (transaction, uuid, businessId, zoneId, tableObj) => {
   return new Promise(async (resolve, reject) => {
     const { tables } = await dbConn();
     try {
@@ -33,12 +27,7 @@ exports.updateTableByUuidBusinessIdZoneId = (
   });
 };
 
-exports.getTableByUuidBusinessIdZoneId = (
-  uuid,
-  businessId,
-  zoneId,
-  transaction
-) => {
+exports.getTableByUuidBusinessIdZoneId = (uuid, businessId, zoneId, transaction) => {
   return new Promise(async (resolve, reject) => {
     const { tables } = await dbConn();
     try {
@@ -70,12 +59,7 @@ exports.getAllTablesByBusinessIdZoneId = (businessId, zoneId, transaction) => {
   });
 };
 
-exports.deleteTableByUuidBusinessIdZoneId = (
-  transaction,
-  uuid,
-  businessId,
-  zoneId
-) => {
+exports.deleteTableByUuidBusinessIdZoneId = (transaction, uuid, businessId, zoneId) => {
   return new Promise(async (resolve, reject) => {
     const { tables } = await dbConn();
     try {
@@ -90,12 +74,12 @@ exports.deleteTableByUuidBusinessIdZoneId = (
   });
 };
 
-exports.getZoneMetaByUuid = (uuid, transaction) => {
+exports.getTableMetaByUuid = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
     const { tables } = await dbConn();
     try {
       const zonesArr = await tables.findOne({
-        where: { uuid },
+        where: { uuid, businessId },
         transaction,
       });
       resolve(zonesArr);

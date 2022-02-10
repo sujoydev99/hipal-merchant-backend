@@ -12,12 +12,7 @@ exports.createZone = (transaction, zoneObj) => {
     }
   });
 };
-exports.updateZoneByUuidBusinessId = (
-  transaction,
-  uuid,
-  businessId,
-  zoneObj
-) => {
+exports.updateZoneByUuidBusinessId = (transaction, uuid, businessId, zoneObj) => {
   return new Promise(async (resolve, reject) => {
     const { zones } = await dbConn();
     try {
@@ -79,12 +74,12 @@ exports.deleteZoneByUuidBusinessId = (transaction, uuid, businessId) => {
   });
 };
 
-exports.getZoneMetaByUuid = (uuid, transaction) => {
+exports.getZoneMetaByUuid = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
     const { zones } = await dbConn();
     try {
       const zonesArr = await zones.findOne({
-        where: { uuid },
+        where: { uuid, businessId },
         transaction,
       });
       resolve(zonesArr);

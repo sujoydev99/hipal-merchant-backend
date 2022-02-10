@@ -23,7 +23,7 @@ exports.createTable = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     const { zoneUuid } = req.params;
-    const zone = await getZoneMetaByUuid(zoneUuid);
+    const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
     if (!zone) throw NOT_FOUND;
     if (zone.type !== "DINE-IN") throw TABLE_ZONE_ERROR;
     const table = await createTable(transaction, {
@@ -32,14 +32,7 @@ exports.createTable = async (req, res, next) => {
       zoneId: zone.id,
     });
     transaction.commit();
-    response(
-      TABLE_CREATED,
-      "table",
-      { ...req.body, uuid: table.uuid },
-      req,
-      res,
-      next
-    );
+    response(TABLE_CREATED, "table", { ...req.body, uuid: table.uuid }, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);
@@ -50,17 +43,11 @@ exports.updateTable = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     const { zoneUuid, tableUuid } = req.params;
-    const zone = await getZoneMetaByUuid(zoneUuid);
+    const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
     if (!zone) throw NOT_FOUND;
-    await updateTableByUuidBusinessIdZoneId(
-      transaction,
-      tableUuid,
-      req.business.id,
-      zone.id,
-      {
-        ...req.body,
-      }
-    );
+    await updateTableByUuidBusinessIdZoneId(transaction, tableUuid, req.business.id, zone.id, {
+      ...req.body,
+    });
     transaction.commit();
     response(TABLE_UPDATED, "table", {}, req, res, next);
   } catch (error) {
@@ -71,12 +58,9 @@ exports.updateTable = async (req, res, next) => {
 exports.getAllBusinessTablesByZone = async (req, res, next) => {
   try {
     const { zoneUuid } = req.params;
-    const zone = await getZoneMetaByUuid(zoneUuid);
+    const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
     if (!zone) throw NOT_FOUND;
-    const tables = await getAllTablesByBusinessIdZoneId(
-      req.business.id,
-      zone.id
-    );
+    const tables = await getAllTablesByBusinessIdZoneId(req.business.id, zone.id);
     response(TABLE_FETCHED, "table", tables, req, res, next);
   } catch (error) {
     next(error);
@@ -85,13 +69,9 @@ exports.getAllBusinessTablesByZone = async (req, res, next) => {
 exports.getTable = async (req, res, next) => {
   try {
     const { zoneUuid, tableUuid } = req.params;
-    const zone = await getZoneMetaByUuid(zoneUuid);
+    const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
     if (!zone) throw NOT_FOUND;
-    const table = await getTableByUuidBusinessIdZoneId(
-      tableUuid,
-      req.business.id,
-      zone.id
-    );
+    const table = await getTableByUuidBusinessIdZoneId(tableUuid, req.business.id, zone.id);
     if (!table) throw NOT_FOUND;
     response(TABLE_FETCHED, "table", table, req, res, next);
   } catch (error) {
@@ -103,14 +83,9 @@ exports.deleteTable = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     const { zoneUuid, tableUuid } = req.params;
-    const zone = await getZoneMetaByUuid(zoneUuid);
+    const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
     if (!zone) throw NOT_FOUND;
-    await deleteTableByUuidBusinessIdZoneId(
-      transaction,
-      tableUuid,
-      req.business.id,
-      zone.id
-    );
+    await deleteTableByUuidBusinessIdZoneId(transaction, tableUuid, req.business.id, zone.id);
     transaction.commit();
     response(TABLE_DELETED, "table", {}, req, res, next);
   } catch (error) {
