@@ -21,6 +21,8 @@ module.exports = {
     "outOrderId",
     "cartItemId",
     "cartAddonId",
+    "tableId",
+    "portionsId",
     "addonId",
   ],
 };
