@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "zoneId",
         as: "tables",
       });
+      zones.hasMany(models.cartItems, {
+        foreignKey: "zoneId",
+        as: "cartItems",
+      });
     }
   }
   zones.init(

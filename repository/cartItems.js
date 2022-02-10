@@ -76,15 +76,15 @@ exports.getAllCartItemsByTableIdOrOutOrderIdandZoneId = (
     try {
       const cartItem = await cartItems.findAll({
         where: clean({ businessId, tableId, zoneId, outOrderId }),
-        attribute: DEFAULT_EXCLUDE,
+        attribute: { exclude: DEFAULT_EXCLUDE },
         include: [
-          { model: items, as: "item", attribute: DEFAULT_EXCLUDE },
-          { model: portions, as: "portion", attribute: DEFAULT_EXCLUDE },
+          { model: items, as: "item", attribute: { exclude: DEFAULT_EXCLUDE } },
+          { model: portions, as: "portion", attribute: { exclude: DEFAULT_EXCLUDE } },
           {
             model: cartAddons,
             as: "cartAddons",
-            attribute: DEFAULT_EXCLUDE,
-            include: [{ model: addons, as: "addon", attribute: DEFAULT_EXCLUDE }],
+            attribute: { exclude: DEFAULT_EXCLUDE },
+            include: [{ model: addons, as: "addon", attribute: { exclude: DEFAULT_EXCLUDE } }],
           },
         ],
         transaction,
@@ -100,20 +100,20 @@ exports.getAllOutOrdersZoneId = (zoneId, businessId, transaction) => {
     const { cartItems, items, portions, cartAddons, addons, outOrders } = await dbConn();
     try {
       const outArr = await outOrders.findAll({
-        attribute: DEFAULT_EXCLUDE,
+        attribute: { exclude: DEFAULT_EXCLUDE },
         include: {
           model: cartItems,
           as: "cartItems",
           where: { zoneId, businessId },
-          attribute: DEFAULT_EXCLUDE,
+          attribute: { exclude: DEFAULT_EXCLUDE },
           include: [
-            { model: items, as: "item", attribute: DEFAULT_EXCLUDE },
-            { model: portions, as: "portion", attribute: DEFAULT_EXCLUDE },
+            { model: items, as: "item", attribute: { exclude: DEFAULT_EXCLUDE } },
+            { model: portions, as: "portion", attribute: { exclude: DEFAULT_EXCLUDE } },
             {
               model: cartAddons,
               as: "cartAddons",
-              attribute: DEFAULT_EXCLUDE,
-              include: [{ model: addons, as: "addon", attribute: DEFAULT_EXCLUDE }],
+              attribute: { exclude: DEFAULT_EXCLUDE },
+              include: [{ model: addons, as: "addon", attribute: { exclude: DEFAULT_EXCLUDE } }],
             },
           ],
         },

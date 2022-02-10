@@ -180,7 +180,6 @@ exports.getLiveCartByZoneOrTable = async (req, res, next) => {
     );
     response(POS_DATA_FETCHED, "pos", liveCart, req, res, next);
   } catch (error) {
-    transaction.rollback();
     next(error);
   }
 };
@@ -192,7 +191,6 @@ exports.getAllOutOrders = async (req, res, next) => {
     const liveCart = await getAllOutOrdersZoneId(zone.id, req.business.id);
     response(POS_DATA_FETCHED, "pos", liveCart, req, res, next);
   } catch (error) {
-    transaction.rollback();
     next(error);
   }
 };
