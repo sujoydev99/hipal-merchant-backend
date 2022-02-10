@@ -54,9 +54,9 @@ exports.createCartAddons = (transaction, addonsArray) => {
 };
 exports.deleteCartAddonsByCartItemId = (transaction, cartItemId) => {
   return new Promise(async (resolve, reject) => {
-    const { cartAddon } = await dbConn();
+    const { cartAddons } = await dbConn();
     try {
-      const item = await cartAddon.destroy({ where: { cartItemId }, transaction });
+      const item = await cartAddons.destroy({ where: { cartItemId }, transaction });
       resolve(item);
     } catch (error) {
       reject(error);
