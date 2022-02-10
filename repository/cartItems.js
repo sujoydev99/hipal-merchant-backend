@@ -76,15 +76,15 @@ exports.getAllCartItemsByTableIdOrOutOrderIdandZoneId = (
     try {
       const cartItem = await cartItems.findAll({
         where: clean({ businessId, tableId, zoneId, outOrderId }),
-        attribute: { exclude: { exclude: DEFAULT_EXCLUDE } },
+        attributes: { exclude: DEFAULT_EXCLUDE },
         include: [
-          { model: items, as: "item", attribute: { exclude: DEFAULT_EXCLUDE } },
-          { model: portions, as: "portion", attribute: { exclude: DEFAULT_EXCLUDE } },
+          { model: items, as: "item", attributes: { exclude: DEFAULT_EXCLUDE } },
+          { model: portions, as: "portion", attributes: { exclude: DEFAULT_EXCLUDE } },
           {
             model: cartAddons,
             as: "cartAddons",
-            attribute: { exclude: DEFAULT_EXCLUDE },
-            include: [{ model: addons, as: "addon", attribute: { exclude: DEFAULT_EXCLUDE } }],
+            attributes: { exclude: DEFAULT_EXCLUDE },
+            include: [{ model: addons, as: "addon", attributes: { exclude: DEFAULT_EXCLUDE } }],
           },
         ],
         transaction,
