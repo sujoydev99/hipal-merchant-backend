@@ -22,7 +22,7 @@ module.exports = {
     "cartItemId",
     "cartAddonId",
     "tableId",
-    "portionsId",
+    "portionId",
     "addonId",
   ],
 };
