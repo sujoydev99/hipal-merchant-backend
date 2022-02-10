@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
         as: "table",
         onDelete: "CASCADE",
       });
+      cartItems.belongsTo(models.outOrders, {
+        foreignKey: "outOrderId",
+        as: "outOrder",
+        onDelete: "CASCADE",
+      });
       cartItems.hasMany(models.cartAddons, {
         foreignKey: "cartItemId",
         as: "cartAddons",
@@ -42,6 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       businessId: { type: DataTypes.INTEGER, allowNull: false },
       stationId: { type: DataTypes.INTEGER, allowNull: false },
       tableId: { type: DataTypes.INTEGER, allowNull: true },
+      outOrderId: { type: DataTypes.INTEGER, allowNull: true },
       itemId: { type: DataTypes.INTEGER, allowNull: false },
       portionId: { type: DataTypes.INTEGER, allowNull: false },
       quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },

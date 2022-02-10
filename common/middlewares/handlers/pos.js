@@ -5,6 +5,8 @@ const {
   getCartItem,
   updateCartItemByIdBusinessId,
   deleteCartAddonsByCartItemId,
+  getAllCartItemsByTableIdOrOutOrderIdandZoneId,
+  getAllOutOrdersZoneId,
 } = require("../../../repository/cartItems");
 
 const {
@@ -14,12 +16,13 @@ const {
 } = require("../../../repository/category");
 const {
   getAllItemsByBusinessIdAndOrCategoryIdForPos,
-  getItemMetaByUuid,
-  getPortionMetaByUuid,
-  getAddonMetaByUuidArrays,
   getItemPortionsAddonsMetaByUuid,
 } = require("../../../repository/item");
-const { getTableMetaByUuid } = require("../../../repository/table");
+const {
+  getTableMetaByUuid,
+  getOutOrderMetaByUuid,
+  createOutOrder,
+} = require("../../../repository/table");
 const { getZoneMetaByUuid } = require("../../../repository/zone");
 
 const {
@@ -78,6 +81,7 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
       userName,
       cartItemUuid = null,
     } = req.body;
+    let outOrder = null;
     const table =
       tableUuid === "TAKE-AWAY" || tableUuid === "DELIVERY"
         ? null
@@ -112,9 +116,18 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
       await createCartAddons(transaction, addonsArr);
       updated = true;
     } else {
+      if (!table) {
+        if (!["TAKE-AWAY", "DELIVERY"].includes(tableUuid)) throw NOT_FOUND;
+        outOrder = await createOutOrder(transaction, {
+          businessId: req.business.id,
+          zoneId: zone.id,
+          type: tableUuid,
+        });
+      }
       cartItem = await createCartItem(transaction, {
         businessId: req.business.id,
         tableId: table ? table.id : null,
+        outOrderId: outOrder ? outOrder.id : null,
         zoneId: zone.id,
         itemId: item.id,
         stationId: item.stationId,
@@ -137,11 +150,47 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
     response(
       updated ? POS_DATA_UDATED : POS_DATA_CREATED,
       "pos",
-      { cartItemUuid: cartItem.uuid },
+      { cartItemUuid: cartItem.uuid, outOrderUuid: outOrder ? outOrder.uuid : null },
       req,
       res,
       next
     );
+  } catch (error) {
+    transaction.rollback();
+    next(error);
+  }
+};
+exports.getLiveCartByZoneOrTable = async (req, res, next) => {
+  try {
+    const { tableUuid, zoneUuid } = req.params;
+    const { outOrderUuid } = req.query;
+    const table =
+      tableUuid === "TAKE-AWAY" || tableUuid === "DELIVERY"
+        ? null
+        : await getTableMetaByUuid(tableUuid, req.business.id);
+    const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
+    const outOrder = outOrderUuid
+      ? await getOutOrderMetaByUuid(outOrderUuid, req.business.id)
+      : null;
+    const liveCart = await getAllCartItemsByTableIdOrOutOrderIdandZoneId(
+      table ? table.id : undefined,
+      outOrder ? outOrder.id : undefined,
+      zone.id,
+      req.business.id
+    );
+    response(POS_DATA_FETCHED, "pos", liveCart, req, res, next);
+  } catch (error) {
+    transaction.rollback();
+    next(error);
+  }
+};
+
+exports.getAllOutOrders = async (req, res, next) => {
+  try {
+    const { zoneUuid } = req.params;
+    const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
+    const liveCart = await getAllOutOrdersZoneId(zone.id, req.business.id);
+    response(POS_DATA_FETCHED, "pos", liveCart, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);

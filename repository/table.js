@@ -88,3 +88,29 @@ exports.getTableMetaByUuid = (uuid, businessId, transaction) => {
     }
   });
 };
+exports.getOutOrderMetaByUuid = (uuid, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { outOrders } = await dbConn();
+    try {
+      const outorder = await outOrders.findOne({
+        where: { uuid, businessId },
+        transaction,
+      });
+      resolve(outorder);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.createOutOrder = (transaction, orderObj) => {
+  return new Promise(async (resolve, reject) => {
+    const { outOrders } = await dbConn();
+    try {
+      const outOrder = await outOrders.create(orderObj, { transaction });
+      resolve(outOrder);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
