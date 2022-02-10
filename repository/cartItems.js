@@ -76,7 +76,7 @@ exports.getAllCartItemsByTableIdOrOutOrderIdandZoneId = (
     try {
       const cartItem = await cartItems.findAll({
         where: clean({ businessId, tableId, zoneId, outOrderId }),
-        attribute: { exclude: DEFAULT_EXCLUDE },
+        attribute: { exclude: { exclude: DEFAULT_EXCLUDE } },
         include: [
           { model: items, as: "item", attribute: { exclude: DEFAULT_EXCLUDE } },
           { model: portions, as: "portion", attribute: { exclude: DEFAULT_EXCLUDE } },

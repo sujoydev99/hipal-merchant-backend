@@ -18,5 +18,9 @@ module.exports = {
     "itemId",
     "categoryId",
     "stationId",
+    "outOrderId",
+    "cartItemId",
+    "cartAddonId",
+    "addonId",
   ],
 };
