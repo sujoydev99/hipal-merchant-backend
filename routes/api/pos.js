@@ -7,6 +7,7 @@ const {
   getAllBusinessCategoriesAndItems,
   createUpdateLiveCartItem,
   getLiveCartByZoneOrTable,
+  getAllOutOrders,
 } = require("../../common/middlewares/handlers/pos");
 const { createUpdateCartItemValidations } = require("../../common/middlewares/validations/pos/pos");
 
@@ -20,16 +21,9 @@ router.post(
   createUpdateLiveCartItem
 );
 
-router.get(
-  "/:businessUuid/:zoneUuid/",
-  verifyToken(),
-  createUpdateCartItemValidations,
-  createUpdateLiveCartItem
-);
-// get all liveCart data by zoneId and tableId
-router.get("/:businessUuid/liveCart/cart", verifyToken(), getLiveCartByZoneOrTable);
+router.get("/:businessUuid/:zoneUuid", verifyToken(), getAllOutOrders);
 
-// get all liveCart data by zoneId and tableId
+// get all liveCart data by zoneId and tableId or outOrderId
 router.get("/:businessUuid/:zoneUuid/:tableUuid", verifyToken(), getLiveCartByZoneOrTable);
 
 module.exports = router;
