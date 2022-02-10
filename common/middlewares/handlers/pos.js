@@ -81,6 +81,12 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
       userName,
       cartItemUuid = null,
     } = req.body;
+
+    const addonsUuidArr = [];
+    addonsArray.map((i) => {
+      addonsUuidArr.push(i.uuid);
+    });
+
     let outOrder = null;
     const table =
       tableUuid === "TAKE-AWAY" || tableUuid === "DELIVERY"
@@ -91,7 +97,7 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
       itemUuid,
       req.business.id,
       portionUuid,
-      addonsArray.map((i) => i.uuid),
+      addonsUuidArr,
       transaction
     );
 
