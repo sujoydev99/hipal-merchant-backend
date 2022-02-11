@@ -322,4 +322,8 @@ module.exports = {
     customMessage: "Item/s deleted",
     statusCode: 200,
   },
+  INVELID_STATUS: {
+    customMessage: "The provided status is invalid",
+    statusCode: 400,
+  },
 };

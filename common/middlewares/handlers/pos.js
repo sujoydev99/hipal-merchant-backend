@@ -225,6 +225,7 @@ exports.updateCartItemStatus = async (req, res, next) => {
   try {
     const { cartItemUuid } = req.params;
     const { status } = req.body;
+    if (![POS_SYSTEM.KOT, POS_SYSTEM.SELECTION].includes(status)) throw NOT_FOUND;
     const cartItem = await getCartItem(cartItemUuid, req.business.id, transaction);
     if (!cartItem) throw NOT_FOUND;
     await updateCartItemByIdBusinessId(transaction, cartItem.id, req.business.id, { status });
