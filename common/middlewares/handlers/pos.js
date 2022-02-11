@@ -229,6 +229,7 @@ exports.updateCartItemStatus = async (req, res, next) => {
     if (!cartItem) throw NOT_FOUND;
     await updateCartItemByIdBusinessId(transaction, cartItem.id, req.business.id, { status });
     transaction.commit();
+    response(POS_DATA_UDATED, "pos", {}, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);
