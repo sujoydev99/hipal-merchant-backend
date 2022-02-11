@@ -20,7 +20,7 @@ exports.updateCartItemByIdBusinessId = (transaction, id, businessId, itemObj) =>
     const { cartItems } = await dbConn();
     try {
       const item = await cartItems.update(itemObj, {
-        where: { id, businessId, status: { [Op.eq]: POS_SYSTEM.SELECTION } },
+        where: { id, businessId },
         transaction,
       });
       resolve(item);
