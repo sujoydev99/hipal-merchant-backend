@@ -32,7 +32,7 @@ exports.updateCartItemByIdBusinessId = (transaction, id, businessId, itemObj) =>
 
 exports.getCartItem = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { cartItems } = await dbConn();
+    const { cartItems, carts } = await dbConn();
     try {
       const cartItem = await cartItems.findOne({
         where: {
@@ -41,6 +41,10 @@ exports.getCartItem = (uuid, businessId, transaction) => {
           status: {
             [Op.in]: [POS_SYSTEM.KOT, POS_SYSTEM.SELECTION],
           },
+        },
+        include: {
+          model: carts,
+          as: "cart",
         },
         transaction,
       });
@@ -84,32 +88,37 @@ exports.deleteCartItemByIdBusinessId = (transaction, id, businessId) => {
   });
 };
 
-exports.getAllCartItemsByTableIdOrOutOrderIdandZoneId = (
+exports.getAllCartItemsByTableIdOrCartIdandZoneId = (
   tableId,
-  outOrderId,
+  cartId,
   zoneId,
   businessId,
   transaction
 ) => {
   return new Promise(async (resolve, reject) => {
-    const { cartItems, items, portions, cartAddons, addons } = await dbConn();
+    const { cartItems, items, portions, cartAddons, addons, carts } = await dbConn();
     try {
-      const cartItem = await cartItems.findAll({
-        where: clean({ businessId, tableId, zoneId, outOrderId }),
+      const cart = await carts.findOne({
+        where: clean({ businessId, tableId, zoneId, cartId }),
         attributes: { exclude: DEFAULT_EXCLUDE },
-        include: [
-          { model: items, as: "item", attributes: { exclude: DEFAULT_EXCLUDE } },
-          { model: portions, as: "portion", attributes: { exclude: DEFAULT_EXCLUDE } },
-          {
-            model: cartAddons,
-            as: "cartAddons",
-            attributes: { exclude: DEFAULT_EXCLUDE },
-            include: [{ model: addons, as: "addon", attributes: { exclude: DEFAULT_EXCLUDE } }],
-          },
-        ],
+        include: {
+          model: cartItems,
+          as: "cartItems",
+          attributes: { exclude: DEFAULT_EXCLUDE },
+          include: [
+            { model: items, as: "item", attributes: { exclude: DEFAULT_EXCLUDE } },
+            { model: portions, as: "portion", attributes: { exclude: DEFAULT_EXCLUDE } },
+            {
+              model: cartAddons,
+              as: "cartAddons",
+              attributes: { exclude: DEFAULT_EXCLUDE },
+              include: [{ model: addons, as: "addon", attributes: { exclude: DEFAULT_EXCLUDE } }],
+            },
+          ],
+        },
         transaction,
       });
-      resolve(cartItem);
+      resolve(cart);
     } catch (error) {
       reject(error);
     }
@@ -141,6 +150,41 @@ exports.getAllOutOrdersZoneId = (zoneId, businessId, transaction) => {
         transaction,
       });
       resolve(outArr);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getCartMetaByIdBusinessId = (id, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { carts, cartItems } = await dbConn();
+    try {
+      const cart = await carts.findOne({
+        where: { id, businessId },
+        include: {
+          model: cartItems,
+          as: "cartItems",
+          required: false,
+        },
+        transaction,
+      });
+      resolve(cart);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.deleteCartByIdBusinessId = (id, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { carts } = await dbConn();
+    try {
+      const cart = await carts.destroy({
+        where: { id, businessId },
+        transaction,
+      });
+      resolve(cart);
     } catch (error) {
       reject(error);
     }

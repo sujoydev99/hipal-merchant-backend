@@ -23,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   cartAddons.init(
     {
-      uuid: { type: DataTypes.STRING, unique: true },
       cartItemId: { type: DataTypes.INTEGER, allowNull: false },
       addonId: { type: DataTypes.INTEGER, allowNull: false },
       quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
@@ -33,9 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "cartAddons",
     }
   );
-  cartAddons.beforeCreate((doc, _) => {
-    return (doc.uuid = "cartAddon_" + nanoid(20));
-  });
+
   return cartAddons;
 };
 // TODO implement live cartAddon feature

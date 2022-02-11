@@ -78,25 +78,25 @@ exports.getTableMetaByUuid = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
     const { tables } = await dbConn();
     try {
-      const zonesArr = await tables.findOne({
+      const table = await tables.findOne({
         where: { uuid, businessId },
         transaction,
       });
-      resolve(zonesArr);
+      resolve(table);
     } catch (error) {
       reject(error);
     }
   });
 };
-exports.getOutOrderMetaByUuid = (uuid, businessId, transaction) => {
+exports.getCartMetaByUuid = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { outOrders } = await dbConn();
+    const { carts } = await dbConn();
     try {
-      const outorder = await outOrders.findOne({
+      const cart = await carts.findOne({
         where: { uuid, businessId },
         transaction,
       });
-      resolve(outorder);
+      resolve(cart);
     } catch (error) {
       reject(error);
     }
@@ -105,9 +105,9 @@ exports.getOutOrderMetaByUuid = (uuid, businessId, transaction) => {
 
 exports.createCart = (transaction, orderObj) => {
   return new Promise(async (resolve, reject) => {
-    const { outOrders } = await dbConn();
+    const { carts } = await dbConn();
     try {
-      const outOrder = await outOrders.create(orderObj, { transaction });
+      const outOrder = await carts.create(orderObj, { transaction });
       resolve(outOrder);
     } catch (error) {
       reject(error);

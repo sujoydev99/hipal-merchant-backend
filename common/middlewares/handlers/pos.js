@@ -5,9 +5,11 @@ const {
   getCartItem,
   updateCartItemByIdBusinessId,
   deleteCartAddonsByCartItemId,
-  getAllCartItemsByTableIdOrOutOrderIdandZoneId,
+  getAllCartItemsByTableIdOrCartIdandZoneId,
   getAllOutOrdersZoneId,
   deleteCartItemByIdBusinessId,
+  getCartMetaByIdBusinessId,
+  deleteCartByIdBusinessId,
 } = require("../../../repository/cartItems");
 
 const {
@@ -82,7 +84,6 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
       userContactNumber,
       userName,
       cartItemUuid = null,
-      cartUuid = null,
     } = req.body;
 
     const addonsUuidArr = [];
@@ -91,7 +92,7 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
     });
 
     let cart = null;
-    let type = ["TAKE-AWAY", "DELIVERY"] ? tableUuid : "DINE-IN";
+    let type = ["TAKE-AWAY", "DELIVERY"].includes(tableUuid) ? tableUuid : "DINE-IN";
     const table =
       tableUuid === "TAKE-AWAY" || tableUuid === "DELIVERY"
         ? null
@@ -129,7 +130,7 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
       cart = await createCart(transaction, {
         businessId: req.business.id,
         zoneId: zone.id,
-        table: table ? table.id : null,
+        tableId: table ? table.id : null,
         type: type,
       });
 
@@ -159,7 +160,7 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
     response(
       updated ? POS_DATA_UDATED : POS_DATA_CREATED,
       "pos",
-      { cartItemUuid: cartItem.uuid, cartUuid: cart ? cart.uuid : null },
+      { cartItemUuid: cartItem.uuid, cartUuid: cart ? cart.uuid : cartItem.cart.uuid },
       req,
       res,
       next
@@ -178,12 +179,10 @@ exports.getLiveCartByZoneOrTable = async (req, res, next) => {
         ? null
         : await getTableMetaByUuid(tableUuid, req.business.id);
     const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
-    const outOrder = outOrderUuid
-      ? await getOutOrderMetaByUuid(outOrderUuid, req.business.id)
-      : null;
-    const liveCart = await getAllCartItemsByTableIdOrOutOrderIdandZoneId(
+    const cart = cartUuid ? await getOutOrderMetaByUuid(cartUuid, req.business.id) : null;
+    const liveCart = await getAllCartItemsByTableIdOrCartIdandZoneId(
       table ? table.id : undefined,
-      outOrder ? outOrder.id : undefined,
+      cart ? cart.id : undefined,
       zone.id,
       req.business.id
     );
@@ -212,6 +211,9 @@ exports.deleteCartItem = async (req, res, next) => {
     const cartItem = await getCartItem(cartItemUuid, req.business.id, transaction);
     if (!cartItem) throw NOT_FOUND;
     await deleteCartItemByIdBusinessId(transaction, cartItem.id, req.business.id);
+    let cart = await getCartMetaByIdBusinessId(cartItem.cartId, req.business.id, transaction);
+    if (cart.cartItems.length === 0)
+      await deleteCartByIdBusinessId(cart.id, req.business.id, transaction);
     response(POS_DATA_DELETED, "pos", {}, req, res, next);
     transaction.commit();
   } catch (error) {

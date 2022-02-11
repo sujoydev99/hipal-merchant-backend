@@ -91,6 +91,7 @@ exports.getAllItemsByBusinessIdAndOrCategoryId = (businessId, categoryId, transa
             model: addons,
             as: "addons",
             attributes: { exclude: DEFAULT_EXCLUDE },
+            through: { attributes: [] },
           },
         ],
       });
