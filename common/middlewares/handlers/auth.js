@@ -31,12 +31,7 @@ exports.userMobileVerifyOtp = async (req, res, next) => {
   try {
     const { mobileNumber, countryCode, otp } = req.body;
     await verifyMobileOtp(countryCode, mobileNumber, otp);
-    let user = await getOrCreateUserByMobileNumber(
-      transaction,
-      countryCode,
-      mobileNumber,
-      otp
-    );
+    let user = await getOrCreateUserByMobileNumber(transaction, countryCode, mobileNumber, otp);
     let jwt = jwtSign(user);
     await updateUserById(transaction, user.id, { accessToken: jwt.token });
     transaction.commit();
@@ -51,9 +46,9 @@ exports.userEmailSignup = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    const { email, password } = req.body;
+    const { email, password, name } = req.body;
     let hashpw = await hash(password);
-    await getOrCreateUserByEmail(transaction, email, hashpw);
+    await getOrCreateUserByEmail(transaction, email, name, hashpw);
     transaction.commit();
     response(EMAIL_SIGNUP_SUCCESS, "claims", null, req, res, next);
   } catch (error) {

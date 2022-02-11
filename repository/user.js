@@ -40,7 +40,7 @@ exports.getOrCreateUserByMobileNumber = (transaction, extension, number, otp = 1
     }
   });
 };
-exports.getOrCreateUserByEmail = (transaction, email, password = null) => {
+exports.getOrCreateUserByEmail = (transaction, email, name, password = null) => {
   return new Promise(async (resolve, reject) => {
     const { users, userEmails } = await dbConn();
     try {
@@ -54,7 +54,7 @@ exports.getOrCreateUserByEmail = (transaction, email, password = null) => {
         transaction,
       });
       if (!user && password) {
-        const newUser = await users.create({ password }, { transaction });
+        const newUser = await users.create({ password, name }, { transaction });
         const _email = await userEmails.create(
           {
             email,
