@@ -10,10 +10,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "business",
         onDelete: "CASCADE",
       });
-      addons.belongsTo(models.items, {
-        foreignKey: "itemId",
-        as: "item",
-        onDelete: "CASCADE",
+      addons.belongsToMany(models.items, {
+        foreignKey: "addonId",
+        as: "items",
+        through: "itemAddons",
       });
     }
   }
@@ -21,7 +21,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       uuid: { type: DataTypes.STRING, unique: true },
       businessId: { type: DataTypes.INTEGER, allowNull: false },
-      itemId: { type: DataTypes.INTEGER, allowNull: false },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -33,6 +32,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       notes: DataTypes.STRING,
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
+      sgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
+      cgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
     },
     {
       sequelize,

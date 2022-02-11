@@ -1,3 +1,4 @@
+const { required } = require("validatorjs/src/lang/en");
 const { validateRules } = require("../../../functions/validator");
 exports.createUpdateItemValidations = async (req, res, next) => {
   try {
@@ -8,10 +9,14 @@ exports.createUpdateItemValidations = async (req, res, next) => {
       stationUuid: "required|string",
       tags: "array",
       types: "required|array",
+      addons: "array",
       "tags.*.tag": "string|min:3",
       "types.*.tag": "required|string|min:3|in:VEG,NON-VEG,VEGAN,EGG,HALAL,KOSHER",
+      "addons.*.tag": "required|string",
       isActive: "required|boolean",
       categoryUuid: "string",
+      cgst: "required|numeric",
+      sgst: "required|numeric",
     };
     await validateRules(req.body, validationRules);
     let tagsArray = [];
@@ -52,6 +57,8 @@ exports.createUpdateAddonValidations = async (req, res, next) => {
       price: "required|integer",
       notes: "string",
       isActive: "boolean",
+      cgst: "required|numeric",
+      sgst: "required|numeric",
     };
     await validateRules(req.body, validationRules);
     next();

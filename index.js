@@ -20,6 +20,7 @@ const station = require("./routes/api/station");
 const table = require("./routes/api/table");
 const category = require("./routes/api/category");
 const item = require("./routes/api/item");
+const addon = require("./routes/api/addon");
 const pos = require("./routes/api/pos");
 const errorMiddleware = require("./common/middlewares/error");
 // initialize the env configuration
@@ -62,6 +63,7 @@ app.use("/api/station", station);
 app.use("/api/table", table);
 app.use("/api/category", category);
 app.use("/api/item", item);
+app.use("/api/addon", addon);
 app.use("/api/pos", pos);
 app.use(errorMiddleware);
 

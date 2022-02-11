@@ -24,5 +24,6 @@ module.exports = {
     "tableId",
     "portionId",
     "addonId",
+    "itemAddons",
   ],
 };

@@ -14,9 +14,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "zoneId",
         as: "tables",
       });
-      zones.hasMany(models.cartItems, {
+      zones.hasMany(models.carts, {
         foreignKey: "zoneId",
-        as: "cartItems",
+        as: "carts",
       });
     }
   }

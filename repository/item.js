@@ -19,6 +19,7 @@ exports.updateItemByUuidBusinessId = (transaction, uuid, businessId, itemObj) =>
       await items.update(itemObj, {
         where: { uuid, businessId },
         transaction,
+        returning: true,
       });
       resolve();
     } catch (error) {
@@ -117,10 +118,15 @@ exports.deleteItemByUuidBusinessId = (transaction, uuid, businessId) => {
 
 exports.getItemMetaByUuid = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { items, stations } = await dbConn();
+    const { items, addons } = await dbConn();
     try {
       const item = await items.findOne({
         where: { uuid, businessId },
+        include: {
+          model: addons,
+          as: "addons",
+          required: false,
+        },
         transaction,
       });
       resolve(item);
@@ -215,6 +221,54 @@ exports.deletePortionByUuidBusinessId = (transaction, uuid, businessId) => {
   });
 };
 
+exports.getAllItemsByBusinessIdAndOrCategoryIdForPos = (businessId, categoryId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { items, portions, categories, addons } = await dbConn();
+    try {
+      let whereFilter = { businessId };
+      if (categoryId !== undefined) whereFilter.categoryId = categoryId;
+      console.log(whereFilter);
+      const itemsArr = await items.findAll({
+        where: whereFilter,
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        transaction,
+        include: [
+          {
+            model: portions,
+            as: "portions",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+            required: true,
+          },
+          {
+            model: addons,
+            as: "addons",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+            through: { attributes: [] },
+          },
+        ],
+      });
+      resolve(itemsArr);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getAddonMetaByUuidArrays = (uuid, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { addons } = await dbConn();
+    try {
+      const addon = await addons.findAll({
+        where: { uuid, businessId },
+        transaction,
+      });
+      resolve(addon);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 exports.createAddon = (transaction, addonObj) => {
   return new Promise(async (resolve, reject) => {
     const { addons } = await dbConn();
@@ -242,44 +296,59 @@ exports.deleteAddonByUuidBusinessId = (transaction, uuid, businessId) => {
   });
 };
 
-exports.getAllItemsByBusinessIdAndOrCategoryIdForPos = (businessId, categoryId, transaction) => {
+exports.getAddonMetaByUuid = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { items, portions, categories, addons } = await dbConn();
+    const { addons } = await dbConn();
     try {
-      let whereFilter = { businessId };
-      if (categoryId !== undefined) whereFilter.categoryId = categoryId;
-      console.log(whereFilter);
-      const itemsArr = await items.findAll({
-        where: whereFilter,
-        attributes: { exclude: DEFAULT_EXCLUDE },
+      const addon = await addons.findAll({
+        where: { uuid, businessId },
         transaction,
-        include: [
-          {
-            model: portions,
-            as: "portions",
-            attributes: { exclude: DEFAULT_EXCLUDE },
-            required: true,
-          },
-          {
-            model: addons,
-            as: "addons",
-            attributes: { exclude: DEFAULT_EXCLUDE },
-          },
-        ],
       });
-      resolve(itemsArr);
+      resolve(addon);
     } catch (error) {
       reject(error);
     }
   });
 };
 
-exports.getAddonMetaByUuidArrays = (uuid, businessId, transaction) => {
+exports.updateAddonByUuidBusinessId = (transaction, uuid, businessId, itemObj) => {
+  return new Promise(async (resolve, reject) => {
+    const { addons } = await dbConn();
+    try {
+      await addons.update(itemObj, {
+        where: { uuid, businessId },
+        transaction,
+      });
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getAddonsByBusinessId = (businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
     const { addons } = await dbConn();
     try {
       const addon = await addons.findAll({
+        where: { businessId },
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        transaction,
+      });
+      resolve(addon);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.getAddonByUuidBusinessId = (uuid, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { addons } = await dbConn();
+    try {
+      const addon = await addons.findOne({
         where: { uuid, businessId },
+        attributes: { exclude: DEFAULT_EXCLUDE },
         transaction,
       });
       resolve(addon);

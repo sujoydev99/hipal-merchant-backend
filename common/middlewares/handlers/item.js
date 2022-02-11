@@ -11,6 +11,7 @@ const {
   createAddon,
   deleteAddonByUuidBusinessId,
   getItemMetaByUuid,
+  getAddonMetaByUuidArrays,
 } = require("../../../repository/item");
 const { getStationMetaByUuid } = require("../../../repository/station");
 
@@ -22,8 +23,6 @@ const {
   ITEM_DELETED,
   PORTION_CREATED,
   PORTION_DELETED,
-  ADDON_CREATED,
-  ADDON_DELETED,
 } = require("../../constants/messages");
 const response = require("../response");
 
@@ -31,7 +30,7 @@ exports.createItem = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    const { categoryUuid = null, stationUuid } = req.body;
+    const { categoryUuid = null, stationUuid, addons = [] } = req.body;
     const category = await getCategoryMetaByUuid(categoryUuid, req.business.id, transaction);
     const station = await getStationMetaByUuid(stationUuid, req.business.id, transaction);
     if (!station) throw NOT_FOUND;
@@ -41,7 +40,19 @@ exports.createItem = async (req, res, next) => {
       categoryId: category ? category.id : null,
       stationId: station.id,
     });
-
+    if (addons.length > 0) {
+      const addonsUuidArr = [];
+      addons.map((i) => {
+        addonsUuidArr.push(i.tag);
+      });
+      const fetchedAddons = await getAddonMetaByUuidArrays(
+        addonsUuidArr,
+        req.business.id,
+        transaction
+      );
+      for (let i = 0; i < fetchedAddons.length; i++)
+        await item.addAddons(fetchedAddons[i], { transaction });
+    }
     transaction.commit();
     response(ITEM_CREATED, "item", { ...req.body, uuid: item.uuid }, req, res, next);
   } catch (error) {
@@ -54,15 +65,31 @@ exports.updateItem = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     const { itemUuid } = req.params;
-    const { categoryUuid = null, stationUuid } = req.body;
+    const { categoryUuid = null, stationUuid, addons } = req.body;
     const category = await getCategoryMetaByUuid(categoryUuid, req.business.id, transaction);
     const station = await getStationMetaByUuid(stationUuid, req.business.id, transaction);
     if (!station) throw NOT_FOUND;
+    const item = await getItemMetaByUuid(itemUuid, req.business.id, transaction);
     await updateItemByUuidBusinessId(transaction, itemUuid, req.business.id, {
       ...req.body,
       categoryId: category ? category.id : null,
       stationId: station.id,
     });
+    for (let i = 0; i < item.addons.length; i++)
+      await item.removeAddons(item.addons[i], { transaction });
+
+    const addonsUuidArr = [];
+    addons.map((i) => {
+      addonsUuidArr.push(i.tag);
+    });
+    const fetchedAddons = await getAddonMetaByUuidArrays(
+      addonsUuidArr,
+      req.business.id,
+      transaction
+    );
+    for (let i = 0; i < fetchedAddons.length; i++)
+      await item.addAddons(fetchedAddons[i], { transaction });
+
     transaction.commit();
     response(ITEM_UPDATED, "item", {}, req, res, next);
   } catch (error) {
@@ -142,41 +169,6 @@ exports.createPortion = async (req, res, next) => {
 
     transaction.commit();
     response(PORTION_CREATED, "portion", { ...req.body, uuid: portion.uuid }, req, res, next);
-  } catch (error) {
-    transaction.rollback();
-    next(error);
-  }
-};
-
-exports.deleteAddon = async (req, res, next) => {
-  const { sequelize } = await dbConn();
-  let transaction = await sequelize.transaction();
-  try {
-    let { addonUuid } = req.params;
-    await deleteAddonByUuidBusinessId(transaction, addonUuid, req.business.id);
-    transaction.commit();
-    response(ADDON_DELETED, "addon", {}, req, res, next);
-  } catch (error) {
-    transaction.rollback();
-    next(error);
-  }
-};
-
-exports.createAddon = async (req, res, next) => {
-  const { sequelize } = await dbConn();
-  let transaction = await sequelize.transaction();
-  try {
-    const { itemUuid } = req.params;
-    const item = await getItemMetaByUuid(itemUuid, req.business.id, transaction);
-    if (!item) throw NOT_FOUND;
-    const addon = await createAddon(transaction, {
-      ...req.body,
-      businessId: req.business.id,
-      itemId: item.id,
-    });
-
-    transaction.commit();
-    response(ADDON_CREATED, "addon", { ...req.body, uuid: addon.uuid }, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);

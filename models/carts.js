@@ -2,40 +2,35 @@
 const { nanoid } = require("nanoid");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class outOrders extends Model {
+  class carts extends Model {
     static associate(models) {
       // define association here
-      outOrders.belongsTo(models.businesses, {
+      carts.belongsTo(models.businesses, {
         foreignKey: "businessId",
         as: "business",
         onDelete: "CASCADE",
       });
-      outOrders.hasMany(models.cartItems, {
-        foreignKey: "outOrderId",
+      carts.hasMany(models.cartItems, {
+        foreignKey: "cartId",
         as: "cartItems",
       });
     }
   }
-  outOrders.init(
+  carts.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
       businessId: { type: DataTypes.INTEGER, allowNull: false },
       stationId: { type: DataTypes.INTEGER, allowNull: false },
-      type: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "TAKE-AWAY",
-        comment: "TAKE-AWAY/DELIVERY",
-      },
+      tableId: { type: DataTypes.INTEGER, allowNull: true },
+      token: { type: DataTypes.INTEGER, defaultValue: 1 },
     },
     {
       sequelize,
-      modelName: "outOrders",
+      modelName: "carts",
     }
   );
-  outOrders.beforeCreate((doc, _) => {
-    return (doc.uuid = "outOrder_" + nanoid(20));
+  carts.beforeCreate((doc, _) => {
+    return (doc.uuid = "cart" + nanoid(20));
   });
-  return outOrders;
+  return carts;
 };
-// TODO implement live cart feature

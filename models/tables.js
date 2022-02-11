@@ -15,9 +15,9 @@ module.exports = (sequelize, DataTypes) => {
         as: "zone",
         onDelete: "CASCADE",
       });
-      tables.hasMany(models.cartItems, {
+      tables.hasMany(models.carts, {
         foreignKey: "tableId",
-        as: "cartItems",
+        as: "carts",
       });
     }
   }

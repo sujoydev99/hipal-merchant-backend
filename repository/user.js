@@ -1,16 +1,8 @@
 const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
-const {
-  EMAIL_ALREADY_EXISTS,
-  NO_ACCOUNT,
-} = require("../common/constants/messages");
+const { EMAIL_ALREADY_EXISTS, NO_ACCOUNT } = require("../common/constants/messages");
 const dbConn = require("../models");
 
-exports.getOrCreateUserByMobileNumber = (
-  transaction,
-  extension,
-  number,
-  otp = 123456
-) => {
+exports.getOrCreateUserByMobileNumber = (transaction, extension, number, otp = 123456) => {
   return new Promise(async (resolve, reject) => {
     const { users, userContactNumbers } = await dbConn();
     try {
@@ -73,9 +65,7 @@ exports.getOrCreateUserByEmail = (transaction, email, password = null) => {
         );
         user = {
           ...newUser.dataValues,
-          userEmails: newUser.userEmails
-            ? newUser.userEmails.push(_email)
-            : [_email],
+          userEmails: newUser.userEmails ? newUser.userEmails.push(_email) : [_email],
         };
         return resolve(user);
       }
@@ -90,8 +80,7 @@ exports.getOrCreateUserByEmail = (transaction, email, password = null) => {
 exports.getUserByUuid = (uuid, transaction) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { users, userEmails, userContactNumbers, userDocs, userAddresses } =
-        await dbConn();
+      const { users, userEmails, userContactNumbers, userDocs, userAddresses } = await dbConn();
       const user = await users.findOne({
         where: { uuid },
         attributes: { exclude: DEFAULT_EXCLUDE },
@@ -141,12 +130,7 @@ exports.getUserByUuidReq = (uuid, transaction) => {
   });
 };
 
-exports.updateUserBasicDetailsByUuidUserId = (
-  transaction,
-  userObj,
-  uuid,
-  id
-) => {
+exports.updateUserBasicDetailsByUuidUserId = (transaction, userObj, uuid, id) => {
   return new Promise(async (resolve, reject) => {
     const { users } = await dbConn();
     let updateFilter = { uuid, id };
@@ -237,8 +221,7 @@ exports.getUserByMobileNumber = (number, extension, transaction) => {
 
 exports.getAllUsersByBusinessId = (id, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { users, businesses, userEmails, userContactNumbers, roles } =
-      await dbConn();
+    const { users, businesses, userEmails, userContactNumbers, roles } = await dbConn();
     try {
       let user = await users.findAll({
         attributes: { exclude: DEFAULT_EXCLUDE },
@@ -264,6 +247,7 @@ exports.getAllUsersByBusinessId = (id, transaction) => {
             model: roles,
             as: "roles",
             attributes: ["name", "uuid"],
+            through: { attributes: [] },
           },
         ],
         transaction,
@@ -292,8 +276,7 @@ exports.getUserMetaByUuid = (uuid, transaction) => {
 
 exports.getUserByUuidBusinessId = (uuid, id, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { users, businesses, userEmails, userContactNumbers, roles } =
-      await dbConn();
+    const { users, businesses, userEmails, userContactNumbers, roles } = await dbConn();
     try {
       let user = await users.findOne({
         where: { uuid },
@@ -319,7 +302,8 @@ exports.getUserByUuidBusinessId = (uuid, id, transaction) => {
           {
             model: roles,
             as: "roles",
-            attributes: ["name"],
+            attributes: { exclude: DEFAULT_EXCLUDE },
+            through: { attributes: [] },
           },
         ],
         transaction,
@@ -332,8 +316,7 @@ exports.getUserByUuidBusinessId = (uuid, id, transaction) => {
 };
 exports.getUserMetaByUuidBusinessId = (uuid, id, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { users, businesses, userEmails, userContactNumbers, roles } =
-      await dbConn();
+    const { users, businesses, userEmails, userContactNumbers, roles } = await dbConn();
     try {
       let user = await users.findOne({
         where: { uuid },

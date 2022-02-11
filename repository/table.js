@@ -103,7 +103,7 @@ exports.getOutOrderMetaByUuid = (uuid, businessId, transaction) => {
   });
 };
 
-exports.createOutOrder = (transaction, orderObj) => {
+exports.createCart = (transaction, orderObj) => {
   return new Promise(async (resolve, reject) => {
     const { outOrders } = await dbConn();
     try {

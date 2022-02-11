@@ -302,6 +302,15 @@ module.exports = {
     customMessage: "Addon created successfully",
     statusCode: 201,
   },
+  ADDON_UPDATED: {
+    customMessage: "Addon updates successfully",
+    statusCode: 201,
+  },
+  ADDON_FETCHED: {
+    customMessage: "Addon fetched successfully",
+    statusCode: 200,
+  },
+
   ADDON_DELETED: {
     customMessage: "Addon deleted successfully",
     statusCode: 201,

@@ -1,9 +1,6 @@
 const sequelize = require("sequelize");
 const { DEFAULT_EXCLUDE } = require("../common/constants/attributes");
-const {
-  EMAIL_ALREADY_EXISTS,
-  NO_ACCOUNT,
-} = require("../common/constants/messages");
+const { EMAIL_ALREADY_EXISTS, NO_ACCOUNT } = require("../common/constants/messages");
 const dbConn = require("../models");
 
 exports.createRole = (transaction, roleObj) => {
@@ -108,7 +105,7 @@ exports.getRoleWithUsersByUuidBusinessId = (uuid, businessId, transaction) => {
       const role = await roles.findOne({
         where: { businessId, uuid },
         attributes: { exclude: DEFAULT_EXCLUDE },
-        include: { model: users, as: "users" },
+        include: { model: users, as: "users", through: { attributes: [] } },
         transaction,
       });
       resolve(role);
@@ -129,6 +126,7 @@ exports.getAllRoleWithUsersByBusinessId = (businessId, transaction) => {
           model: users,
           as: "users",
           attributes: { exclude: DEFAULT_EXCLUDE },
+          through: { attributes: [] },
         },
         transaction,
       });
@@ -150,6 +148,7 @@ exports.getAllRoleByBusinessId = (businessId, transaction) => {
           model: users,
           as: "users",
           attributes: { exclude: DEFAULT_EXCLUDE },
+          through: { attributes: [] },
         },
       });
       resolve(rolesArr);
@@ -203,11 +202,7 @@ exports.getRoleMetaByUuidBusinessId = (uuid, businessId, transaction) => {
   });
 };
 
-exports.getRoleMetaByUserIdRoleIdBusinessId = (
-  userId,
-  businessId,
-  transaction
-) => {
+exports.getRoleMetaByUserIdRoleIdBusinessId = (userId, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
     const { businessUserRoles } = await dbConn();
     try {

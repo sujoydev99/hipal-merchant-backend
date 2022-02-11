@@ -7,17 +7,17 @@ const {
   getAllBusinessCategoriesAndItems,
   createUpdateLiveCartItem,
   getLiveCartByZoneOrTable,
+  getAllOutOrders,
   deleteCartItem,
   updateCartItemStatus,
-  getAllCarts,
 } = require("../../common/middlewares/handlers/pos");
 const {
   createUpdateCartItemValidations,
   updatecartItemStatusValidations,
 } = require("../../common/middlewares/validations/pos/pos");
 
-// get all business categories and items with meta data (subcategory and item, addons, portion)
-router.get("/:businessUuid", verifyToken(), getAllBusinessCategoriesAndItems);
+// get all by tickets zone
+router.get("/:businessUuid/:stationId", verifyToken(), getAllBusinessCategoriesAndItems);
 // create/update live cart
 router.post(
   "/:businessUuid",
@@ -26,11 +26,9 @@ router.post(
   createUpdateLiveCartItem
 );
 
-router.get("/:businessUuid/:zoneUuid", verifyToken(), getAllCarts);
+router.get("/:businessUuid/:zoneUuid", verifyToken(), getAllOutOrders);
 
 // get all liveCart data by zoneId and tableId or outOrderId
-router.get("/:businessUuid/:zoneUuid/:tableUuid", verifyToken(), getLiveCartByZoneOrTable);
-router.delete("/:businessUuid/:cartItemUuid", verifyToken(), deleteCartItem);
 router.put(
   "/:businessUuid/:cartItemUuid",
   verifyToken(),

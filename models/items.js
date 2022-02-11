@@ -24,9 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "itemId",
         as: "portions",
       });
-      items.hasMany(models.addons, {
+      items.belongsToMany(models.addons, {
         foreignKey: "itemId",
         as: "addons",
+        through: "itemAddons",
       });
       items.hasMany(models.cartItems, {
         foreignKey: "itemId",
@@ -58,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: [],
       },
-      gst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
+      sgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
       cgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
