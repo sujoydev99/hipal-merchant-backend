@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
       uuid: { type: DataTypes.STRING, unique: true },
       businessId: { type: DataTypes.INTEGER, allowNull: false },
       stationId: { type: DataTypes.INTEGER, allowNull: false },
-      cartId: { type: DataTypes.INTEGER, allowNull: true },
+      cartId: { type: DataTypes.INTEGER, allowNull: false },
       itemId: { type: DataTypes.INTEGER, allowNull: false },
       portionId: { type: DataTypes.INTEGER, allowNull: false },
       quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },

@@ -65,7 +65,7 @@ exports.updateItem = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     const { itemUuid } = req.params;
-    const { categoryUuid = null, stationUuid, addons } = req.body;
+    const { categoryUuid = null, stationUuid, addons = [] } = req.body;
     const category = await getCategoryMetaByUuid(categoryUuid, req.business.id, transaction);
     const station = await getStationMetaByUuid(stationUuid, req.business.id, transaction);
     if (!station) throw NOT_FOUND;

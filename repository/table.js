@@ -114,3 +114,14 @@ exports.createCart = (transaction, orderObj) => {
     }
   });
 };
+exports.getCartMetaByTableIdZoneId = (tableId, zoneId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { carts } = await dbConn();
+    try {
+      const cart = await carts.findOne({ where: { tableId, zoneId }, transaction });
+      resolve(cart);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

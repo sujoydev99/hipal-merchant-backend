@@ -25,6 +25,7 @@ const {
   getTableMetaByUuid,
   getOutOrderMetaByUuid,
   createCart,
+  getCartMetaByTableIdZoneId,
 } = require("../../../repository/table");
 const { getZoneMetaByUuid } = require("../../../repository/zone");
 
@@ -127,12 +128,14 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
       await createCartAddons(transaction, addonsArr);
       updated = true;
     } else {
-      cart = await createCart(transaction, {
-        businessId: req.business.id,
-        zoneId: zone.id,
-        tableId: table ? table.id : null,
-        type: type,
-      });
+      cart = await getCartMetaByTableIdZoneId(table ? table.id : null, zone.id, transaction);
+      if (!cart)
+        cart = await createCart(transaction, {
+          businessId: req.business.id,
+          zoneId: zone.id,
+          tableId: table ? table.id : null,
+          type: type,
+        });
 
       cartItem = await createCartItem(transaction, {
         businessId: req.business.id,
@@ -179,6 +182,7 @@ exports.getLiveCartByZoneOrTable = async (req, res, next) => {
         ? null
         : await getTableMetaByUuid(tableUuid, req.business.id);
     const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
+    if (!zone) throw NOT_FOUND;
     const cart = cartUuid ? await getOutOrderMetaByUuid(cartUuid, req.business.id) : null;
     const liveCart = await getAllCartItemsByTableIdOrCartIdandZoneId(
       table ? table.id : undefined,
