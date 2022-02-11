@@ -215,6 +215,18 @@ exports.deleteCartItem = async (req, res, next) => {
   }
 };
 
+exports.updateCartItemStatus = async (req, res, next) => {
+  try {
+    const { cartItemUuid } = req.params;
+    const { status } = req.body;
+    const cartItem = await getCartItem(cartItemUuid, req.business.id, transaction);
+    if (!cartItem) throw NOT_FOUND;
+    await updateCartItemByIdBusinessId(transaction, cartItem.id, req.business.id, { status });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // exports.deleteCart = async (req, res, next) => {
 //   try {
 //     const { tableUuid, outOrderUuid } = req.query;
