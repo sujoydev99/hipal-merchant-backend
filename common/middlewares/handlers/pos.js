@@ -204,25 +204,33 @@ exports.getAllOutOrders = async (req, res, next) => {
 };
 
 exports.deleteCartItem = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
   try {
     const { cartItemUuid } = req.params;
     const cartItem = await getCartItem(cartItemUuid, req.business.id, transaction);
     if (!cartItem) throw NOT_FOUND;
     await deleteCartItemByIdBusinessId(transaction, cartItem.id, req.business.id);
     response(POS_DATA_DELETED, "pos", {}, req, res, next);
+    transaction.commit();
   } catch (error) {
+    transaction.rollback();
     next(error);
   }
 };
 
 exports.updateCartItemStatus = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
   try {
     const { cartItemUuid } = req.params;
     const { status } = req.body;
     const cartItem = await getCartItem(cartItemUuid, req.business.id, transaction);
     if (!cartItem) throw NOT_FOUND;
     await updateCartItemByIdBusinessId(transaction, cartItem.id, req.business.id, { status });
+    transaction.commit();
   } catch (error) {
+    transaction.rollback();
     next(error);
   }
 };
