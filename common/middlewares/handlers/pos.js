@@ -21,12 +21,7 @@ const {
   getAllItemsByBusinessIdAndOrCategoryIdForPos,
   getItemPortionsAddonsMetaByUuid,
 } = require("../../../repository/item");
-const {
-  getTableMetaByUuid,
-  getOutOrderMetaByUuid,
-  createCart,
-  getCartMetaByTableIdZoneId,
-} = require("../../../repository/table");
+const { getTableMetaByUuid, createCart, getCartMetaByUuid } = require("../../../repository/table");
 const { getZoneMetaByUuid } = require("../../../repository/zone");
 
 const {
@@ -85,6 +80,7 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
       userContactNumber,
       userName,
       cartItemUuid = null,
+      cartUuid = null,
     } = req.body;
 
     const addonsUuidArr = [];
@@ -92,7 +88,7 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
       addonsUuidArr.push(i.uuid);
     });
 
-    let cart = null;
+    let cart = cartUuid ? await getCartMetaByUuid(cartUuid, req.business.id, transaction) : null;
     let type = ["TAKE-AWAY", "DELIVERY"].includes(tableUuid) ? tableUuid : "DINE-IN";
     const table =
       tableUuid === "TAKE-AWAY" || tableUuid === "DELIVERY"
@@ -109,9 +105,7 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
 
     let updated = false;
     let cartItem = null;
-    // find cart item by uuid and status - SELECTION
-    // if not found create new cart item and addons
-    // else if found set cartItem variable and update cart item and and addons
+
     if (cartItemUuid !== undefined && cartItemUuid !== null) {
       cartItem = await getCartItem(cartItemUuid, req.business.id, transaction);
       if (!cartItem) throw NOT_FOUND;
@@ -128,7 +122,6 @@ exports.createUpdateLiveCartItem = async (req, res, next) => {
       await createCartAddons(transaction, addonsArr);
       updated = true;
     } else {
-      cart = await getCartMetaByTableIdZoneId(table ? table.id : null, zone.id, transaction);
       if (!cart)
         cart = await createCart(transaction, {
           businessId: req.business.id,
@@ -183,7 +176,7 @@ exports.getLiveCartByZoneOrTable = async (req, res, next) => {
         : await getTableMetaByUuid(tableUuid, req.business.id);
     const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
     if (!zone) throw NOT_FOUND;
-    const cart = cartUuid ? await getOutOrderMetaByUuid(cartUuid, req.business.id) : null;
+    const cart = cartUuid ? await getCartMetaByUuid(cartUuid, req.business.id) : null;
     const liveCart = await getAllCartItemsByTableIdOrCartIdandZoneId(
       table ? table.id : undefined,
       cart ? cart.id : undefined,

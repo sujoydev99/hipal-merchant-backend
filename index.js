@@ -26,7 +26,7 @@ const errorMiddleware = require("./common/middlewares/error");
 // initialize the env configuration
 dotenv.config();
 
-const port = process.env.SERVER_PORT || 5001;
+const port = process.env.SERVER_PORT || process.env.PORT || 5001;
 const app = express();
 
 // enable cors

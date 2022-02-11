@@ -13,10 +13,9 @@ exports.createUpdateCartItemValidations = async (req, res, next) => {
       userContactNumber: "string",
       userName: "string",
       cartItemUuid: "string",
+      cartUuid: "string",
     };
     await validateRules(req.body, cartItemValidationRules);
-    // const cartItemAddonsValidationRules = {};
-    // await validateRules(req.body, cartItemAddonsValidationRules);
     next();
   } catch (error) {
     next(error);

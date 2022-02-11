@@ -99,7 +99,7 @@ exports.getAllCartItemsByTableIdOrCartIdandZoneId = (
     const { cartItems, items, portions, cartAddons, addons, carts } = await dbConn();
     try {
       const cart = await carts.findOne({
-        where: clean({ businessId, tableId, zoneId, cartId }),
+        where: clean({ businessId, tableId, zoneId, id: cartId }),
         attributes: { exclude: DEFAULT_EXCLUDE },
         include: {
           model: cartItems,
