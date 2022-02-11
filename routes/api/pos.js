@@ -11,7 +11,10 @@ const {
   deleteCartItem,
   updateCartItemStatus,
 } = require("../../common/middlewares/handlers/pos");
-const { createUpdateCartItemValidations } = require("../../common/middlewares/validations/pos/pos");
+const {
+  createUpdateCartItemValidations,
+  updatecartItemStatusValidations,
+} = require("../../common/middlewares/validations/pos/pos");
 
 // get all business categories and items with meta data (subcategory and item, addons, portion)
 router.get("/:businessUuid", verifyToken(), getAllBusinessCategoriesAndItems);
@@ -28,6 +31,11 @@ router.get("/:businessUuid/:zoneUuid", verifyToken(), getAllOutOrders);
 // get all liveCart data by zoneId and tableId or outOrderId
 router.get("/:businessUuid/:zoneUuid/:tableUuid", verifyToken(), getLiveCartByZoneOrTable);
 router.delete("/:businessUuid/:cartItemUuid", verifyToken(), deleteCartItem);
-router.put("/:businessUuid/:cartItemUuid", verifyToken(), updateCartItemStatus);
+router.put(
+  "/:businessUuid/:cartItemUuid",
+  verifyToken(),
+  updatecartItemStatusValidations,
+  updateCartItemStatus
+);
 
 module.exports = router;

@@ -52,3 +52,14 @@ exports.createUpdateAddonValidations = async (req, res, next) => {
     next(error);
   }
 };
+exports.updatecartItemStatusValidations = async (req, res, next) => {
+  try {
+    const validationRules = {
+      status: "required|string|in:KOT,SELECTION",
+    };
+    await validateRules(req.body, validationRules);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
