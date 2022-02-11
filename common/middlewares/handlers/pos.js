@@ -7,6 +7,7 @@ const {
   deleteCartAddonsByCartItemId,
   getAllCartItemsByTableIdOrOutOrderIdandZoneId,
   getAllOutOrdersZoneId,
+  deleteCartItemByIdBusinessId,
 } = require("../../../repository/cartItems");
 
 const {
@@ -30,6 +31,7 @@ const {
   NOT_FOUND,
   POS_DATA_CREATED,
   POS_DATA_UDATED,
+  POS_DATA_DELETED,
 } = require("../../constants/messages");
 const { POS_SYSTEM } = require("../../constants/pos");
 const response = require("../response");
@@ -200,3 +202,26 @@ exports.getAllOutOrders = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.deleteCartItem = async (req, res, next) => {
+  try {
+    const { cartItemUuid } = req.params;
+    const cartItem = await getCartItem(cartItemUuid, req.business.id, transaction);
+    if (!cartItem) throw NOT_FOUND;
+    await deleteCartItemByIdBusinessId(transaction, cartItem.id, req.business.id);
+    response(POS_DATA_DELETED, "pos", {}, req, res, next);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// exports.deleteCart = async (req, res, next) => {
+//   try {
+//     const { tableUuid, outOrderUuid } = req.query;
+//     const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
+//     const liveCart = await getAllOutOrdersZoneId(zone.id, req.business.id);
+//     response(POS_DATA_FETCHED, "pos", liveCart, req, res, next);
+//   } catch (error) {
+//     next(error);
+//   }
+// };

@@ -34,7 +34,16 @@ exports.getCartItem = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
     const { cartItems } = await dbConn();
     try {
-      const cartItem = await cartItems.findOne({ where: { uuid, businessId }, transaction });
+      const cartItem = await cartItems.findOne({
+        where: {
+          uuid,
+          businessId,
+          status: {
+            [Op.in]: [POS_SYSTEM.KOT, POS_SYSTEM.SELECTION],
+          },
+        },
+        transaction,
+      });
       resolve(cartItem);
     } catch (error) {
       reject(error);
@@ -57,6 +66,17 @@ exports.deleteCartAddonsByCartItemId = (transaction, cartItemId) => {
     const { cartAddons } = await dbConn();
     try {
       const item = await cartAddons.destroy({ where: { cartItemId }, transaction });
+      resolve(item);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+exports.deleteCartItemByIdBusinessId = (transaction, cartItemId, businessId) => {
+  return new Promise(async (resolve, reject) => {
+    const { cartItems } = await dbConn();
+    try {
+      const item = await cartItems.destroy({ where: { cartItemId, businessId }, transaction });
       resolve(item);
     } catch (error) {
       reject(error);

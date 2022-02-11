@@ -307,15 +307,19 @@ module.exports = {
     statusCode: 201,
   },
   POS_DATA_FETCHED: {
-    customMessage: "Pos data fetched",
+    customMessage: "Item/s fetched",
     statusCode: 200,
   },
   POS_DATA_CREATED: {
-    customMessage: "Pos data created",
+    customMessage: "Item/s created",
     statusCode: 201,
   },
   POS_DATA_UDATED: {
-    customMessage: "Pos data updated",
+    customMessage: "Item/s updated",
+    statusCode: 200,
+  },
+  POS_DATA_DELETED: {
+    customMessage: "Item/s deleted",
     statusCode: 200,
   },
 };
