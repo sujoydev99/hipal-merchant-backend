@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 module.exports = {
   development: {
     username: process.env.DBUSERNAME,
@@ -7,7 +7,7 @@ module.exports = {
     providerDatabase: process.env.PROVIDER_DATABASE,
     host: process.env.HOST,
     dialect: process.env.DIALECT,
-    port: process.env.PORT,
+    port: process.env.DBPORT,
     freezeTableName: true,
     pool: {
       max: 10,
@@ -29,7 +29,7 @@ module.exports = {
     providerDatabase: process.env.PROVIDER_DATABASE,
     host: process.env.HOST,
     dialect: process.env.DIALECT,
-    port: process.env.PORT,
+    port: process.env.DBPORT,
     freezeTableName: true,
     pool: {
       max: 10,
@@ -45,7 +45,7 @@ module.exports = {
     providerDatabase: process.env.PROVIDER_DATABASE,
     host: process.env.HOST,
     dialect: process.env.DIALECT,
-    port: process.env.PORT,
+    port: process.env.DBPORT,
     freezeTableName: true,
     pool: {
       max: 10,
