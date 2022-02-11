@@ -72,11 +72,11 @@ exports.deleteCartAddonsByCartItemId = (transaction, cartItemId) => {
     }
   });
 };
-exports.deleteCartItemByIdBusinessId = (transaction, cartItemId, businessId) => {
+exports.deleteCartItemByIdBusinessId = (transaction, id, businessId) => {
   return new Promise(async (resolve, reject) => {
     const { cartItems } = await dbConn();
     try {
-      const item = await cartItems.destroy({ where: { cartItemId, businessId }, transaction });
+      const item = await cartItems.destroy({ where: { id, businessId }, transaction });
       resolve(item);
     } catch (error) {
       reject(error);
