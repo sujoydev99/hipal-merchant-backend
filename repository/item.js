@@ -226,7 +226,7 @@ exports.getAllItemsByBusinessIdAndOrCategoryIdForPos = (businessId, categoryId, 
   return new Promise(async (resolve, reject) => {
     const { items, portions, categories, addons } = await dbConn();
     try {
-      let whereFilter = { businessId };
+      let whereFilter = { businessId, isActive: true };
       if (categoryId !== undefined) whereFilter.categoryId = categoryId;
       console.log(whereFilter);
       const itemsArr = await items.findAll({
