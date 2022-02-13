@@ -9,7 +9,7 @@ const {
   getLiveCartByZoneOrTable,
   deleteCartItem,
   updateCartItemStatus,
-  getAllCarts,
+  getAllCartsByZone,
 } = require("../../common/middlewares/handlers/pos");
 const {
   createUpdateCartItemValidations,
@@ -28,8 +28,8 @@ router.post(
 
 router.get("/:businessUuid/:zoneUuid", verifyToken(), getAllCarts);
 
-// get all liveCart data by zoneId and tableId or outOrderId
-router.get("/:businessUuid/:zoneUuid/:tableUuid", verifyToken(), getLiveCartByZoneOrTable);
+// get all liveCart data by zoneId
+router.get("/:businessUuid/carts/:zoneUuid", verifyToken(), getAllCartsByZone);
 router.delete("/:businessUuid/:cartItemUuid", verifyToken(), deleteCartItem);
 router.put(
   "/:businessUuid/:cartItemUuid",
