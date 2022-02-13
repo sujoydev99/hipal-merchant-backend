@@ -129,20 +129,20 @@ exports.getAllCartsZoneId = (zoneId, businessId, transaction) => {
     const { cartItems, items, portions, cartAddons, addons, carts } = await dbConn();
     try {
       const cartArr = await carts.findAll({
-        attribute: { exclude: DEFAULT_EXCLUDE },
+        attributes: { exclude: DEFAULT_EXCLUDE },
         include: {
           model: cartItems,
           as: "cartItems",
           where: { zoneId, businessId },
-          attribute: { exclude: DEFAULT_EXCLUDE },
+          attributes: { exclude: DEFAULT_EXCLUDE },
           include: [
-            { model: items, as: "item", attribute: { exclude: DEFAULT_EXCLUDE } },
-            { model: portions, as: "portion", attribute: { exclude: DEFAULT_EXCLUDE } },
+            { model: items, as: "item", attributes: { exclude: DEFAULT_EXCLUDE } },
+            { model: portions, as: "portion", attributes: { exclude: DEFAULT_EXCLUDE } },
             {
               model: cartAddons,
               as: "cartAddons",
-              attribute: { exclude: DEFAULT_EXCLUDE },
-              include: [{ model: addons, as: "addon", attribute: { exclude: DEFAULT_EXCLUDE } }],
+              attributes: { exclude: DEFAULT_EXCLUDE },
+              include: [{ model: addons, as: "addon", attributes: { exclude: DEFAULT_EXCLUDE } }],
             },
           ],
         },

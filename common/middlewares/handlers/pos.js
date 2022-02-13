@@ -236,14 +236,3 @@ exports.updateCartItemStatus = async (req, res, next) => {
     next(error);
   }
 };
-
-// exports.deleteCart = async (req, res, next) => {
-//   try {
-//     const { tableUuid, outOrderUuid } = req.query;
-//     const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
-//     const liveCart = await getAllOutOrdersZoneId(zone.id, req.business.id);
-//     response(POS_DATA_FETCHED, "pos", liveCart, req, res, next);
-//   } catch (error) {
-//     next(error);
-//   }
-// };

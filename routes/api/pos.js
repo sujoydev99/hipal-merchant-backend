@@ -17,7 +17,9 @@ const {
 } = require("../../common/middlewares/validations/pos/pos");
 
 // get all business categories and items with meta data (subcategory and item, addons, portion)
+// ?categoryUuid=all/root/`uuid`
 router.get("/:businessUuid", verifyToken(), getAllBusinessCategoriesAndItems);
+
 // create/update live cart
 router.post(
   "/:businessUuid",
@@ -25,11 +27,6 @@ router.post(
   createUpdateCartItemValidations,
   createUpdateLiveCartItem
 );
-
-router.get("/:businessUuid/:zoneUuid", verifyToken(), getAllCarts);
-
-// get all liveCart data by zoneId
-router.get("/:businessUuid/carts/:zoneUuid", verifyToken(), getAllCartsByZone);
 router.delete("/:businessUuid/:cartItemUuid", verifyToken(), deleteCartItem);
 router.put(
   "/:businessUuid/:cartItemUuid",
@@ -37,5 +34,9 @@ router.put(
   updatecartItemStatusValidations,
   updateCartItemStatus
 );
+router.get("/:businessUuid/:zoneUuid/carts", verifyToken(), getAllCartsByZone);
+
+//  ?cartUuid
+router.get("/:businessUuid/:zoneUuid/:tableUuid", verifyToken(), getLiveCartByZoneOrTable);
 
 module.exports = router;
