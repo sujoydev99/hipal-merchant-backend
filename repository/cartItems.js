@@ -124,11 +124,11 @@ exports.getAllCartItemsByTableIdOrCartIdandZoneId = (
     }
   });
 };
-exports.getAllOutOrdersZoneId = (zoneId, businessId, transaction) => {
+exports.getAllCartsZoneId = (zoneId, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { cartItems, items, portions, cartAddons, addons, outOrders } = await dbConn();
+    const { cartItems, items, portions, cartAddons, addons, carts } = await dbConn();
     try {
-      const outArr = await outOrders.findAll({
+      const cartArr = await carts.findAll({
         attribute: { exclude: DEFAULT_EXCLUDE },
         include: {
           model: cartItems,
@@ -149,7 +149,7 @@ exports.getAllOutOrdersZoneId = (zoneId, businessId, transaction) => {
 
         transaction,
       });
-      resolve(outArr);
+      resolve(cartArr);
     } catch (error) {
       reject(error);
     }

@@ -6,10 +6,10 @@ const {
   updateCartItemByIdBusinessId,
   deleteCartAddonsByCartItemId,
   getAllCartItemsByTableIdOrCartIdandZoneId,
-  getAllOutOrdersZoneId,
   deleteCartItemByIdBusinessId,
   getCartMetaByIdBusinessId,
   deleteCartByIdBusinessId,
+  getAllCartsZoneId,
 } = require("../../../repository/cartItems");
 
 const {
@@ -189,12 +189,13 @@ exports.getLiveCartByZoneOrTable = async (req, res, next) => {
   }
 };
 
-exports.getAllCarts = async (req, res, next) => {
+exports.getAllCartsByZone = async (req, res, next) => {
   try {
-    const { zoneUuid, tableUuid } = req.query;
+    const { zoneUuid } = req.params;
     const zone = await getZoneMetaByUuid(zoneUuid, req.business.id);
-    const liveCart = await getAllOutOrdersZoneId(zone.id, req.business.id);
-    response(POS_DATA_FETCHED, "pos", liveCart, req, res, next);
+    if (!zone) throw NOT_FOUND;
+    let data = await getAllCartsZoneId(zone.id, req.business.id);
+    response(POS_DATA_FETCHED, "pos", data, req, res, next);
   } catch (error) {
     next(error);
   }
