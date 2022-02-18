@@ -26,5 +26,6 @@ module.exports = {
     "addonId",
     "itemAddons",
     "cartId",
+    "taxCategoryId",
   ],
 };

@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         as: "station",
         onDelete: "RESTRICT",
       });
+      items.belongsTo(models.taxCategory, {
+        foreignKey: "taxCategoryId",
+        as: "taxCategory",
+        onDelete: "RESTRICT",
+      });
       items.hasMany(models.portions, {
         foreignKey: "itemId",
         as: "portions",
@@ -39,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       uuid: { type: DataTypes.STRING, unique: true },
       businessId: { type: DataTypes.INTEGER, allowNull: false },
+      taxCategoryId: { type: DataTypes.INTEGER, allowNull: false },
       stationId: { type: DataTypes.INTEGER, allowNull: true },
       categoryId: {
         type: DataTypes.INTEGER,

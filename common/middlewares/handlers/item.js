@@ -14,6 +14,7 @@ const {
   getAddonMetaByUuidArrays,
 } = require("../../../repository/item");
 const { getStationMetaByUuid } = require("../../../repository/station");
+const { getTaxcategoryMetaByUuid } = require("../../../repository/taxCategory");
 
 const {
   NOT_FOUND,
@@ -30,15 +31,21 @@ exports.createItem = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
-    const { categoryUuid = null, stationUuid, addons = [] } = req.body;
+    const { categoryUuid = null, stationUuid, addons = [], taxCategoryUuid } = req.body;
     const category = await getCategoryMetaByUuid(categoryUuid, req.business.id, transaction);
     const station = await getStationMetaByUuid(stationUuid, req.business.id, transaction);
-    if (!station) throw NOT_FOUND;
+    const taxCategory = await getTaxcategoryMetaByUuid(
+      taxCategoryUuid,
+      req.business.id,
+      transaction
+    );
+    if (!station || !taxCategory) throw NOT_FOUND;
     const item = await createItem(transaction, {
       ...req.body,
       businessId: req.business.id,
       categoryId: category ? category.id : null,
       stationId: station.id,
+      taxCategoryId: taxCategory.id,
     });
     if (addons.length > 0) {
       const addonsUuidArr = [];
@@ -65,15 +72,21 @@ exports.updateItem = async (req, res, next) => {
   let transaction = await sequelize.transaction();
   try {
     const { itemUuid } = req.params;
-    const { categoryUuid = null, stationUuid, addons = [] } = req.body;
+    const { categoryUuid = null, stationUuid, addons = [], taxCategoryUuid } = req.body;
     const category = await getCategoryMetaByUuid(categoryUuid, req.business.id, transaction);
     const station = await getStationMetaByUuid(stationUuid, req.business.id, transaction);
-    if (!station) throw NOT_FOUND;
+    const taxCategory = await getTaxcategoryMetaByUuid(
+      taxCategoryUuid,
+      req.business.id,
+      transaction
+    );
+    if (!station || !taxCategory) throw NOT_FOUND;
     const item = await getItemMetaByUuid(itemUuid, req.business.id, transaction);
     await updateItemByUuidBusinessId(transaction, itemUuid, req.business.id, {
       ...req.body,
       categoryId: category ? category.id : null,
       stationId: station.id,
+      taxCategoryId: taxCategory.id,
     });
     for (let i = 0; i < item.addons.length; i++)
       await item.removeAddons(item.addons[i], { transaction });

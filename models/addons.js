@@ -15,12 +15,18 @@ module.exports = (sequelize, DataTypes) => {
         as: "items",
         through: "itemAddons",
       });
+      addons.belongsTo(models.taxCategory, {
+        foreignKey: "taxCategoryId",
+        as: "taxCategory",
+        onDelete: "RESTRICT",
+      });
     }
   }
   addons.init(
     {
       uuid: { type: DataTypes.STRING, unique: true },
       businessId: { type: DataTypes.INTEGER, allowNull: false },
+      taxCategoryId: { type: DataTypes.INTEGER, allowNull: false },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -32,8 +38,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       notes: DataTypes.STRING,
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
-      sgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
-      cgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
+      // sgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
+      // cgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
     },
     {
       sequelize,

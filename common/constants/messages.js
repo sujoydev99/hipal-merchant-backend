@@ -274,6 +274,22 @@ module.exports = {
     customMessage: "Station Deleted",
     statusCode: 200,
   },
+  TAX_CREATED: {
+    customMessage: "Your Tax Category has been created",
+    statusCode: 201,
+  },
+  TAX_UPDATED: {
+    customMessage: "Your Tax Category has been updated",
+    statusCode: 200,
+  },
+  TAX_FETCHED: {
+    customMessage: "Your Tax Category",
+    statusCode: 200,
+  },
+  TAX_DELETED: {
+    customMessage: "Tax Category Deleted",
+    statusCode: 200,
+  },
   ITEM_CREATED: {
     customMessage: "Your item has been created",
     statusCode: 201,

@@ -9,7 +9,7 @@ async function run() {
     logger.info(process.env.DBUSERNAME);
     logger.info(process.env.PASSWORD);
     logger.info(process.env.HOST);
-    logger.info(process.env.PORT);
+    logger.info(process.env.DBPORT);
     logger.info(process.env.DATABASE);
     await db.sequelize.sync({ alter: true, transaction });
     transaction.commit();

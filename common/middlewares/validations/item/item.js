@@ -15,8 +15,7 @@ exports.createUpdateItemValidations = async (req, res, next) => {
       "addons.*.tag": "required|string",
       isActive: "required|boolean",
       categoryUuid: "string",
-      cgst: "required|numeric",
-      sgst: "required|numeric",
+      taxCategoryUuid: "required|string",
     };
     await validateRules(req.body, validationRules);
     let tagsArray = [];
@@ -57,8 +56,7 @@ exports.createUpdateAddonValidations = async (req, res, next) => {
       price: "required|integer",
       notes: "string",
       isActive: "boolean",
-      cgst: "required|numeric",
-      sgst: "required|numeric",
+      taxCategoryUuid: "required|string",
     };
     await validateRules(req.body, validationRules);
     next();
