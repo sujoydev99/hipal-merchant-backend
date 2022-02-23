@@ -23,6 +23,7 @@ const item = require("./routes/api/item");
 const addon = require("./routes/api/addon");
 const pos = require("./routes/api/pos");
 const tax = require("./routes/api/taxCategory");
+const kds = require("./routes/api/kds");
 const errorMiddleware = require("./common/middlewares/error");
 // initialize the env configuration
 dotenv.config();
@@ -67,6 +68,7 @@ app.use("/api/tax", tax);
 app.use("/api/item", item);
 app.use("/api/addon", addon);
 app.use("/api/pos", pos);
+app.use("/api/kds", kds);
 app.use(errorMiddleware);
 
 // initializeMessageHandler();

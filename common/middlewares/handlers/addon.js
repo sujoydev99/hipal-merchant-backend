@@ -1,5 +1,6 @@
 const dbConn = require("../../../models");
 const { getCategoryMetaByUuid } = require("../../../repository/category");
+const { getTaxcategoryMetaByUuid } = require("../../../repository/taxCategory");
 const {
   createItem,
   updateItemByUuidBusinessId,
@@ -38,9 +39,17 @@ exports.createAddon = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
+    const { taxCategoryUuid } = req.body;
+    const taxCategory = await getTaxcategoryMetaByUuid(
+      taxCategoryUuid,
+      req.business.id,
+      transaction
+    );
+    if (!taxCategory) throw NOT_FOUND;
     const addon = await createAddon(transaction, {
       ...req.body,
       businessId: req.business.id,
+      taxCategoryId: taxCategory.id,
     });
 
     transaction.commit();
@@ -54,11 +63,19 @@ exports.updateAddon = async (req, res, next) => {
   const { sequelize } = await dbConn();
   let transaction = await sequelize.transaction();
   try {
+    const { taxCategoryUuid } = req.body;
     const { addonUuid } = req.params;
+    const taxCategory = await getTaxcategoryMetaByUuid(
+      taxCategoryUuid,
+      req.business.id,
+      transaction
+    );
+    if (!taxCategory) throw NOT_FOUND;
     const addon = await getAddonMetaByUuid(addonUuid, req.business.id, transaction);
     if (!addon) throw NOT_FOUND;
     await updateAddonByUuidBusinessId(transaction, addonUuid, req.business.id, {
       ...req.body,
+      taxCategoryId: taxCategory.id,
     });
     transaction.commit();
     response(ADDON_UPDATED, "item", {}, req, res, next);

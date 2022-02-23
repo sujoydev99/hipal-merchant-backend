@@ -347,6 +347,18 @@ module.exports = {
     customMessage: "Item/s deleted",
     statusCode: 200,
   },
+  KDS_DATA_FETCHED: {
+    customMessage: "Item/s fetched",
+    statusCode: 200,
+  },
+  KDS_DATA_UDATED: {
+    customMessage: "Item/s updated",
+    statusCode: 200,
+  },
+  KDS_DATA_DELETED: {
+    customMessage: "Item/s deleted",
+    statusCode: 200,
+  },
   INVELID_STATUS: {
     customMessage: "The provided status is invalid",
     statusCode: 400,

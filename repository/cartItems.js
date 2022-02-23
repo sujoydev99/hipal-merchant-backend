@@ -190,3 +190,79 @@ exports.deleteCartByIdBusinessId = (id, businessId, transaction) => {
     }
   });
 };
+
+exports.getAllKdsCartsByStationIdBusinessId = (stationId, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { cartItems, items, portions, cartAddons, addons, carts, tables } = await dbConn();
+    try {
+      const cartArr = await carts.findAll({
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        include: [
+          { model: tables, as: "table", attributes: { exclude: DEFAULT_EXCLUDE } },
+          {
+            model: cartItems,
+            as: "cartItems",
+            where: { businessId },
+            attributes: { exclude: DEFAULT_EXCLUDE },
+            include: [
+              {
+                model: items,
+                as: "item",
+                attributes: { exclude: DEFAULT_EXCLUDE },
+                where: { stationId, businessId },
+              },
+              { model: portions, as: "portion", attributes: { exclude: DEFAULT_EXCLUDE } },
+              {
+                model: cartAddons,
+                as: "cartAddons",
+                attributes: { exclude: DEFAULT_EXCLUDE },
+                include: [{ model: addons, as: "addon", attributes: { exclude: DEFAULT_EXCLUDE } }],
+              },
+            ],
+          },
+        ],
+
+        transaction,
+      });
+      resolve(cartArr);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+exports.getAllKdsCartItemsByStationIdBusinessId = (stationId, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { cartItems, items, portions, cartAddons, addons, carts, tables } = await dbConn();
+    try {
+      const cartArr = await cartItems.findAll({
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        include: [
+          {
+            model: carts,
+            as: "cart",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+            include: [{ model: tables, as: "table", attributes: { exclude: DEFAULT_EXCLUDE } }],
+          },
+          {
+            model: items,
+            as: "item",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+            where: { stationId, businessId },
+          },
+          { model: portions, as: "portion", attributes: { exclude: DEFAULT_EXCLUDE } },
+          {
+            model: cartAddons,
+            as: "cartAddons",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+            include: [{ model: addons, as: "addon", attributes: { exclude: DEFAULT_EXCLUDE } }],
+          },
+        ],
+
+        transaction,
+      });
+      resolve(cartArr);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

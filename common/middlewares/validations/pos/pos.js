@@ -62,3 +62,14 @@ exports.updatecartItemStatusValidations = async (req, res, next) => {
     next(error);
   }
 };
+exports.updateKdsItemStatusValidations = async (req, res, next) => {
+  try {
+    const validationRules = {
+      status: "required|string|in:KOT,SELECTION,COOKING,COOKED,SERVED",
+    };
+    await validateRules(req.body, validationRules);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};

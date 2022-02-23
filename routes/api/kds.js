@@ -2,37 +2,25 @@ const express = require("express");
 const router = express.Router();
 const { PRIVILEGES, ROLES } = require("../../common/constants/rolesAndPrivileges");
 const { verifyToken } = require("../../common/middlewares/authentication");
+const { getKdsItemsByStation } = require("../../common/middlewares/handlers/kds");
 
 const {
   getAllBusinessCategoriesAndItems,
-  createUpdateLiveCartItem,
-  getLiveCartByZoneOrTable,
-  getAllOutOrders,
   deleteCartItem,
   updateCartItemStatus,
 } = require("../../common/middlewares/handlers/pos");
-const {
-  createUpdateCartItemValidations,
-  updatecartItemStatusValidations,
-} = require("../../common/middlewares/validations/pos/pos");
+const { updateKdsItemStatusValidations } = require("../../common/middlewares/validations/pos/pos");
 
-// get all by tickets zone
-router.get("/:businessUuid/:stationId", verifyToken(), getAllBusinessCategoriesAndItems);
-// create/update live cart
-router.post(
-  "/:businessUuid",
-  verifyToken(),
-  createUpdateCartItemValidations,
-  createUpdateLiveCartItem
-);
+// get all kds by station in ticket/cart mode ?mode:=ticket/cart
+router.get("/:businessUuid/:stationUuid", verifyToken(), getKdsItemsByStation);
+// delete cart item
+router.delete("/:businessUuid/:cartItemUuid", verifyToken(), deleteCartItem);
 
-router.get("/:businessUuid/:zoneUuid", verifyToken(), getAllOutOrders);
-
-// get all liveCart data by zoneId and tableId or outOrderId
+// update cart item status
 router.put(
   "/:businessUuid/:cartItemUuid",
   verifyToken(),
-  updatecartItemStatusValidations,
+  updateKdsItemStatusValidations,
   updateCartItemStatus
 );
 
