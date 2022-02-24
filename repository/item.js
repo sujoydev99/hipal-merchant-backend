@@ -30,7 +30,7 @@ exports.updateItemByUuidBusinessId = (transaction, uuid, businessId, itemObj) =>
 
 exports.getItemByUuidBusinessId = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { items, portions, categories, addons, stations } = await dbConn();
+    const { items, portions, categories, addons, stations, taxCategory } = await dbConn();
     try {
       const item = await items.findOne({
         where: { uuid, businessId },
@@ -57,6 +57,11 @@ exports.getItemByUuidBusinessId = (uuid, businessId, transaction) => {
             as: "station",
             attributes: { exclude: DEFAULT_EXCLUDE },
           },
+          {
+            model: taxCategory,
+            as: "taxCategory",
+            attributes: { exclude: DEFAULT_EXCLUDE },
+          },
         ],
       });
       resolve(item);
@@ -68,7 +73,7 @@ exports.getItemByUuidBusinessId = (uuid, businessId, transaction) => {
 
 exports.getAllItemsByBusinessIdAndOrCategoryId = (businessId, categoryId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { items, portions, categories, addons } = await dbConn();
+    const { items, portions, categories, addons, taxCategory } = await dbConn();
     try {
       let whereFilter = { businessId };
       if (categoryId !== undefined) whereFilter.categoryId = categoryId;
@@ -92,6 +97,11 @@ exports.getAllItemsByBusinessIdAndOrCategoryId = (businessId, categoryId, transa
             as: "addons",
             attributes: { exclude: DEFAULT_EXCLUDE },
             through: { attributes: [] },
+          },
+          {
+            model: taxCategory,
+            as: "taxCategory",
+            attributes: { exclude: DEFAULT_EXCLUDE },
           },
         ],
       });
@@ -329,11 +339,16 @@ exports.updateAddonByUuidBusinessId = (transaction, uuid, businessId, itemObj) =
 
 exports.getAddonsByBusinessId = (businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { addons } = await dbConn();
+    const { addons, taxCategory } = await dbConn();
     try {
       const addon = await addons.findAll({
         where: { businessId },
         attributes: { exclude: DEFAULT_EXCLUDE },
+        include: {
+          model: taxCategory,
+          as: "taxCategory",
+          attributes: { exclude: DEFAULT_EXCLUDE },
+        },
         transaction,
       });
       resolve(addon);
@@ -345,11 +360,16 @@ exports.getAddonsByBusinessId = (businessId, transaction) => {
 
 exports.getAddonByUuidBusinessId = (uuid, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { addons } = await dbConn();
+    const { addons, taxCategory } = await dbConn();
     try {
       const addon = await addons.findOne({
         where: { uuid, businessId },
         attributes: { exclude: DEFAULT_EXCLUDE },
+        include: {
+          model: taxCategory,
+          as: "taxCategory",
+          attributes: { exclude: DEFAULT_EXCLUDE },
+        },
         transaction,
       });
       resolve(addon);
