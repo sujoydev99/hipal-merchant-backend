@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "businessUserRoles",
-      paranoid: true,
+      paranoid: false,
     }
   );
   return businessUserRoles;

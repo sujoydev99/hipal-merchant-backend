@@ -232,7 +232,7 @@ exports.getAllKdsCartsByStationIdBusinessId = (stationId, businessId, transactio
 };
 exports.getAllKdsCartItemsByStationIdBusinessId = (stationId, businessId, transaction) => {
   return new Promise(async (resolve, reject) => {
-    const { cartItems, items, portions, cartAddons, addons, carts, tables } = await dbConn();
+    const { cartItems, items, portions, cartAddons, addons, carts, tables, zones } = await dbConn();
     try {
       const cartArr = await cartItems.findAll({
         attributes: { exclude: DEFAULT_EXCLUDE },
@@ -241,7 +241,15 @@ exports.getAllKdsCartItemsByStationIdBusinessId = (stationId, businessId, transa
             model: carts,
             as: "cart",
             attributes: { exclude: DEFAULT_EXCLUDE },
-            include: [{ model: tables, as: "table", attributes: { exclude: DEFAULT_EXCLUDE } }],
+            include: [
+              {
+                model: tables,
+                as: "table",
+                attributes: { exclude: DEFAULT_EXCLUDE },
+                required: false,
+              },
+              { model: zones, as: "zone", attributes: { exclude: DEFAULT_EXCLUDE } },
+            ],
           },
           {
             model: items,

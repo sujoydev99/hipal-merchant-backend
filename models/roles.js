@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "roles",
-      paranoid: true,
+      paranoid: false,
     }
   );
   roles.beforeCreate((role, _) => {

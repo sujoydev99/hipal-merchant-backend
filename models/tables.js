@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "tables",
-      paranoid: true,
+      paranoid: false,
     }
   );
   tables.beforeCreate((doc, _) => {

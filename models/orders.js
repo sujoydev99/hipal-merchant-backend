@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "orders",
-      paranoid: true,
+      paranoid: false,
     }
   );
   orders.beforeCreate((doc, _) => {
