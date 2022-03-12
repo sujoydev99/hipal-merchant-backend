@@ -93,7 +93,7 @@ exports.getCartMetaByUuid = (uuid, businessId, transaction) => {
     const { carts } = await dbConn();
     try {
       const cart = await carts.findOne({
-        where: { uuid, businessId },
+        where: { uuid, businessId, isSettled: false },
         transaction,
       });
       resolve(cart);
@@ -120,6 +120,21 @@ exports.getCartMetaByTableIdZoneId = (tableId, zoneId, transaction) => {
     try {
       const cart = await carts.findOne({ where: { tableId, zoneId }, transaction });
       resolve(cart);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+exports.updateCartByIdBusinessId = (transaction, id, businessId, cartObj) => {
+  return new Promise(async (resolve, reject) => {
+    const { carts } = await dbConn();
+    try {
+      await carts.update(cartObj, {
+        where: { id, businessId },
+        transaction,
+      });
+      resolve();
     } catch (error) {
       reject(error);
     }

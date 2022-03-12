@@ -363,4 +363,16 @@ module.exports = {
     customMessage: "The provided status is invalid",
     statusCode: 400,
   },
+  SETTLEMENT_CREATED: {
+    customMessage: "Cart has been settled successfully",
+    statusCode: 200,
+  },
+  SETTELMENT_CALCULATION_ERROR: {
+    customMessage: "Cannot settle with invalid calculations",
+    statusCode: 400,
+  },
+  CART_CONFIRMED: {
+    customMessage: "Cart comfirmed, moved all items to KOT",
+    statusCode: 200,
+  },
 };

@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       tableId: { type: DataTypes.INTEGER, allowNull: true },
       zoneId: { type: DataTypes.INTEGER, allowNull: false },
       token: { type: DataTypes.INTEGER, defaultValue: 1 },
+      isSettled:{type:DataTypes.BOOLEAN, defaultValue:false},
       type: { type: DataTypes.STRING, allowNull: false, comment: "DINE-IN/DELIVERY/TAKE-AWAY" },
     },
     {

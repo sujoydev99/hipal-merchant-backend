@@ -10,16 +10,31 @@ const {
   deleteCartItem,
   updateCartItemStatus,
   getAllCartsByZone,
+  settlementHandler,
+  confirmCartHandler,
 } = require("../../common/middlewares/handlers/pos");
 const {
   createUpdateCartItemValidations,
   updatecartItemStatusValidations,
+  settlementValidations,
 } = require("../../common/middlewares/validations/pos/pos");
 
 // get all business categories and items with meta data (subcategory and item, addons, portion)
 // ?categoryUuid=all/root/`uuid`
 router.get("/:businessUuid", verifyToken(), getAllBusinessCategoriesAndItems);
 
+// settle live cart
+router.post(
+  "/:businessUuid/settle",
+  verifyToken(),
+  settlementValidations,
+  settlementHandler
+);
+router.put(
+  "/:businessUuid/confirm/:cartUuid",
+  verifyToken(),
+  confirmCartHandler
+);
 // create/update live cart
 router.post(
   "/:businessUuid",

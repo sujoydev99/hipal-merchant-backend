@@ -88,6 +88,56 @@ exports.deleteCartItemByIdBusinessId = (transaction, id, businessId) => {
   });
 };
 
+exports.getAllCartItemsByCartIdBusinessId = (cartId, businessId, transaction) => {
+  return new Promise(async (resolve, reject) => {
+    const { cartItems, items, portions, cartAddons, addons, carts, taxCategory } = await dbConn();
+    try {
+      const cart = await carts.findOne({
+        where: clean({ businessId, id: cartId }),
+        attributes: { exclude: DEFAULT_EXCLUDE },
+        include: {
+          model: cartItems,
+          as: "cartItems",
+          attributes: { exclude: DEFAULT_EXCLUDE },
+          include: [
+            {
+              model: items,
+              as: "item",
+              attributes: { exclude: DEFAULT_EXCLUDE },
+              include: {
+                model: taxCategory,
+                as: "taxCategory",
+                attributes: { exclude: DEFAULT_EXCLUDE },
+              },
+            },
+            { model: portions, as: "portion", attributes: { exclude: DEFAULT_EXCLUDE } },
+            {
+              model: cartAddons,
+              as: "cartAddons",
+              attributes: { exclude: DEFAULT_EXCLUDE },
+              include: [
+                {
+                  model: addons,
+                  as: "addon",
+                  attributes: { exclude: DEFAULT_EXCLUDE },
+                  include: {
+                    model: taxCategory,
+                    as: "taxCategory",
+                    attributes: { exclude: DEFAULT_EXCLUDE },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        transaction,
+      });
+      resolve(cart);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 exports.getAllCartItemsByTableIdOrCartIdandZoneId = (
   tableId,
   cartId,
@@ -261,6 +311,22 @@ exports.getAllKdsCartItemsByStationIdBusinessId = (stationId, businessId, transa
         transaction,
       });
       resolve(cartArr);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+
+exports.updateCartItemKotByCartIdBusinessId = (transaction, cartId, businessId, itemObj) => {
+  return new Promise(async (resolve, reject) => {
+    const { cartItems } = await dbConn();
+    try {
+      const item = await cartItems.update(itemObj, {
+        where: { cartId, businessId },
+        transaction,
+      });
+      resolve(item);
     } catch (error) {
       reject(error);
     }

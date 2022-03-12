@@ -73,3 +73,22 @@ exports.updateKdsItemStatusValidations = async (req, res, next) => {
     next(error);
   }
 };
+
+
+exports.settlementValidations = async (req, res, next) => {
+  try {
+    const cartItemValidationRules = {
+      cartUuid: "required|string",
+      password:"string",discountAmount:"integer|min:0",
+      "paymentData.*.online":"required|integer|min:0",
+      "paymentData.*.cash":"required|integer|min:0",
+      "paymentData.*.card":"required|integer|min:0",
+      userContactNumber: "string",
+      userName: "string",
+    };
+    await validateRules(req.body, cartItemValidationRules);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};

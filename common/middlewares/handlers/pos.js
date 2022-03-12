@@ -1,3 +1,6 @@
+const { nanoid } = require("nanoid");
+const { password } = require("pg/lib/defaults");
+const { arrayToObject } = require("qs/lib/utils");
 const dbConn = require("../../../models");
 const {
   createCartItem,
@@ -10,6 +13,8 @@ const {
   getCartMetaByIdBusinessId,
   deleteCartByIdBusinessId,
   getAllCartsZoneId,
+  getAllCartItemsByCartIdBusinessId,
+  updateCartItemKotByCartIdBusinessId,
 } = require("../../../repository/cartItems");
 
 const {
@@ -21,7 +26,13 @@ const {
   getAllItemsByBusinessIdAndOrCategoryIdForPos,
   getItemPortionsAddonsMetaByUuid,
 } = require("../../../repository/item");
-const { getTableMetaByUuid, createCart, getCartMetaByUuid } = require("../../../repository/table");
+const { createOrder, createOrderItems } = require("../../../repository/order");
+const {
+  getTableMetaByUuid,
+  createCart,
+  getCartMetaByUuid,
+  updateCartByIdBusinessId,
+} = require("../../../repository/table");
 const { getZoneMetaByUuid } = require("../../../repository/zone");
 
 const {
@@ -30,8 +41,12 @@ const {
   POS_DATA_CREATED,
   POS_DATA_UDATED,
   POS_DATA_DELETED,
+  SETTLEMENT_CREATED,
+  SETTELMENT_CALCULATION_ERROR,
+  CART_CONFIRMED,
 } = require("../../constants/messages");
 const { POS_SYSTEM } = require("../../constants/pos");
+const { comparepw } = require("../../functions/bcrypt");
 const response = require("../response");
 
 exports.getAllBusinessCategoriesAndItems = async (req, res, next) => {
@@ -231,6 +246,143 @@ exports.updateCartItemStatus = async (req, res, next) => {
     await updateCartItemByIdBusinessId(transaction, cartItem.id, req.business.id, { status });
     transaction.commit();
     response(POS_DATA_UDATED, "pos", {}, req, res, next);
+  } catch (error) {
+    transaction.rollback();
+    next(error);
+  }
+};
+
+exports.settlementHandler = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    const { cartUuid, paymentData, userContactNumber, userName, password } = req.body;
+    if (password) await comparepw(password, req.user.password);
+    const cart = await getCartMetaByUuid(cartUuid, req.business.id, transaction);
+    if (!cart) throw NOT_FOUND;
+    let cartItems = await getAllCartItemsByCartIdBusinessId(cart.id, req.business.id, transaction);
+    cartItems = cartItems.cartItems;
+    if (!cartItems) throw NOT_FOUND;
+    const orderItems = [];
+    let order = {
+      businessId: req.business.id,
+      currency: req.business.currency,
+      paymentData,
+      userContactNumber,
+      userName,
+    };
+    let totalAmount = 0,
+      discountAmount = req.body.discountAmount || 0,
+      taxAmount = 0;
+    for (let i = 0; i < cartItems.length; i++) {
+      let ci = cartItems[i];
+      let ciad = ci.cartAddons;
+      let name = ci.item.name;
+      let quantity = ci.quantity;
+      let amount = ci.portion.price;
+      let taxData = ci.item.taxCategory.taxData;
+      totalAmount += amount;
+      let taxes = Object.keys(taxData);
+      taxes.map((val, index) => {
+        taxAmount += (taxData[val] / 100) * amount * quantity;
+      });
+      orderItems.push({ name, amount, quantity, taxData, businessId: req.business.id });
+
+      for (let i = 0; i < ciad.length; i++) {
+        let ca = ciad[i];
+        let name = ca.addon.name;
+        let quantity = ca.quantity;
+        let amount = ca.addon.price;
+        let taxData = ca.addon.taxCategory.taxData;
+        totalAmount += amount;
+        let taxes = Object.keys(taxData);
+        taxes.map((val, index) => {
+          taxAmount += (taxData[val] / 100) * amount * quantity;
+        });
+        orderItems.push({ name, amount, quantity, taxData, businessId: req.business.id });
+      }
+    }
+    order = {
+      ...order,
+      totalAmount,
+      discountAmount,
+      paidAmount: totalAmount - discountAmount,
+      taxAmount,
+    };
+    if (paymentData.cash + paymentData.online + paymentData.card != totalAmount - discountAmount)
+      throw SETTELMENT_CALCULATION_ERROR;
+    const orderData = await createOrder(transaction, order);
+    let temp = [];
+    orderItems.map((val, index) => {
+      temp.push({ ...val, orderId: orderData.id, uuid: "orderItem_" + nanoid() });
+    });
+    await createOrderItems(transaction, temp);
+    await updateCartByIdBusinessId(transaction, cart.id, req.business.id, { isSettled: true });
+    transaction.commit();
+    response(SETTLEMENT_CREATED, "pos", {}, req, res, next);
+  } catch (error) {
+    transaction.rollback();
+    next(error);
+  }
+};
+
+exports.confirmCartHandler = async (req, res, next) => {
+  const { sequelize } = await dbConn();
+  let transaction = await sequelize.transaction();
+  try {
+    const { cartUuid } = req.params;
+    const cart = await getCartMetaByUuid(cartUuid, req.business.id, transaction);
+    if (!cart) throw NOT_FOUND;
+    await updateCartItemKotByCartIdBusinessId(transaction, cart.id, req.business.id, {
+      status: POS_SYSTEM.KOT,
+    });
+    let cartItems = await getAllCartItemsByCartIdBusinessId(cart.id, req.business.id, transaction);
+    cartItems = cartItems.cartItems;
+    if (!cartItems) throw NOT_FOUND;
+    const orderItems = [];
+    let order = {
+      currency: req.business.currency,
+    };
+    let totalAmount = 0,
+      taxAmount = 0;
+    for (let i = 0; i < cartItems.length; i++) {
+      let ci = cartItems[i];
+      let ciad = ci.cartAddons;
+      let name = ci.item.name;
+      let quantity = ci.quantity;
+      let amount = ci.portion.price;
+      let taxData = ci.item.taxCategory.taxData;
+      totalAmount += amount;
+      let taxes = Object.keys(taxData);
+      taxes.map((val, index) => {
+        taxAmount += (taxData[val] / 100) * amount * quantity;
+      });
+      orderItems.push({ quantity, item: ci.item });
+
+      for (let i = 0; i < ciad.length; i++) {
+        let ca = ciad[i];
+        let name = ca.addon.name;
+        let quantity = ca.quantity;
+        let amount = ca.addon.price;
+        let taxData = ca.addon.taxCategory.taxData;
+        totalAmount += amount;
+        let taxes = Object.keys(taxData);
+        taxes.map((val, index) => {
+          taxAmount += (taxData[val] / 100) * amount * quantity;
+        });
+        orderItems.push({ quantity, addon: ca.addon });
+      }
+    }
+    order = {
+      ...order,
+      totalAmount,
+      taxAmount,
+      orderItems: orderItems,
+    };
+
+    transaction.commit();
+
+    response(CART_CONFIRMED, "pos", order, req, res, next);
   } catch (error) {
     transaction.rollback();
     next(error);
