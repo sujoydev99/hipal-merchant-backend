@@ -114,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "businesses",
-      paranoid: true,
+      paranoid: false,
     }
   );
   businesses.beforeCreate((business, _) => {

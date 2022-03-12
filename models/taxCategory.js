@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "taxCategory",
-      paranoid: true,
+      paranoid: false,
     }
   );
   taxCategory.beforeCreate((doc, _) => {

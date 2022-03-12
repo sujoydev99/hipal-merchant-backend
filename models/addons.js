@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "addons",
-      paranoid: true,
+      paranoid: false,
     }
   );
   addons.beforeCreate((doc, _) => {
