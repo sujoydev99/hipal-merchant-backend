@@ -331,7 +331,7 @@ exports.updateCartItemKotByCartIdBusinessId = (transaction, cartId, businessId, 
     const { cartItems } = await dbConn();
     try {
       const item = await cartItems.update(itemObj, {
-        where: { cartId, businessId },
+        where: { cartId, businessId, status:POS_SYSTEM.SELECTION },
         transaction,
       });
       resolve(item);
