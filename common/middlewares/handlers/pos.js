@@ -270,6 +270,7 @@ exports.settlementHandler = async (req, res, next) => {
       paymentData,
       userContactNumber,
       userName,
+      type: cart.type,
     };
     let totalAmount = 0,
       discountAmount = req.body.discountAmount || 0,

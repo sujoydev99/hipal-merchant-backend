@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       paymentData: { type: DataTypes.JSON },
       taxAmount:{type:DataTypes.JSON},
       currency:{ type: DataTypes.STRING },
+      type:{ type: DataTypes.STRING },
     },
     {
       sequelize,
