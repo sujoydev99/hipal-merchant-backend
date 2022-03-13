@@ -38,8 +38,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       notes: DataTypes.STRING,
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
-      // sgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
-      // cgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
     },
     {
       sequelize,

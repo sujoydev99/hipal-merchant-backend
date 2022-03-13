@@ -65,8 +65,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: [],
       },
-      sgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
-      cgst: { type: DataTypes.DOUBLE(10, 2), defaultValue: 9 },
       isActive: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
     {

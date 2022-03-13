@@ -352,7 +352,7 @@ exports.confirmCartHandler = async (req, res, next) => {
       let quantity = ci.quantity;
       let amount = ci.portion.price;
       let taxData = ci.item.taxCategory.taxData;
-      totalAmount += amount;
+      totalAmount += amount * quantity;
       let taxes = Object.keys(taxData);
       taxes.map((val, index) => {
         taxAmount += (taxData[val] / 100) * amount * quantity;
@@ -365,7 +365,7 @@ exports.confirmCartHandler = async (req, res, next) => {
         let quantity = ca.quantity;
         let amount = ca.addon.price;
         let taxData = ca.addon.taxCategory.taxData;
-        totalAmount += amount;
+        totalAmount += amount * quantity;
         let taxes = Object.keys(taxData);
         taxes.map((val, index) => {
           taxAmount += (taxData[val] / 100) * amount * quantity;
