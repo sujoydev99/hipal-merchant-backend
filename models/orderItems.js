@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       orderId: { type: DataTypes.INTEGER, allowNull: false },
       name: { type: DataTypes.STRING },
       quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+      size: { type: DataTypes.STRING, allowNull: false, defaultValue: "default" },
       amount: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
       taxData: { type: DataTypes.JSON },
     },

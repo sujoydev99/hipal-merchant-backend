@@ -126,4 +126,18 @@ router.delete(
   deleteBusinessProfilePicture
 );
 
+// get business stats
+router.get(
+  "/:businessUuid/stats",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  deleteBusinessProfilePicture
+);
+// get sales data
+router.get(
+  "/:businessUuid/sales",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  deleteBusinessProfilePicture
+);
+
+
 module.exports = router;

@@ -281,13 +281,14 @@ exports.settlementHandler = async (req, res, next) => {
       let name = ci.item.name;
       let quantity = ci.quantity;
       let amount = ci.portion.price;
+      let size = ci.portion ? ci.portion.name : "default";
       let taxData = ci.item.taxCategory.taxData;
       totalAmount += amount * quantity;
       let taxes = Object.keys(taxData);
       taxes.map((val, index) => {
         taxAmount += (taxData[val] / 100) * amount * quantity;
       });
-      orderItems.push({ name, amount, quantity, taxData, businessId: req.business.id });
+      orderItems.push({ name, amount, quantity, taxData, businessId: req.business.id, size });
 
       for (let i = 0; i < ciad.length; i++) {
         let ca = ciad[i];
@@ -300,7 +301,7 @@ exports.settlementHandler = async (req, res, next) => {
         taxes.map((val, index) => {
           taxAmount += (taxData[val] / 100) * amount * quantity;
         });
-        orderItems.push({ name, amount, quantity, taxData, businessId: req.business.id });
+        orderItems.push({ name, amount, quantity, taxData, businessId: req.business.id, size:"default" });
       }
     }
     order = {
@@ -358,7 +359,7 @@ exports.confirmCartHandler = async (req, res, next) => {
       taxes.map((val, index) => {
         taxAmount += (taxData[val] / 100) * amount * quantity;
       });
-      orderItems.push({ quantity, item: ci.item });
+      orderItems.push({ quantity, item: ci.item, portion: ci.portion });
 
       for (let i = 0; i < ciad.length; i++) {
         let ca = ciad[i];
