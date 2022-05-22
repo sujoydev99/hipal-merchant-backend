@@ -9,18 +9,19 @@ module.exports = {
     dialect: process.env.DIALECT,
     port: process.env.DBPORT,
     freezeTableName: true,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+
     pool: {
       max: 10,
       min: 0,
       idle: 10000,
     },
-    // dialectOptions: {
-    //   // ssl: {
-    //   //   require: true,
-    //   //   rejectUnauthorized: false,
-    //   // },
-    // },
-    logging: false,
+    logging: true,
   },
   test: {
     username: process.env.DBUSERNAME,
@@ -36,7 +37,8 @@ module.exports = {
       min: 0,
       idle: 500,
     },
-    logging: false,
+    logging: true,
+    
   },
   production: {
     username: process.env.DBUSERNAME,
@@ -47,11 +49,17 @@ module.exports = {
     dialect: process.env.DIALECT,
     port: process.env.DBPORT,
     freezeTableName: true,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
     pool: {
       max: 10,
       min: 0,
       idle: 500,
     },
-    logging: false,
+    logging: true,
   },
 };
