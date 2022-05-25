@@ -15,12 +15,12 @@ exports.createCartItem = (transaction, itemObj) => {
     }
   });
 };
-exports.updateCartItemByIdBusinessId = (transaction, id, businessId, itemObj) => {
+exports.updateCartItemByIdBusinessId = (transaction, id, businessId, itemObj, filter = { isSettled: false }) => {
   return new Promise(async (resolve, reject) => {
     const { cartItems } = await dbConn();
     try {
       const item = await cartItems.update(itemObj, {
-        where: { id, businessId },
+        where: { id, businessId, ...filter },
         transaction,
       });
       resolve(item);
@@ -331,7 +331,7 @@ exports.updateCartItemKotByCartIdBusinessId = (transaction, cartId, businessId, 
     const { cartItems } = await dbConn();
     try {
       const item = await cartItems.update(itemObj, {
-        where: { cartId, businessId, status:POS_SYSTEM.SELECTION },
+        where: { cartId, businessId, status: POS_SYSTEM.SELECTION, isSettled: false },
         transaction,
       });
       resolve(item);

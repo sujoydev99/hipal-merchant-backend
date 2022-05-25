@@ -131,7 +131,7 @@ exports.updateCartByIdBusinessId = (transaction, id, businessId, cartObj) => {
     const { carts } = await dbConn();
     try {
       await carts.update(cartObj, {
-        where: { id, businessId },
+        where: { id, businessId, isSettled: false },
         transaction,
       });
       resolve();

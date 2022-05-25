@@ -49,7 +49,7 @@ exports.updateCartItemStatusByKds = async (req, res, next) => {
     const { status } = req.body;
     const cartItem = await getCartItem(cartItemUuid, req.business.id, transaction);
     if (!cartItem) throw NOT_FOUND;
-    await updateCartItemByIdBusinessId(transaction, cartItem.id, req.business.id, { status });
+    await updateCartItemByIdBusinessId(transaction, cartItem.id, req.business.id, { status }, {});
     transaction.commit();
     response(KDS_DATA_UDATED, "pos", {}, req, res, next);
   } catch (error) {
