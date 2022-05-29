@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "business",
         onDelete: "CASCADE",
       });
+      orders.hasMany(models.orderItems, {
+        foreignKey: "orderId",
+        as: "orderItems",
+      });
     }
   }
   orders.init(

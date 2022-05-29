@@ -149,7 +149,7 @@ exports.getAllCartItemsByTableIdOrCartIdandZoneId = (
     const { cartItems, items, portions, cartAddons, addons, carts } = await dbConn();
     try {
       const cart = await carts.findOne({
-        where: clean({ businessId, tableId, zoneId, id: cartId }),
+        where: clean({ businessId, tableId, zoneId, id: cartId, isSettled: false }),
         attributes: { exclude: DEFAULT_EXCLUDE },
         include: {
           model: cartItems,
@@ -340,3 +340,20 @@ exports.updateCartItemKotByCartIdBusinessId = (transaction, cartId, businessId, 
     }
   });
 };
+
+
+exports.updateCartItemsByCartIdBusinessId = (transaction, cartId, businessId, itemObj) => {
+  return new Promise(async (resolve, reject) => {
+    const { cartItems } = await dbConn();
+    try {
+      const item = await cartItems.update(itemObj, {
+        where: { cartId, businessId },
+        transaction,
+      });
+      resolve(item);
+    } catch (error) {
+      reject(error);
+    }
+  });
+
+}

@@ -9,6 +9,9 @@ const {
   updateBusiness,
   uploadBusinessProfilePicture,
   deleteBusinessProfilePicture,
+  getBusinessStats,
+  getBusinessSales,
+  getBusinessSale,
 } = require("../../common/middlewares/handlers/business");
 const {
   businessDocsValidation,
@@ -130,13 +133,19 @@ router.delete(
 router.get(
   "/:businessUuid/stats",
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  deleteBusinessProfilePicture
+  getBusinessStats
 );
 // get sales data
 router.get(
   "/:businessUuid/sales",
   verifyToken([], [ROLES.ADMIN, ROLES.USER]),
-  deleteBusinessProfilePicture
+  getBusinessSales
+);
+// get sale data
+router.get(
+  "/:businessUuid/sales/:saleUuid",
+  verifyToken([], [ROLES.ADMIN, ROLES.USER]),
+  getBusinessSale
 );
 
 

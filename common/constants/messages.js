@@ -375,4 +375,12 @@ module.exports = {
     customMessage: "Cart comfirmed, moved all items to KOT",
     statusCode: 200,
   },
+  BUSINESS_STATS: {
+    customMessage: "Business stats fetched",
+    statusCode: 200,
+  },
+  BUSINESS_SALES: {
+    customMessage: "Business sales fetched",
+    statusCode: 200,
+  },
 };

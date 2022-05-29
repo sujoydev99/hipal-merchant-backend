@@ -15,6 +15,7 @@ const {
   getAllCartsZoneId,
   getAllCartItemsByCartIdBusinessId,
   updateCartItemKotByCartIdBusinessId,
+  updateCartItemsByCartIdBusinessId,
 } = require("../../../repository/cartItems");
 
 const {
@@ -304,14 +305,15 @@ exports.settlementHandler = async (req, res, next) => {
         orderItems.push({ name, amount, quantity, taxData, businessId: req.business.id, size:"default" });
       }
     }
+    console.log(totalAmount)
     order = {
       ...order,
       totalAmount,
       discountAmount,
-      paidAmount: totalAmount - discountAmount,
+      paidAmount: totalAmount + taxAmount - discountAmount,
       taxAmount,
     };
-    if (paymentData.cash + paymentData.online + paymentData.card != totalAmount - discountAmount)
+    if (paymentData.cash + paymentData.online + paymentData.card != totalAmount + taxAmount - discountAmount)
       throw SETTELMENT_CALCULATION_ERROR;
     const orderData = await createOrder(transaction, order);
     let temp = [];
@@ -320,6 +322,7 @@ exports.settlementHandler = async (req, res, next) => {
     });
     await createOrderItems(transaction, temp);
     await updateCartByIdBusinessId(transaction, cart.id, req.business.id, { isSettled: true });
+    await updateCartItemsByCartIdBusinessId(transaction, cart.id, req.business.id, { isSettled: true })
     transaction.commit();
     response(SETTLEMENT_CREATED, "pos", {}, req, res, next);
   } catch (error) {
@@ -377,7 +380,7 @@ exports.confirmCartHandler = async (req, res, next) => {
     }
     order = {
       ...order,
-      totalAmount,
+      totalAmount : totalAmount + taxAmount,
       taxAmount,
       orderItems: orderItems,
     };

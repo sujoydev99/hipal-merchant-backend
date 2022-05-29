@@ -62,6 +62,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: "SELECTION",
         comment: "SELECTION/KOT/COOKING/COOKED/SERVED/SETTLED",
       },
+      isSettled: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
     },
     {
       sequelize,
